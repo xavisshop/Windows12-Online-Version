@@ -1,7 +1,9 @@
 > [!NOTE]
 > 无偿请求帮助我们翻译此项目！目前暂仅需英语。详见[此](lang/readme.md)。
 
-
+<p align="center">
+    <img src="./icon/windows12.svg" width="100" height="100">
+</p>
 <h1 align="center">Windows 12 网页版</h1>
 <p align="center" class="shields">
   <span href="https://github.com/tjy-gitnub/win12/issues" style="text-decoration:none">
@@ -57,7 +59,7 @@ Bilibili：
 
 xavisshop：
 
-[![image]([https://raw.githubusercontent.com/xavisshop/win12-PLUS/refs/heads/main/img/IMG_6856.png](https://pub-cd21ced5b61b49829f5836c95b826b62.r2.dev/Screenshot_20250128_150816.jpg))](https://space.bilibili.com/3546616411720459/)
+[![image](https://pub-cd21ced5b61b49829f5836c95b826b62.r2.dev/Screenshot_20250128_150816.jpg)](https://space.bilibili.com/3546616411720459/)
 
 **我们的项目及源代码绝对不进行强制收费！如果看到倒卖本项目且没有注明原项目链接的，或违反EPL-2.0开源协议及本项目开源说明的，欢迎举报！**
 
