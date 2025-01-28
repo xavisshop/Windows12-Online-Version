@@ -1,9 +1,7 @@
 > [!NOTE]
 > 无偿请求帮助我们翻译此项目！目前暂仅需英语。详见[此](lang/readme.md)。
 
-<p align="center">
-    <img src="./icon/windows12.svg" width="100" height="100">
-</p>
+
 <h1 align="center">Windows 12 网页版</h1>
 <p align="center" class="shields">
   <span href="https://github.com/tjy-gitnub/win12/issues" style="text-decoration:none">
