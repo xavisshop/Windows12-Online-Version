@@ -57,7 +57,7 @@ Bilibili：
 
 xavisshop：
 
-[![image](https://github.com/xavisshop/win12-PLUS/blob/main/img/IMG_6856.png)](https://space.bilibili.com/3546616411720459/)
+[![image](https://raw.githubusercontent.com/xavisshop/win12-PLUS/refs/heads/main/img/IMG_6856.png)](https://space.bilibili.com/3546616411720459/)
 
 **我们的项目及源代码绝对不进行强制收费！如果看到倒卖本项目且没有注明原项目链接的，或违反EPL-2.0开源协议及本项目开源说明的，欢迎举报！**
 
