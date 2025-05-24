@@ -48,6 +48,17 @@
             justify-content: center; /* 水平居中对齐 */
         }
 
+        /* XPtech Logo样式 */
+        .xptech-logo {
+            position: absolute; /* 绝对定位 */
+            top: 50%; /* 垂直居中 */
+            left: 50%; /* 水平居中 */
+            transform: translate(-50%, -50%); /* 精确居中 */
+            width: 1200px; /* logo宽度 */
+            height: 900px; /* logo高度 */
+            margin-top: -80px; /* 向上偏移100像素，位于进度条上方 */
+        }
+
         /* 信息区域定位 */
         #info {
             position: absolute; /* 绝对定位 */
@@ -58,6 +69,7 @@
 </head> <!-- 文档头部结束 -->
 
 <body id="body" scroll="no"> <!-- 页面主体开始，禁用滚动 -->
+    <img src="./img/XPtech.jpg" alt="XPtech Logo" class="xptech-logo"> <!-- XPtech Logo -->
     <div id="info"> <!-- 信息显示区域 -->
         <div class="loading"> <!-- 加载动画容器 -->
             <p>Starting</p> <!-- 启动提示文本 -->
