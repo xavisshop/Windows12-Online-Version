@@ -1,33 +1,3 @@
-> [!NOTE]
-> 无偿请求帮助我们翻译此项目！目前暂仅需英语。详见[此](lang/readme.md)。
-
-<p align="center">
-    <img src="./icon/windows12.svg" width="100" height="100">
-</p>
-<h1 align="center">Windows 12 网页版</h1>
-<p align="center" class="shields">
-  <span href="https://github.com/tjy-gitnub/win12/issues" style="text-decoration:none">
-    <img src="https://img.shields.io/github/issues/tjy-gitnub/win12.svg" alt="GitHub issues"/>
-  </span>
-  <span href="https://github.com/tjy-gitnub/win12/stargazers" style="text-decoration:none">
-    <img src="https://img.shields.io/github/stars/tjy-gitnub/win12.svg" alt="GitHub stars"/>
-  </span>
-  <span href="https://github.com/tjy-gitnub/win12/network" style="text-decoration:none">
-    <img src="https://img.shields.io/github/forks/tjy-gitnub/win12.svg" alt="GitHub forks"/>
-  </span>
-  <span href="https://github.com/tjy-gitnub/win12/blob/master/LICENSE" style="text-decoration:none">
-    <img src="https://img.shields.io/github/license/tjy-gitnub/win12" alt="GitHub License"/>
-  </pan>
-</p>
-<p align="center" class="language" title="Language selection 语言选择">
-  <a href="readme/README_en_us.md">English</a> | 
-  <b>简体中文</b> | 
-  <a href="readme/README_fr_fr.md">Français</a>
-</p>
-
-  </a>
-</details>
-
 ## 公告
 
 ### 重要！
@@ -47,13 +17,13 @@
     
 
 ## 前前言
-我们项目的核心开发团队是由 xavisshop（初一），Patrick130306（初一）二位开发者组成的！
+我们这个项目主要是由两个初一学生开发的！他们是 xavisshop（初一）和 Patrick130306（初一）！
 
-我们只在 GitHub和Bilibili 上有官方账号！
+我们只在 GitHub 和 Bilibili 上面有官方账号哦！
 
 GitHub：
 
-去贡献者里看一下吧~
+去贡献者里面看看就知道啦~
 
 Bilibili：
 
@@ -61,88 +31,71 @@ xavisshop：
 
 [![image](https://pub-cd21ced5b61b49829f5836c95b826b62.r2.dev/Screenshot_20250128_150816.jpg)](https://space.bilibili.com/3546616411720459/)
 
-**我们的项目及源代码绝对不进行强制收费！如果看到倒卖本项目且没有注明原项目链接的，或违反EPL-2.0开源协议及本项目开源说明的，欢迎举报！**
+**我们的项目和代码都是免费的！如果你看到有人拿去卖钱，而且没有写原项目链接的，或者违反了EPL-2.0开源协议和我们开源说明的，请告诉我们！**
 
 ## 前言
 
-最近（很久以前）看到 Windows 12 概念版（Powered by PowerPoint）后深受启发，决定做一个 Windows 12 网页版，就像 [Windows 11 网页版](https://win11.blueedge.me/) 一样。
+前段时间（其实是很久以前）看到了用 PowerPoint 做的 Windows 12 概念版，觉得超级厉害，就决定做一个网页版的 Windows 12，就像 [Windows 11 网页版](https://win11.blueedge.me/) 那样。
 
-参考 [前景规划](#前景规划)。
+具体要做什么可以看看 [前景规划](#前景规划)。
 
-精美的 ui 设计，流畅丰富的动画，各种高级的功能（相较于网页版）。
+我们想做出超好看的界面设计，超流畅的动画效果，还有各种厉害的功能（对于网页版来说已经很不错了）。
 
-> 移动端适配不太完善，开桌面版网站凑合着用吧 `>v-)o`
+> 手机上用可能不太好，建议用电脑打开网站哦 `>v-)o`
 
 ## 效果展示
 
-> 新的版本有很多变化，仅供参考，请以实物为准（你点一下 [这里](https://win12.hub-xptech.com/）就知道了啊，不麻烦`-_-)o` ）
-
-![image](https://tjy-gitnub.github.io/win12/img/start-menu.png)
-
-*开始菜单*
-
-![image](https://tjy-gitnub.github.io/win12/img/colorful-apps.png)
-
-*丰富的应用*
-
-![image](https://tjy-gitnub.github.io/win12/img/dark-mode.png)
-
-*深色模式*
-
-![image](https://tjy-gitnub.github.io/win12/img/ai-copilot.png)
-
-*AI Copilot*
+暂时还没有哦
 
 ## 在线体验
 
 [在线预览](https://win12.hub-xptech.com/)
 
-有点慢，稍等一下~
 
 ## 安装和使用
 
-下载代码，无需安装，打开 `desktop.html` 即可。
+下载代码，无需安装，打开 `Desktop.html` 即可。
 
 ## 前景规划
 
 关于该项目的路径规划:
 
-- [x] 基本功能与应用
-- [x] 外观整体优化
-- [x] 加入特效
-- [x] 窗口功能
-- [x] 应用完善
-- [x] 添加更多个性化方面的设置
-- [x] 添加 Edge 应用
+- [ ] 基本功能与应用
+- [ ] 外观整体优化
+- [ ] 加入特效
+- [ ] 窗口功能
+- [ ] 应用完善
+- [ ] 添加更多个性化方面的设置
+- [ ] 添加 Edge 应用
 - [ ] 为更多应用添加标签页
-- [x] 完善小组件，添加到桌面等功能
-- [x] 动态壁纸
+- [ ] 完善小组件，添加到桌面等功能
+- [ ] 动态壁纸
 - [ ] 更多任务栏的自定义
 - [ ] 丰富应用生态，添加 Microsoft Store
 - [ ] 完善设置及 Windows 更新
 
 下面是一些...呃......畅..想 `~o~)/`：
 
-- [x] 建立文件系统
+- [ ] 建立文件系统
 - [ ] 建立自己的可执行文件机制
 - [ ] 将 .exe 文件转化并执行
 - [ ] 提供更多 api 供应用调用
-- [x] 内置浏览器内核，成为应用
+- [ ] 内置浏览器内核，成为应用
 - [ ] 将项目更名为 "Windows 12"
 - [ ] 封装到 Windows 系统中
 - [ ] 将启动程序设为此应用
 - [ ] 去除多余系统功能，封装成独立的操作系统
 - [ ] 将项目更名为 "Doswin 1.0"
 - [ ] 适配量子计算机
-- [ ] 接入Deepseek
-- [x] 接入ChatGPT
+- [ ] 接入Claude
+- [ ] 接入ChatGPT
 - [ ] 将项目更名为 "550W"
 
 ## 开源说明
 
 本项目作者:谢辰铭（xavisshop）
 
-本项目链接：<https://github.com/xavisshop/win12-PLUS >
+本项目链接：<https://github.com/xavisshop/win12.1 >
 
 此项目是一个开源项目。此项目使用 EPL v2.0 开源许可。开源许可是具有法律效力的合同，请自觉遵守开源许可，尊重他人劳动。
 
@@ -166,8 +119,6 @@ xavisshop：
 
 ## 贡献须知
 
-详情请见 [贡献指南](./CONTRIBUTING.md)。
+详情请见 [贡献指南](./.github/CONTRIBUTING.md)。
 
-## AI Copilot 实现
 
-详情请见 [AI Copilot 实现](./scripts/AI%20Copilot%20service/README.md)
