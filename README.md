@@ -49,7 +49,7 @@ xavisshop：
 
 ## 在线体验
 
-[在线预览](https://win12.hub-xptech.com/)
+[在线预览](https://win12.hub-xptech.com/)现在没啥用
 
 
 ## 安装和使用
