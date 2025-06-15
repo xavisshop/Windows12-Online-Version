@@ -1,2256 +1,1417 @@
-<!DOCTYPE html>  
-<!--   
-    XPtech BIOS Setup Utility - 完整功能模拟版  
-    Copyright (c) 2024 Colorful Technology And Development Co.,Ltd. All rights reserved.  
-    
-    本软件受版权法保护。仅供学习和演示使用。  
-    所有设置更改仅在浏览器中生效，不会对实际硬件造成影响。  
-    
-    版权所有 Colorful Technology And Development Co.,Ltd  
-    保留所有权利  
--->  
-<html lang="zh-CN">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>XPtech BIOS Setup Utility</title>  
-    
-    <style>  
-        /* 重置样式 */  
-        * {  
-            margin: 0;  
-            padding: 0;  
-            box-sizing: border-box;  
-        }  
-        
-        /* 主体样式 */  
-        body {  
-            font-family: 'Microsoft YaHei', 'Arial', sans-serif;  
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);  
-            background-attachment: fixed;  
-            color: #FFFFFF;  
-            margin: 0;  
-            padding: 0;  
-            min-height: 100vh;  
-            overflow-x: hidden;  
-            position: relative;  
-        }  
-        
-        /* 网格背景 */  
-        body::before {  
-            content: '';  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100%;  
-            background-image:   
-                linear-gradient(rgba(255,0,0,0.1) 1px, transparent 1px),  
-                linear-gradient(90deg, rgba(255,0,0,0.1) 1px, transparent 1px);  
-            background-size: 20px 20px;  
-            z-index: -1;  
-            pointer-events: none;  
-        }  
-        
-        /* BIOS主容器 */  
-        .bios-container {  
-            width: 100vw;  
-            height: 100vh;  
-            border: 3px solid #ff0000;  
-            background-color: rgba(26, 26, 26, 0.95);  
-            position: relative;  
-            display: flex;  
-            flex-direction: column;  
-        }  
-        
-        /* 装饰边角 */  
-        .corner-tl, .corner-tr, .corner-bl, .corner-br {  
-            position: absolute;  
-            width: 30px;  
-            height: 30px;  
-            border: 3px solid #ff0000;  
-        }  
-        .corner-tl { top: -3px; left: -3px; border-right: none; border-bottom: none; }  
-        .corner-tr { top: -3px; right: -3px; border-left: none; border-bottom: none; }  
-        .corner-bl { bottom: -3px; left: -3px; border-right: none; border-top: none; }  
-        .corner-br { bottom: -3px; right: -3px; border-left: none; border-top: none; }  
-        
-        /* 标题栏 */  
-        .bios-header {  
-            background: linear-gradient(90deg, #ff0000 0%, #cc0000 100%);  
-            color: #FFFFFF;  
-            padding: 15px 30px;  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-            box-shadow: 0 2px 10px rgba(255,0,0,0.3);  
-        }  
-        
-        /* 时间显示 */  
-        .time-display {  
-            display: flex;  
-            flex-direction: column;  
-            align-items: flex-start;  
-        }  
-        
-        .time-large {  
-            font-size: 32px;  
-            font-weight: bold;  
-            color: #FFFFFF;  
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);  
-            font-family: 'Courier New', monospace;  
-        }  
-        
-        .date-display {  
-            font-size: 14px;  
-            color: #ffcccc;  
-            margin-top: 2px;  
-        }  
-        
-        /* LOGO区域 */  
-        .logo-area {  
-            display: flex;  
-            align-items: center;  
-            font-size: 24px;  
-            font-weight: bold;  
-        }  
-        
-        /* 导航标签 */  
-        .nav-tabs {  
-            display: flex;  
-            background-color: rgba(0,0,0,0.8);  
-            border-bottom: 2px solid #ff0000;  
-            padding: 0 30px;  
-        }  
-        
-        .nav-tab {  
-            padding: 15px 25px;  
-            cursor: pointer;  
-            transition: all 0.3s ease;  
-            border: 2px solid transparent;  
-            margin: 5px 5px 0 5px;  
-            background-color: rgba(255,255,255,0.1);  
-            color: #FFFFFF;  
-            font-weight: bold;  
-        }  
-        
-        .nav-tab:hover {  
-            background-color: rgba(255,0,0,0.3);  
-            border-color: #ff0000;  
-            transform: translateY(-2px);  
-        }  
-        
-        .nav-tab.active {  
-            background-color: #ff0000;  
-            border-color: #ff0000;  
-            box-shadow: 0 2px 10px rgba(255,0,0,0.5);  
-        }  
-        
-        /* 主内容区 */  
-        .bios-content {  
-            flex: 1;  
-            display: flex;  
-            padding: 30px;  
-            gap: 30px;  
-            overflow: hidden;  
-        }  
-        
-        .left-panel, .right-panel {  
-            flex: 1;  
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;  
-        }  
-        
-        /* 信息卡片 */  
-        .info-card {  
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);  
-            border: 1px solid rgba(255,0,0,0.3);  
-            border-radius: 8px;  
-            padding: 20px;  
-            backdrop-filter: blur(10px);  
-        }  
-        
-        .card-title {  
-            font-size: 18px;  
-            font-weight: bold;  
-            color: #ff0000;  
-            margin-bottom: 15px;  
-            padding-bottom: 8px;  
-            border-bottom: 2px solid rgba(255,0,0,0.3);  
-        }  
-        
-        /* 信息行 */  
-        .info-row {  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-            padding: 8px 0;  
-            border-bottom: 1px solid rgba(255,255,255,0.1);  
-        }  
-        
-        .info-label {  
-            color: #cccccc;  
-            font-size: 14px;  
-        }  
-        
-        .info-value {  
-            color: #FFFFFF;  
-            font-weight: bold;  
-            font-size: 14px;  
-        }  
-        
-        .temp-display {  
-            color: #ff6666;  
-            font-size: 16px;  
-            font-weight: bold;  
-        }  
-        
-        .voltage-display {  
-            color: #66ff66;  
-            font-size: 16px;  
-            font-weight: bold;  
-        }  
-        
-        /* 设置项 */  
-        .setting-item {  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-            padding: 12px 0;  
-            border-bottom: 1px solid rgba(255,255,255,0.1);  
-        }  
-        
-        .setting-label {  
-            color: #FFFFFF;  
-            font-size: 14px;  
-            flex: 1;  
-        }  
-        
-        .setting-value {  
-            background-color: rgba(255,0,0,0.2);  
-            border: 1px solid #ff0000;  
-            padding: 6px 12px;  
-            border-radius: 4px;  
-            color: #FFFFFF;  
-            cursor: pointer;  
-            transition: all 0.3s ease;  
-            min-width: 80px;  
-            text-align: center;  
-            font-weight: bold;  
-        }  
-        
-        .setting-value:hover {  
-            background-color: #ff0000;  
-            box-shadow: 0 2px 8px rgba(255,0,0,0.4);  
-            transform: scale(1.05);  
-        }  
-        
-        /* 风扇控制 */  
-        .fan-control {  
-            display: grid;  
-            grid-template-columns: 1fr 1fr;  
-            gap: 15px;  
-            margin-top: 15px;  
-        }  
-        
-        .fan-item {  
-            display: flex;  
-            flex-direction: column;  
-            align-items: center;  
-            background-color: rgba(255,255,255,0.05);  
-            padding: 15px;  
-            border-radius: 8px;  
-            border: 1px solid rgba(255,0,0,0.2);  
-            cursor: pointer;  
-            transition: all 0.3s ease;  
-        }  
-        
-        .fan-item:hover {  
-            background-color: rgba(255, 0, 0, 0.2);  
-            transform: scale(1.05);  
-        }  
-        
-        .fan-name {  
-            font-size: 12px;  
-            color: #cccccc;  
-            margin-bottom: 5px;  
-        }  
-        
-        .fan-speed {  
-            font-size: 14px;  
-            color: #FFFFFF;  
-            font-weight: bold;  
-        }  
-        
-        /* CPU风扇图形 */  
-        .cpu-fan-chart {  
-            width: 100%;  
-            height: 150px;  
-            background: linear-gradient(to right, #333 0%, #666 50%, #333 100%);  
-            border: 1px solid rgba(255,0,0,0.3);  
-            border-radius: 8px;  
-            position: relative;  
-            overflow: hidden;  
-        }  
-        
-        .fan-curve {  
-            position: absolute;  
-            bottom: 20px;  
-            left: 20px;  
-            right: 20px;  
-            height: 80px;  
-            border-left: 2px solid #ff6600;  
-            border-bottom: 2px solid #ff6600;  
-        }  
-        
-        .curve-line {  
-            position: absolute;  
-            bottom: 0;  
-            left: 0;  
-            right: 0;  
-            height: 2px;  
-            background: linear-gradient(to right, #ff6600 0%, #ff0000 100%);  
-            transform-origin: left bottom;  
-            transform: rotate(25deg) scaleX(1.2);  
-        }  
-        
-        /* EZ OC圆形控制 */  
-        .ez-oc-control {  
-            display: flex;  
-            justify-content: center;  
-            align-items: center;  
-            height: 120px;  
-            position: relative;  
-        }  
-        
-        .oc-circle {  
-            width: 80px;  
-            height: 80px;  
-            border: 3px solid #ff0000;  
-            border-radius: 50%;  
-            display: flex;  
-            align-items: center;  
-            justify-content: center;  
-            background: radial-gradient(circle, rgba(255,0,0,0.2) 0%, rgba(255,0,0,0.1) 100%);  
-            cursor: pointer;  
-            transition: all 0.3s ease;  
-            position: relative;  
-            overflow: hidden;  
-        }  
-        
-        .oc-circle:hover {  
-            transform: scale(1.1);  
-            box-shadow: 0 0 20px rgba(255,0,0,0.5);  
-        }  
-        
-        .oc-circle::before {  
-            content: 'OC';  
-            font-size: 18px;  
-            font-weight: bold;  
-            color: #ff0000;  
-        }  
-        
-        /* 启动优先级列表 */  
-        .boot-list {  
-            background-color: rgba(0,0,0,0.3);  
-            border: 1px solid rgba(255,0,0,0.3);  
-            border-radius: 8px;  
-            padding: 15px;  
-        }  
-        
-        .boot-item {  
-            display: flex;  
-            align-items: center;  
-            padding: 10px;  
-            margin: 5px 0;  
-            background-color: rgba(255,255,255,0.05);  
-            border-radius: 4px;  
-            cursor: pointer;  
-            transition: all 0.3s ease;  
-        }  
-        
-        .boot-item:hover {  
-            background-color: rgba(255,0,0,0.2);  
-        }  
-        
-        .boot-icon {  
-            width: 24px;  
-            height: 24px;  
-            margin-right: 15px;  
-            background-color: #666;  
-            border-radius: 4px;  
-            display: flex;  
-            align-items: center;  
-            justify-content: center;  
-            font-size: 12px;  
-        }  
-        
-        /* 底部快捷键 */  
-        .bios-footer {  
-            background: linear-gradient(90deg, #333 0%, #222 100%);  
-            color: #FFFFFF;  
-            padding: 15px 30px;  
-            border-top: 2px solid #ff0000;  
-            display: flex;  
-            justify-content: space-between;  
-            flex-wrap: wrap;  
-            font-size: 12px;  
-        }  
-        
-        .footer-key {  
-            margin-right: 20px;  
-            margin-bottom: 5px;  
-        }  
-        
-        .key-highlight {  
-            background-color: #ff0000;  
-            color: #FFFFFF;  
-            padding: 2px 6px;  
-            border-radius: 3px;  
-            font-weight: bold;  
-            margin-right: 5px;  
-        }  
-        
-        /* 版本信息 */  
-                .version-info {  
-            font-size: 11px;  
-            color: #999;  
-            text-align: center;  
-            margin-top: 10px;  
-        }  
-        
-        /* 隐藏内容 */  
-        .tab-content {  
-            display: none;  
-        }  
-        
-        .tab-content.active {  
-            display: block;  
-        }  
-        
-        /* 响应式设计 */  
-        @media (max-width: 1200px) {  
-            .bios-content {  
-                flex-direction: column;  
-                padding: 20px;  
-            }  
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPtech BIOS Setup Utility</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #FFFFFF;
+            overflow: hidden;
+            height: 100vh;
+            background-attachment: fixed;
+        }
+
+        /* BIOS容器 */
+        .bios-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 顶部标题栏 */
+        .bios-header {
+            background: linear-gradient(90deg, #ff0000, #cc0000);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff4444;
+            box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 56px; /* 进一步增大logo尺寸 */
+            width: auto;
+        }
+
+        .logo.hidden {
+            display: none;
+        }
+
+        .bios-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .time-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 12px;
+        }
+
+        #current-time {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        #current-date {
+            color: #ffcccc;
+        }
+
+        /* 导航标签栏 - 最大化间距 */
+        .bios-nav {
+            background: linear-gradient(90deg, #333, #444);
+            padding: 18px 25px; /* 大幅增加上下内边距 */
+            display: flex;
+            border-bottom: 1px solid #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            gap: 35px; /* 大幅增大选项卡间距 */
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px 15px; /* 大幅增加垂直内边距 */
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: none;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 14px; /* 稍微增大字体 */
+            font-weight: bold;
+            border-radius: 12px; /* 进一步增大圆角 */
+            min-height: 60px; /* 大幅增加最小高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin: 0 8px; /* 额外的左右边距 */
+        }
+
+        .nav-tab:hover {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 8px 18px rgba(52, 152, 219, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.5);
+            color: #FFFFFF;
+            transform: translateY(-3px);
+        }
+
+        /* 主内容区 */
+        .bios-content {
+            flex: 1;
+            display: flex;
+            padding: 15px 20px;
+            gap: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 0;
+        }
+
+        .left-panel, .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border: 1px solid rgba(255,0,0,0.3);
+            border-radius: 8px;
+            padding: 12px 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(255,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* 信息网格布局 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 信息行 */
+        .info-row {
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 8px;
+            transition: all 0.3s ease;
+        }
+
+        .info-row:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: rgba(255,0,0,0.3);
+        }
+
+        .info-label {
+            color: #cccccc;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: 12px;
+            display: block;
+        }
+
+        /* 设置项 */
+        .setting-item {
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: rgba(255,0,0,0.3);
+        }
+
+        .setting-label {
+            color: #FFFFFF;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .setting-value {
+            background-color: rgba(255,0,0,0.2);
+            border: 1px solid #ff0000;
+            padding: 4px 8px;
+            border-radius: 3px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 10px;
+            display: block;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .setting-value:hover {
+            background-color: rgba(255,0,0,0.4);
+            box-shadow: 0 2px 5px rgba(255,0,0,0.3);
+        }
+
+        /* 温度和电压显示 */
+        .temp-display, .voltage-display {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .temp-display {
+            color: #ff6666;
+        }
+
+        .voltage-display {
+            color: #66ff66;
+        }
+
+        /* 风扇控制 */
+        .fan-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .fan-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(255,255,255,0.05);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fan-item:hover {
+            background-color: rgba(255,0,0,0.1);
+            border-color: rgba(255,0,0,0.5);
+        }
+
+        .fan-name {
+            font-size: 9px;
+            color: #cccccc;
+            margin-bottom: 3px;
+        }
+
+        .fan-speed {
+            font-size: 11px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        /* 启动列表 */
+        .boot-list {
+            background-color: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .boot-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 3px 0;
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 11px;
+        }
+
+        .boot-item:hover {
+            background-color: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+
+        .boot-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            background-color: #666;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+        }
+
+        /* 保存区域 */
+        .save-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .save-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border: 2px solid #2ecc71;
+            color: #fff;
+            padding: 15px 18px; /* 增大按钮尺寸 */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px; /* 增大字体 */
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            margin-bottom: 12px;
+        }
+
+        .save-button:hover {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+        }
+
+        .save-button.danger-button {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-color: #e74c3c;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .save-button.danger-button:hover {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+        }
+
+        .save-button.reset-button {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border-color: #f39c12;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+
+        .save-button.reset-button:hover {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            box-shadow: 0 6px 16px rgba(243, 156, 18, 0.4);
+        }
+
+        .save-icon {
+            font-size: 18px; /* 增大图标 */
+        }
+
+        /* 底部快捷键栏 */
+        .bios-footer {
+            background: linear-gradient(90deg, #2c3e50, #34495e);
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-top: 2px solid #555;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+
+        .footer-key {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            color: #cccccc;
+        }
+
+        .key-highlight {
+            background: rgba(255,0,0,0.3);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #fff;
+            font-weight: bold;
+            border: 1px solid rgba(255,0,0,0.5);
+        }
+
+        /* 对话框 */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .dialog-box {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .dialog-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .dialog-content {
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .dialog-btn {
+            padding: 10px 18px; /* 增大按钮 */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px; /* 增大字体 */
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .dialog-btn.confirm-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .dialog-btn.confirm-btn:hover {
+            background: #c0392b;
+        }
+
+        .dialog-btn.cancel-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .dialog-btn.cancel-btn:hover {
+            background: #7f8c8d;
+        }
+
+        /* EZ模式样式 */
+        .ez-oc-control {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .oc-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .oc-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+        }
+
+        .ez-option {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ez-option:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .ez-icon {
+            font-size: 20px;
+            min-width: 35px;
+        }
+
+        .ez-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .ez-desc {
+            font-size: 10px;
+            color: #bbb;
+            margin-top: 2px;
+        }
+
+        /* 安全相关样式 */
+        .security-item {
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .security-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: rgba(255,0,0,0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1400px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
             
-            .left-panel, .right-panel {  
-                flex: none;  
-            }  
-        }  
-        
-        @media (max-width: 768px) {  
-            .nav-tabs {  
-                flex-wrap: wrap;  
-                padding: 0 15px;  
-            }  
+            .fan-control {
+                grid-template-columns: 1fr 1fr;
+            }
             
-            .nav-tab {  
-                padding: 10px 15px;  
-                font-size: 12px;  
-            }  
+            .bios-nav {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .bios-content {
+                flex-direction: column;
+                padding: 10px 15px;
+            }
             
-            .bios-header {  
-                padding: 10px 15px;  
-                flex-direction: column;  
-                gap: 10px;  
-            }  
+            .left-panel, .right-panel {
+                flex: none;
+            }
             
-            .time-large {  
-                font-size: 24px;  
-            }  
-        }  
-        
-        /* 自定义滚动条 */  
-        ::-webkit-scrollbar {  
-            width: 8px;  
-        }  
-        
-        ::-webkit-scrollbar-track {  
-            background: rgba(255,255,255,0.1);  
-            border-radius: 4px;  
-        }  
-        
-        ::-webkit-scrollbar-thumb {  
-            background: #ff0000;  
-            border-radius: 4px;  
-        }  
-        
-        ::-webkit-scrollbar-thumb:hover {  
-            background: #cc0000;  
-        }  
-        
-        /* 动画效果 */  
-        @keyframes pulse {  
-            0% { transform: scale(1); }  
-            50% { transform: scale(1.05); }  
-            100% { transform: scale(1); }  
-        }  
-        
-        .pulse {  
-            animation: pulse 2s infinite;  
-        }  
-        
-        @keyframes fadeIn {  
-            from { opacity: 0; transform: translateY(20px); }  
-            to { opacity: 1; transform: translateY(0); }  
-        }  
-        
-        .fade-in {  
-            animation: fadeIn 0.5s ease-out;  
-        }  
-    </style>  
-</head>  
-<body>  
-    <div class="bios-container">  
-        <!-- 装饰边角 -->  
-        <div class="corner-tl"></div>  
-        <div class="corner-tr"></div>  
-        <div class="corner-bl"></div>  
-        <div class="corner-br"></div>  
-        
-        <!-- 标题栏 -->  
-        <div class="bios-header">  
-            <div class="logo-area">  
-                🖥️ XPtech BIOS Setup Utility  
-            </div>  
-            <div class="time-display">  
-                <div class="time-large" id="current-time">00:00:00</div>  
-                <div class="date-display" id="current-date">2024年1月1日 星期一</div>  
-            </div>  
-        </div>  
-        
-        <!-- 导航标签 -->  
-        <div class="nav-tabs">  
-            <div class="nav-tab active" onclick="switchTab('main')">🏠 主要</div>  
-            <div class="nav-tab" onclick="switchTab('advanced')">⚙️ 高级</div>  
-            <div class="nav-tab" onclick="switchTab('power')">🔋 电源管理</div>  
-            <div class="nav-tab" onclick="switchTab('boot')">🚀 启动</div>  
-            <div class="nav-tab" onclick="switchTab('security')">🔐 安全</div>  
-            <div class="nav-tab" onclick="switchTab('hardware')">🔧 硬件监控</div>  
-            <div class="nav-tab" onclick="switchTab('ez')">⚡ EZ模式</div>  
-        </div>  
-        
-        <!-- 主内容区 -->  
-        <div class="bios-content">  
-            <!-- 主要选项卡 -->  
-            <div id="main-tab" class="tab-content active">  
-                <div class="left-panel">  
-                    <!-- 系统信息 -->  
-                    <div class="info-card fade-in">  
-                        <div class="card-title">💻 系统信息</div>  
-                        <div class="info-row">  
-                            <span class="info-label">BIOS版本</span>  
-                            <span class="info-value">XPtech UEFI v2.85.1268</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">BIOS日期</span>  
-                            <span class="info-value">2024/01/15</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">主板型号</span>  
-                            <span class="info-value">XPtech Z790-Gaming Pro</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">主板版本</span>  
-                            <span class="info-value">Rev 1.02</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">系统序列号</span>  
-                            <span class="info-value">XPT240115001</span>  
-                        </div>  
-                    </div>  
+            .save-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .bios-nav {
+                gap: 15px;
+                padding: 12px 20px;
+            }
+            
+            .nav-tab {
+                padding: 15px 10px;
+                min-height: 50px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid, .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .fan-control {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .bios-nav {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 10px 15px;
+            }
+            
+            .nav-tab {
+                flex: 1 1 25%;
+                font-size: 11px;
+                padding: 12px 6px;
+                margin: 0 2px;
+                min-height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bios-container">
+        <!-- 顶部标题栏 -->
+        <div class="bios-header">
+            <div class="logo-section">
+                <img src="img/XPbios.png" alt="XPtech Logo" class="logo" onerror="this.classList.add('hidden')">
+                <div class="bios-title">XPtech BIOS Setup Utility</div>
+            </div>
+            <div class="time-display">
+                <div id="current-time">00:00:00</div>
+                <div id="current-date">2024年1月15日</div>
+            </div>
+        </div>
+
+        <!-- 导航标签栏 -->
+        <div class="bios-nav">
+            <button class="nav-tab active" onclick="switchTab('main', event)">🏠 主要</button>
+            <button class="nav-tab" onclick="switchTab('advanced', event)">⚙️ 高级</button>
+            <button class="nav-tab" onclick="switchTab('power', event)">🔋 电源</button>
+            <button class="nav-tab" onclick="switchTab('boot', event)">🚀 启动</button>
+            <button class="nav-tab" onclick="switchTab('security', event)">🔐 安全</button>
+            <button class="nav-tab" onclick="switchTab('hardware', event)">🔧 硬件监控</button>
+            <button class="nav-tab" onclick="switchTab('ez', event)">⚡ EZ模式</button>
+            <button class="nav-tab" onclick="switchTab('save', event)">💾 保存</button>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="bios-content">
+            <!-- 主要选项卡 -->
+            <div id="main-tab" class="tab-content active">
+                <div class="left-panel">
+                    <!-- 系统信息 -->
+                    <div class="info-card">
+                        <div class="card-title">💻 系统信息</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">BIOS版本</span>
+                                <span class="info-value">XPtech UEFI v2.85.1268</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">BIOS日期</span>
+                                <span class="info-value">2024/01/15</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">主板型号</span>
+                                <span class="info-value">XPtech Z790-Gaming Pro</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">主板版本</span>
+                                <span class="info-value">Rev 1.02</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">系统序列号</span>
+                                <span class="info-value">XPT240115001</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">制造商</span>
+                                <span class="info-value">Colorful Technology</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <!-- CPU信息 -->  
-                    <div class="info-card fade-in">  
-                        <div class="card-title">🔲 处理器信息</div>  
-                        <div class="info-row">  
-                            <span class="info-label">处理器</span>  
-                            <span class="info-value">Intel Core i7-13700K</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">微架构</span>  
-                            <span class="info-value">Raptor Lake</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">核心数量</span>  
-                            <span class="info-value">16核心(8P+8E) / 24线程</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">基础频率</span>  
-                            <span class="info-value">3.4 GHz</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">最大频率</span>  
-                            <span class="info-value">5.4 GHz</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">缓存大小</span>  
-                            <span class="info-value">L3: 30MB</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <!-- CPU信息 -->
+                    <div class="info-card">
+                        <div class="card-title">🔲 处理器信息</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">处理器</span>
+                                <span class="info-value">Intel Core i7-13700K</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">微架构</span>
+                                <span class="info-value">Raptor Lake</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">核心数量</span>
+                                <span class="info-value">16核心(8P+8E)</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">线程数量</span>
+                                <span class="info-value">24线程</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">基础频率</span>
+                                <span class="info-value">3.4 GHz</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">最大频率</span>
+                                <span class="info-value">5.4 GHz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <!-- 内存信息 -->  
-                    <div class="info-card fade-in">  
-                        <div class="card-title">🧠 内存信息</div>  
-                        <div class="info-row">  
-                            <span class="info-label">总内存大小</span>  
-                            <span class="info-value">32768 MB (32GB)</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存类型</span>  
-                            <span class="info-value">DDR5-5600</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存插槽1</span>  
-                            <span class="info-value">16GB DDR5-5600</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存插槽2</span>  
-                            <span class="info-value">16GB DDR5-5600</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存插槽3</span>  
-                            <span class="info-value">空</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存插槽4</span>  
-                            <span class="info-value">空</span>  
-                        </div>  
-                    </div>  
+                <div class="right-panel">
+                    <!-- 内存信息 -->
+                    <div class="info-card">
+                        <div class="card-title">🧠 内存信息</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">总内存大小</span>
+                                <span class="info-value">32GB (32768 MB)</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">内存类型</span>
+                                <span class="info-value">DDR5-5600</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">内存通道</span>
+                                <span class="info-value">双通道</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">插槽1</span>
+                                <span class="info-value">16GB DDR5-5600</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">插槽2</span>
+                                <span class="info-value">16GB DDR5-5600</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">XMP状态</span>
+                                <span class="info-value">已启用</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <!-- 存储设备 -->  
-                    <div class="info-card fade-in">  
-                        <div class="card-title">💾 存储设备</div>  
-                        <div class="info-row">  
-                            <span class="info-label">M.2 SSD #1</span>  
-                            <span class="info-value">Samsung 980 PRO 1TB</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">M.2 SSD #2</span>  
-                            <span class="info-value">WD Black SN850 2TB</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">SATA SSD</span>  
-                            <span class="info-value">Samsung 870 QVO 4TB</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">光驱</span>  
-                            <span class="info-value">无</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
+                    <!-- 存储设备 -->
+                    <div class="info-card">
+                        <div class="card-title">💾 存储设备</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">主M.2 SSD</span>
+                                <span class="info-value">Samsung 980 PRO 1TB</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">副M.2 SSD</span>
+                                <span class="info-value">WD Black SN850 2TB</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">SATA SSD</span>
+                                <span class="info-value">Samsung 870 QVO 4TB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 高级选项卡 -->  
-            <div id="advanced-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">⚙️ CPU配置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Intel虚拟化技术</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">超线程技术</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Execute Disable Bit</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Intel SpeedStep</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">C-States</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                    </div>  
+            <!-- 高级选项卡 -->
+            <div id="advanced-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">⚙️ CPU配置</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">Intel虚拟化技术</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">超线程技术</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">Turbo Boost</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">C-States</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="info-card">  
-                        <div class="card-title">🧠 内存配置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">内存频率</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', 'DDR5-4800', 'DDR5-5200', 'DDR5-5600', 'DDR5-6000'])">DDR5-5600</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">内存时序</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', '手动'])">自动</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">内存电压</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', '1.10V', '1.20V', '1.35V'])">自动</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">XMP配置</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['关闭', 'Profile 1', 'Profile 2'])">Profile 1</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <div class="info-card">
+                        <div class="card-title">🧠 内存配置</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">内存频率</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['自动', 'DDR5-4800', 'DDR5-5600', 'DDR5-6000'])">DDR5-5600</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">XMP配置</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['关闭', 'Profile 1', 'Profile 2'])">Profile 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🔌 PCIe配置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">PCIe Gen</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', 'Gen3', 'Gen4', 'Gen5'])">Gen5</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">M.2_1 模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['PCIe', 'SATA'])">PCIe</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">M.2_2 模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['PCIe', 'SATA'])">PCIe</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">SATA模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['AHCI', 'IDE'])">AHCI</span>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">🌐 网络配置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">网络启动</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                                                <div class="setting-item">  
-                            <span class="setting-label">Wake on LAN</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">WiFi模块</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">蓝牙模块</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">🔌 PCIe配置</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">PCIe版本</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['自动', 'Gen3', 'Gen4', 'Gen5'])">Gen5</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">SATA模式</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['AHCI', 'IDE'])">AHCI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 电源管理选项卡 -->  
-            <div id="power-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🔋 电源选项</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">ACPI模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['S1', 'S3', 'S4'])">S3</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">电源恢复</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['关闭', '开启', '上次状态'])">上次状态</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">USB唤醒</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">键盘唤醒</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">鼠标唤醒</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>  
-                        </div>  
-                    </div>  
+            <!-- 电源管理选项卡 -->
+            <div id="power-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">🔋 电源选项</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">电源恢复</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['关闭', '开启', '上次状态'])">上次状态</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">USB唤醒</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="info-card">  
-                        <div class="card-title">⚡ CPU电源管理</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">CPU电源模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['节能', '平衡', '性能', '超频'])">性能</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Turbo Boost</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">CPU电压调节</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', '手动'])">自动</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">负载线校准</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['自动', 'Level 1', 'Level 2', 'Level 3'])">自动</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <div class="info-card">
+                        <div class="card-title">🔥 温度监控</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">CPU温度</span>
+                                <span class="temp-display" id="cpu-temp">42°C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">主板温度</span>
+                                <span class="temp-display" id="mb-temp">35°C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">GPU温度</span>
+                                <span class="temp-display" id="gpu-temp">38°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🔥 温度控制</div>  
-                        <div class="info-row">  
-                            <span class="info-label">CPU温度</span>  
-                            <span class="temp-display" id="cpu-temp">42°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">主板温度</span>  
-                            <span class="temp-display" id="mb-temp">35°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">GPU温度</span>  
-                            <span class="temp-display" id="gpu-temp">38°C</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">温度报警</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['75°C', '80°C', '85°C', '90°C'])">85°C</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">过热保护</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">🌪️ 风扇控制</div>  
-                        <div class="fan-control">  
-                            <div class="fan-item" onclick="toggleFanMode('cpu')">  
-                                <div class="fan-name">CPU风扇</div>  
-                                <div class="fan-speed" id="cpu-fan-speed">1200 RPM</div>  
-                            </div>  
-                            <div class="fan-item" onclick="toggleFanMode('sys1')">  
-                                <div class="fan-name">系统风扇1</div>  
-                                <div class="fan-speed" id="sys1-fan-speed">800 RPM</div>  
-                            </div>  
-                            <div class="fan-item" onclick="toggleFanMode('sys2')">  
-                                <div class="fan-name">系统风扇2</div>  
-                                <div class="fan-speed" id="sys2-fan-speed">850 RPM</div>  
-                            </div>  
-                            <div class="fan-item" onclick="toggleFanMode('psu')">  
-                                <div class="fan-name">电源风扇</div>  
-                                <div class="fan-speed" id="psu-fan-speed">600 RPM</div>  
-                            </div>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">风扇模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['静音', '标准', '性能', '全速'])">标准</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">🌪️ 风扇控制</div>
+                        <div class="fan-control">
+                            <div class="fan-item">
+                                <div class="fan-name">CPU风扇</div>
+                                <div class="fan-speed">1200 RPM</div>
+                            </div>
+                            <div class="fan-item">
+                                <div class="fan-name">系统风扇1</div>
+                                <div class="fan-speed">800 RPM</div>
+                            </div>
+                            <div class="fan-item">
+                                <div class="fan-name">系统风扇2</div>
+                                <div class="fan-speed">850 RPM</div>
+                            </div>
+                        </div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">风扇模式</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['静音', '标准', '性能', '全速'])">标准</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 启动选项卡 -->  
-            <div id="boot-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🚀 启动选项</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">快速启动</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">启动模式</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['UEFI', 'Legacy', 'UEFI+Legacy'])">UEFI</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">CSM支持</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">安全启动</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">启动延时</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['0秒', '3秒', '5秒', '10秒'])">3秒</span>  
-                        </div>  
-                    </div>  
+            <!-- 启动选项卡 -->
+            <div id="boot-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">🚀 启动选项</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">快速启动</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">启动模式</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['UEFI', 'Legacy'])">UEFI</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">安全启动</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="info-card">  
-                        <div class="card-title">⌨️ 启动热键</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">F12启动菜单</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">F2 BIOS设置</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Del键BIOS</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <div class="info-card">
+                        <div class="card-title">🔧 启动设备顺序</div>
+                        <div class="boot-list">
+                            <div class="boot-item">
+                                <div class="boot-icon">💾</div>
+                                <span>Samsung 980 PRO 1TB</span>
+                            </div>
+                            <div class="boot-item">
+                                <div class="boot-icon">💿</div>
+                                <span>USB启动设备</span>
+                            </div>
+                            <div class="boot-item">
+                                <div class="boot-icon">🌐</div>
+                                <span>网络启动 (PXE)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">📋 启动优先级</div>  
-                        <div class="boot-list">  
-                            <div class="boot-item" onclick="selectBootDevice(this)">  
-                                <div class="boot-icon">💾</div>  
-                                <div>  
-                                    <div style="font-weight: bold;">Samsung 980 PRO 1TB</div>  
-                                    <div style="font-size: 12px; color: #999;">UEFI: Windows Boot Manager</div>  
-                                </div>  
-                            </div>  
-                            <div class="boot-item" onclick="selectBootDevice(this)">  
-                                <div class="boot-icon">💽</div>  
-                                <div>  
-                                    <div style="font-weight: bold;">WD Black SN850 2TB</div>  
-                                    <div style="font-size: 12px; color: #999;">UEFI: Ubuntu</div>  
-                                </div>  
-                            </div>  
-                            <div class="boot-item" onclick="selectBootDevice(this)">  
-                                <div class="boot-icon">🌐</div>  
-                                <div>  
-                                    <div style="font-weight: bold;">网络启动 (PXE)</div>  
-                                    <div style="font-size: 12px; color: #999;">Realtek PCIe GbE</div>  
-                                </div>  
-                            </div>  
-                            <div class="boot-item" onclick="selectBootDevice(this)">  
-                                <div class="boot-icon">💿</div>  
-                                <div>  
-                                    <div style="font-weight: bold;">USB设备</div>  
-                                    <div style="font-size: 12px; color: #999;">可移动存储设备</div>  
-                                </div>  
-                            </div>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">🛡️ 启动安全</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">TPM 2.0</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Intel PTT</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">启动密码</span>  
-                            <span class="setting-value" onclick="setBootPassword()">未设置</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">🔐 启动安全</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">安全启动状态</span>
+                                <span class="info-value" style="color: #2ecc71;">已启用</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">平台密钥 (PK)</span>
+                                <span class="info-value">已安装</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">密钥交换密钥 (KEK)</span>
+                                <span class="info-value">已安装</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 安全选项卡 -->  
-            <div id="security-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🔐 密码设置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">管理员密码</span>  
-                            <span class="setting-value" onclick="setPassword('admin')">未设置</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">用户密码</span>  
-                            <span class="setting-value" onclick="setPassword('user')">未设置</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">HDD密码</span>  
-                            <span class="setting-value" onclick="setPassword('hdd')">未设置</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">密码复杂度</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['简单', '中等', '复杂'])">中等</span>  
-                        </div>  
-                    </div>  
+            <!-- 安全选项卡 -->
+            <div id="security-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">🔐 用户认证</div>
+                        <div class="security-item">
+                            <div class="setting-label">管理员密码</div>
+                            <div class="setting-value" onclick="showPasswordDialog('admin')">未设置</div>
+                        </div>
+                        <div class="security-item">
+                            <div class="setting-label">用户密码</div>
+                            <div class="setting-value" onclick="showPasswordDialog('user')">未设置</div>
+                        </div>
+                    </div>
                     
-                    <div class="info-card">  
-                        <div class="card-title">🛡️ 安全特性</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">安全启动</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">TPM状态</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">Intel TXT</span>
-                                                        <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">BIOS锁定</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">USB端口锁定</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['全部', '部分', '禁用'])">禁用</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <div class="info-card">
+                        <div class="card-title">🛡️ TPM安全</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">TPM状态</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">TPM版本</span>
+                                <span class="setting-value">TPM 2.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🔑 证书管理</div>  
-                        <div class="info-row">  
-                            <span class="info-label">平台密钥(PK)</span>  
-                            <span class="info-value">已安装</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">密钥交换密钥(KEK)</span>  
-                            <span class="info-value">已安装</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">签名数据库(db)</span>  
-                            <span class="info-value">已安装</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">禁止签名数据库(dbx)</span>  
-                            <span class="info-value">已安装</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">清除所有密钥</span>  
-                            <span class="setting-value" onclick="clearSecurityKeys()">执行</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">恢复出厂密钥</span>  
-                            <span class="setting-value" onclick="restoreFactoryKeys()">执行</span>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">🚫 访问控制</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">USB存储设备</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['允许', '只读', '禁止'])">允许</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">光驱访问</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['允许', '禁止'])">允许</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">软驱访问</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['允许', '禁止'])">禁止</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">网络启动</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['允许', '禁止'])">允许</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">🔒 安全功能</div>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <span class="setting-label">安全启动</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>
+                            </div>
+                            <div class="setting-item">
+                                <span class="setting-label">Intel TXT</span>
+                                <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">禁用</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <!-- 硬件监控选项卡 -->  
-            <div id="hardware-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🌡️ 温度监控</div>  
-                        <div class="info-row">  
-                            <span class="info-label">CPU温度</span>  
-                            <span class="temp-display" id="hw-cpu-temp">42°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">CPU封装温度</span>  
-                            <span class="temp-display">45°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">主板温度</span>  
-                            <span class="temp-display">35°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存温度</span>  
-                            <span class="temp-display">32°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">M.2 SSD #1</span>  
-                            <span class="temp-display">38°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">M.2 SSD #2</span>  
-                            <span class="temp-display">41°C</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">显卡温度</span>  
-                            <span class="temp-display">36°C</span>  
-                        </div>  
-                    </div>  
+            <!-- 硬件监控选项卡 -->
+            <div id="hardware-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">⚡ 电压监控</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">CPU核心电压</span>
+                                <span class="voltage-display">1.25V</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">内存电压</span>
+                                <span class="voltage-display">1.35V</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">+12V</span>
+                                <span class="voltage-display">12.05V</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">+5V</span>
+                                <span class="voltage-display">5.02V</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">+3.3V</span>
+                                <span class="voltage-display">3.31V</span>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="info-card">  
-                        <div class="card-title">⚡ 电压监控</div>  
-                        <div class="info-row">  
-                            <span class="info-label">CPU核心电压</span>  
-                            <span class="voltage-display">1.235V</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">内存电压</span>  
-                            <span class="voltage-display">1.35V</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">+12V</span>  
-                            <span class="voltage-display">12.048V</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">+5V</span>  
-                            <span class="voltage-display">5.012V</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">+3.3V</span>  
-                            <span class="voltage-display">3.296V</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">CMOS电池</span>  
-                            <span class="voltage-display">3.168V</span>  
-                        </div>  
-                    </div>  
-                </div>  
+                    <div class="info-card">
+                        <div class="card-title">🔥 温度监控</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">CPU温度</span>
+                                <span class="temp-display">42°C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">CPU核心1</span>
+                                <span class="temp-display">45°C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">CPU核心2</span>
+                                <span class="temp-display">43°C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">主板温度</span>
+                                <span class="temp-display">35°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🌪️ 风扇转速</div>  
-                        <div class="info-row">  
-                            <span class="info-label">CPU风扇</span>  
-                            <span class="info-value" id="hw-cpu-fan">1200 RPM</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">系统风扇1</span>  
-                            <span class="info-value">800 RPM</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">系统风扇2</span>  
-                            <span class="info-value">850 RPM</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">系统风扇3</span>  
-                            <span class="info-value">0 RPM (未连接)</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">电源风扇</span>  
-                            <span class="info-value">600 RPM</span>  
-                        </div>  
-                        <div class="info-row">  
-                            <span class="info-label">显卡风扇</span>  
-                            <span class="info-value">0 RPM (停转)</span>  
-                        </div>  
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">🌪️ 风扇监控</div>
+                        <div class="fan-control">
+                            <div class="fan-item">
+                                <div class="fan-name">CPU风扇</div>
+                                <div class="fan-speed">1200 RPM</div>
+                            </div>
+                            <div class="fan-item">
+                                <div class="fan-name">系统风扇1</div>
+                                <div class="fan-speed">800 RPM</div>
+                            </div>
+                            <div class="fan-item">
+                                <div class="fan-name">系统风扇2</div>
+                                <div class="fan-speed">850 RPM</div>
+                            </div>
+                            <div class="fan-item">
+                                <div class="fan-name">电源风扇</div>
+                                <div class="fan-speed">950 RPM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- EZ模式选项卡 -->
+            <div id="ez-tab" class="tab-content">
+                <div class="left-panel">
+                    <div class="info-card">
+                        <div class="card-title">⚡ EZ超频</div>
+                        <div class="ez-oc-control">
+                            <div class="oc-circle" onclick="toggleOverclock()">OC</div>
+                        </div>
                         
-                        <!-- CPU风扇曲线图 -->  
-                        <div class="cpu-fan-chart">  
-                            <div class="fan-curve">  
-                                <div class="curve-line"></div>  
-                            </div>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">⚙️ 监控设置</div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">温度单位</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['摄氏度', '华氏度'])">摄氏度</span>  
-                        </div>  
-                                                <div class="setting-item">  
-                            <span class="setting-label">监控频率</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['1秒', '2秒', '5秒'])">2秒</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">风扇报警</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                        <div class="setting-item">  
-                            <span class="setting-label">温度报警</span>  
-                            <span class="setting-value" onclick="toggleSetting(this, ['启用', '禁用'])">启用</span>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
-            
-            <!-- EZ模式选项卡 -->  
-            <div id="ez-tab" class="tab-content">  
-                <div class="left-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">⚡ 快速设置</div>  
-                        <div class="ez-option" onclick="applyEzMode('gaming')">  
-                            <div class="ez-icon">🎮</div>  
-                            <div class="ez-name">游戏模式</div>  
-                            <div class="ez-desc">优化CPU/内存性能，适合游戏</div>  
-                        </div>  
-                        <div class="ez-option" onclick="applyEzMode('silent')">  
-                            <div class="ez-icon">🔇</div>  
-                            <div class="ez-name">静音模式</div>  
-                            <div class="ez-desc">降低风扇转速，减少噪音</div>  
-                        </div>  
-                        <div class="ez-option" onclick="applyEzMode('power')">  
-                            <div class="ez-icon">💪</div>  
-                            <div class="ez-name">性能模式</div>  
-                            <div class="ez-desc">最大化系统性能</div>  
-                        </div>  
-                        <div class="ez-option" onclick="applyEzMode('eco')">  
-                            <div class="ez-icon">🌱</div>  
-                            <div class="ez-name">节能模式</div>  
-                            <div class="ez-desc">降低功耗，延长硬件寿命</div>  
-                        </div>  
-                    </div>  
-                </div>  
-                
-                <div class="right-panel">  
-                    <div class="info-card">  
-                        <div class="card-title">🏆 系统状态</div>  
-                        <div class="status-meter">  
-                            <div class="meter-label">性能指数</div>  
-                            <div class="meter-bar">  
-                                <div class="meter-fill" style="width: 85%"></div>  
-                            </div>  
-                            <div class="meter-value">85%</div>  
-                        </div>  
-                        <div class="status-meter">  
-                            <div class="meter-label">系统稳定性</div>  
-                            <div class="meter-bar">  
-                                <div class="meter-fill" style="width: 92%"></div>  
-                            </div>  
-                            <div class="meter-value">92%</div>  
-                        </div>  
-                        <div class="status-meter">  
-                            <div class="meter-label">散热效率</div>  
-                            <div class="meter-bar">  
-                                <div class="meter-fill" style="width: 78%"></div>  
-                            </div>  
-                            <div class="meter-value">78%</div>  
-                        </div>  
-                    </div>  
-                    
-                    <div class="info-card">  
-                        <div class="card-title">🔧 一键优化</div>  
-                        <div class="ez-button" onclick="autoOptimize()">  
-                            <div class="ez-button-icon">🚀</div>  
-                            <div>自动优化系统</div>  
-                        </div>  
-                        <div class="ez-button" onclick="updateBios()">  
-                            <div class="ez-button-icon">⬆️</div>  
-                            <div>检查BIOS更新</div>  
-                        </div>  
-                        <div class="ez-button" onclick="resetToDefault()">  
-                            <div class="ez-button-icon">🔄</div>  
-                            <div>恢复默认设置</div>  
-                        </div>  
-                    </div>  
-                </div>  
-            </div>  
-        </div>  
-        
-        <!-- 底部功能栏 -->  
-        <div class="bottom-bar">  
-            <div class="help-text">  
-                <span class="key">F1</span> 帮助  
-                <span class="key">F9</span> 优化默认值  
-                <span class="key">F10</span> 保存并退出  
-                <span class="key">ESC</span> 退出  
-            </div>  
-            <div class="action-buttons">  
-                <button class="action-btn" onclick="loadDefaults()">  
-                    <span class="btn-icon">🔄</span>  
-                    加载默认值  
-                </button>  
-                <button class="action-btn" onclick="discardChanges()">  
-                    <span class="btn-icon">❌</span>  
-                    放弃更改  
-                </button>  
-                <button class="action-btn save-btn" onclick="saveAndExit()">  
-                    <span class="btn-icon">💾</span>  
-                    保存并退出  
-                </button>  
-            </div>  
-        </div>  
-        
-        <!-- 版本信息 -->  
-        <div class="version-info">  
-            XPtech UEFI BIOS v2.85.1268 - Build Date: 2024/01/15 - © 2024 XPtech Corporation  
-        </div>  
-    </div>  
-    
-    <!-- 弹窗对话框 -->  
-    <div id="dialog-overlay" class="dialog-overlay">  
-        <div class="dialog-box">  
-            <div class="dialog-title" id="dialog-title">确认操作</div>  
-            <div class="dialog-content" id="dialog-content">  
-                您确定要执行此操作吗？  
-            </div>  
-            <div class="dialog-buttons">  
-                <button class="dialog-btn" onclick="closeDialog()">取消</button>  
-                <button class="dialog-btn confirm-btn" onclick="confirmAction()">确认</button>  
-            </div>  
-        </div>  
-    </div>  
-    
-    <script>  
-        // 全局变量  
-        let currentDialog = null;  
-        let pendingAction = null;  
-        let hasUnsavedChanges = false;  
-        
-        // 初始化  
-        document.addEventListener('DOMContentLoaded', function() {  
-            updateTime();  
-            setInterval(updateTime, 1000);  
-            setInterval(updateTemperatures, 2000);  
-            setInterval(updateFanSpeeds, 3000);  
-            
-            // 键盘事件监听  
-            document.addEventListener('keydown', handleKeyPress);  
-            
-            // 滚动优化  
-            document.addEventListener('wheel', function(e) {  
-                e.preventDefault();  
-                const container = document.querySelector('.bios-container');  
-                container.scrollTop += e.deltaY;  
-            }, { passive: false });  
-        });  
-        
-        // 时间更新  
-        function updateTime() {  
-            const now = new Date();  
-            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });  
-            const dateStr = now.toLocaleDateString('zh-CN', {   
-                year: 'numeric',   
-                month: 'long',   
-                day: 'numeric',   
-                weekday: 'long'   
-            });  
-            
-            document.getElementById('current-time').textContent = timeStr;  
-            document.getElementById('current-date').textContent = dateStr;  
-        }  
-        
-        // 温度更新  
-        function updateTemperatures() {  
-            const cpuTemp = 40 + Math.random() * 10;  
-            const mbTemp = 32 + Math.random() * 8;  
-            const gpuTemp = 35 + Math.random() * 10;  
-            
-            const cpuTempElements = document.querySelectorAll('#cpu-temp, #hw-cpu-temp');  
-            cpuTempElements.forEach(el => el.textContent = Math.round(cpuTemp) + '°C');  
-            
-            document.getElementById('mb-temp').textContent = Math.round(mbTemp) + '°C';  
-            document.getElementById('gpu-temp').textContent = Math.round(gpuTemp) + '°C';  
-        }  
-        
-        // 风扇转速更新  
-        function updateFanSpeeds() {  
-            const cpuFan = 1150 + Math.random() * 100;  
-            const sys1Fan = 750 + Math.random() * 100;  
-            const sys2Fan = 800 + Math.random() * 100;  
-            const psuFan = 550 + Math.random() * 100;  
-            
-            const cpuFanElements = document.querySelectorAll('#cpu-fan-speed, #hw-cpu-fan');  
-            cpuFanElements.forEach(el => el.textContent = Math.round(cpuFan) + ' RPM');  
-            
-            document.getElementById('sys1-fan-speed').textContent = Math.round(sys1Fan) + ' RPM';  
-            document.getElementById('sys2-fan-speed').textContent = Math.round(sys2Fan) + ' RPM';  
-            document.getElementById('psu-fan-speed').textContent = Math.round(psuFan) + ' RPM';  
-        }  
-        
-        // 切换标签页  
-        function switchTab(tabName) {  
-            // 移除所有活动状态  
-            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));  
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));  
-            
-            // 激活当前标签  
-            event.target.classList.add('active');  
-            document.getElementById(tabName + '-tab').classList.add('active');  
-            
-            // 添加淡入动画  
-            const activeContent = document.getElementById(tabName + '-tab');  
-            activeContent.style.animation = 'none';  
-            setTimeout(() => {  
-                activeContent.style.animation = 'fadeIn 0.3s ease-out';  
-            }, 10);  
-        }  
-        
-        // 切换设置值  
-        function toggleSetting(element, options) {  
-            const currentValue = element.textContent;  
-            const currentIndex = options.indexOf(currentValue);  
-            const nextIndex = (currentIndex + 1) % options.length;  
-            
-            element.textContent = options[nextIndex];  
-            element.classList.add('pulse');  
-            hasUnsavedChanges = true;  
-            
-            setTimeout(() => {  
-                element.classList.remove('pulse');  
-            }, 500);  
-        }  
-        
-        // 键盘事件处理  
-        function handleKeyPress(event) {  
-            switch(event.key) {  
-                case 'F1':  
-                    event.preventDefault();  
-                    showHelp();  
-                    break;  
-                case 'F9':  
-                    event.preventDefault();  
-                    loadDefaults();  
-                    break;  
-                case 'F10':  
-                    event.preventDefault();  
-                    saveAndExit();  
-                    break;  
-                case 'Escape':  
-                    event.preventDefault();  
-                    discardChanges();  
-                    break;  
-            }  
-        }  
-        
-        // 显示对话框  
-        function showDialog(title, content, action) {  
-            document.getElementById('dialog-title').textContent = title;  
-            document.getElementById('dialog-content').innerHTML = content;  
-            document.getElementById('dialog-overlay').style.display = 'flex';  
-            pendingAction = action;  
-        }  
-        
-        // 关闭对话框  
-        function closeDialog() {  
-            document.getElementById('dialog-overlay').style.display = 'none';  
-            pendingAction = null;  
-        }  
-        
-        // 确认操作  
-        function confirmAction() {  
-            if (pendingAction) {  
-                pendingAction();  
-            }  
-            closeDialog();  
-        }  
-        
-        // 保存并退出  
-        function saveAndExit() {  
-            showDialog(  
-                '保存设置',   
-                '您确定要保存所有更改并重启系统吗？<br><br><strong>注意：系统将会重新启动！</strong>',   
-                () => {  
-                    // 模拟保存过程  
-                    showSavingAnimation();  
-                }  
-            );  
-        }  
-        
-        // 放弃更改  
-        function discardChanges() {  
-            if (hasUnsavedChanges) {  
-                showDialog(  
-                    '放弃更改',   
-                    '您有未保存的更改，确定要放弃吗？',   
-                    () => {  
-                        exitBios();  
-                    }  
-                );  
-            } else {  
-                exitBios();  
-            }  
-        }  
-        
-        // 加载默认值  
-        function loadDefaults() {  
-            showDialog(  
-                '加载默认值',   
-                '这将重置所有设置为出厂默认值，确定继续吗？',   
-                () => {  
-                    // 重置所有设置的逻辑  
-                    resetAllSettings();  
-                }  
-            );  
-        }  
-        
-        // 显示保存动画  
-        function showSavingAnimation() {  
-            const overlay = document.getElementById('dialog-overlay');  
-            overlay.innerHTML = `  
-                <div class="dialog-box">  
-                    <div class="dialog-title">正在保存设置...</div>  
-                    <div class="dialog-content">  
-                        <div class="progress-bar">  
-                            <div class="progress-fill"></div>  
-                        </div>  
-                        <div style="margin-top: 10px;">请勿关闭电源</div>  
-                    </div>  
-                </div>  
-            `;  
-            
-            // 模拟保存进度  
-            let progress = 0;  
-            const interval = setInterval(() => {  
-                progress += Math.random() * 15;  
-                if (progress >= 100) {  
-                    progress = 100;  
-                    clearInterval(interval);  
-                    setTimeout(() => {  
-                        showRebootScreen();  
-                    }, 500);  
-                }  
-                document.querySelector('.progress-fill').style.width = progress + '%';  
-            }, 200);
-                    }  
-        
-        // 显示重启界面  
-        function showRebootScreen() {  
-            document.body.innerHTML = `  
-                <div class="reboot-screen">  
-                    <div class="reboot-content">  
-                        <div class="reboot-icon">🔄</div>  
-                        <div class="reboot-title">设置已保存</div>  
-                        <div class="reboot-message">系统将在 <span id="countdown">3</span> 秒后重启...</div>  
-                        <div class="reboot-progress">  
-                            <div class="reboot-progress-bar"></div>  
-                        </div>  
-                    </div>  
-                </div>  
-            `;  
-            
-            // 倒计时重启  
-            let countdown = 3;  
-            const countdownInterval = setInterval(() => {  
-                countdown--;  
-                const countdownEl = document.getElementById('countdown');  
-                if (countdownEl) {  
-                    countdownEl.textContent = countdown;  
-                }  
-                
-                if (countdown <= 0) {  
-                    clearInterval(countdownInterval);  
-                    // 模拟重启  
-                    document.body.innerHTML = `  
-                        <div class="boot-screen">  
-                            <div class="boot-logo">XPtech</div>  
-                            <div class="boot-text">正在重启系统...</div>  
-                            <div class="boot-dots">  
-                                <span>.</span><span>.</span><span>.</span>  
-                            </div>  
-                        </div>  
-                    `;  
-                    
-                    setTimeout(() => {  
-                        window.location.reload();  
-                    }, 3000);  
-                }  
-            }, 1000);  
-        }  
-        
-        // 退出BIOS  
-        function exitBios() {  
-            document.body.innerHTML = `  
-                <div class="exit-screen">  
-                    <div class="exit-content">  
-                        <div class="exit-icon">👋</div>  
-                        <div class="exit-title">退出BIOS设置</div>  
-                        <div class="exit-message">感谢使用 XPtech UEFI BIOS</div>  
-                    </div>  
-                </div>  
-            `;  
-            
-            setTimeout(() => {  
-                window.close();  
-            }, 2000);  
-        }  
-        
-        // 重置所有设置  
-        function resetAllSettings() {  
-            // 这里可以添加重置逻辑  
-            hasUnsavedChanges = true;  
-            
-            // 显示重置完成消息  
-            showDialog(  
-                '重置完成',   
-                '所有设置已重置为默认值',   
-                null  
-            );  
-        }  
-        
-        // CPU风扇模式切换  
-        function toggleFanMode(fanType) {  
-            const modes = ['静音', '标准', '性能', '全速'];  
-            // 这里可以添加风扇模式切换逻辑  
-        }  
-        
-        // 选择启动设备  
-        function selectBootDevice(element) {  
-            // 移除其他选中状态  
-            document.querySelectorAll('.boot-item').forEach(item => {  
-                item.classList.remove('selected');  
-            });  
-            
-            // 选中当前设备  
-            element.classList.add('selected');  
-            hasUnsavedChanges = true;  
-        }  
-        
-        // 设置密码  
-        function setPassword(type) {  
-            const typeNames = {  
-                'admin': '管理员',  
-                'user': '用户',  
-                'hdd': '硬盘'  
-            };  
-            
-            showDialog(  
-                `设置${typeNames[type]}密码`,   
-                `  
-                    <div style="text-align: left; margin: 10px 0;">  
-                        <input type="password" placeholder="请输入新密码" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #555; background: #2a2a2a; color: #fff;">  
-                        <input type="password" placeholder="确认密码" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #555; background: #2a2a2a; color: #fff;">  
-                    </div>  
-                `,   
-                () => {  
-                    // 密码设置逻辑  
-                    hasUnsavedChanges = true;  
-                }  
-            );  
-        }  
-        
-        // EZ模式应用  
-        function applyEzMode(mode) {  
-            const modeNames = {  
-                'gaming': '游戏模式',  
-                'silent': '静音模式',  
-                'power': '性能模式',  
-                'eco': '节能模式'  
-            };  
-            
-            showDialog(  
-                `应用${modeNames[mode]}`,   
-                `确定要应用${modeNames[mode]}预设吗？这将覆盖当前的自定义设置。`,   
-                () => {  
-                    // 应用预设逻辑  
-                    hasUnsavedChanges = true;  
-                    
-                    // 显示应用成功动画  
-                    const successMsg = document.createElement('div');  
-                    successMsg.className = 'success-message';  
-                    successMsg.innerHTML = `✅ ${modeNames[mode]}已应用`;  
-                    document.body.appendChild(successMsg);  
-                    
-                    setTimeout(() => {  
-                        successMsg.remove();  
-                    }, 2000);  
-                }  
-            );  
-        }  
-        
-        // 自动优化  
-        function autoOptimize() {  
-            showDialog(  
-                '自动优化系统',   
-                '系统将根据您的硬件配置自动优化设置，确定继续吗？',   
-                () => {  
-                    // 显示优化进度  
-                    const overlay = document.getElementById('dialog-overlay');  
-                    overlay.innerHTML = `  
-                        <div class="dialog-box">  
-                            <div class="dialog-title">正在优化系统...</div>  
-                            <div class="dialog-content">  
-                                <div class="optimization-steps">  
-                                    <div class="step active">🔍 分析硬件配置</div>  
-                                    <div class="step">⚙️ 优化CPU设置</div>  
-                                    <div class="step">💾 优化内存设置</div>  
-                                    <div class="step">🌪️ 调整风扇曲线</div>  
-                                    <div class="step">✅ 完成优化</div>  
-                                </div>  
-                            </div>  
-                        </div>  
-                    `;  
-                    
-                    // 模拟优化过程  
-                    const steps = document.querySelectorAll('.step');  
-                    let currentStep = 0;  
-                    
-                    const stepInterval = setInterval(() => {  
-                        if (currentStep > 0) {  
-                            steps[currentStep - 1].classList.remove('active');  
-                            steps[currentStep - 1].classList.add('completed');  
-                        }  
+                        <div class="ez-option" onclick="applyPreset('gaming')">
+                            <div class="ez-icon">🎮</div>
+                            <div>
+                                <div class="ez-name">游戏模式</div>
+                                <div class="ez-desc">优化游戏性能</div>
+                            </div>
+                        </div>
                         
-                        if (currentStep < steps.length) {  
-                            steps[currentStep].classList.add('active');  
-                            currentStep++;  
-                        } else {  
-                            clearInterval(stepInterval);  
-                            setTimeout(() => {  
-                                closeDialog();  
-                                hasUnsavedChanges = true;  
-                            }, 1000);  
-                        }  
-                    }, 1500);  
-                }  
-            );  
-        }  
-        
-        // 更新BIOS  
-        function updateBios() {  
-            showDialog(  
-                '检查BIOS更新',   
-                '正在连接到更新服务器...',   
-                null  
-            );  
-            
-            // 模拟检查更新  
-            setTimeout(() => {  
-                closeDialog();  
-                showDialog(  
-                    'BIOS更新',   
-                    '当前已是最新版本 v2.85.1268<br><br>发布日期: 2024/01/15<br>无需更新',   
-                    null  
-                );  
-            }, 2000);  
-        }  
-        
-        // 显示帮助  
-        function showHelp() {  
-            showDialog(  
-                'BIOS帮助',   
-                `  
-                    <div style="text-align: left;">  
-                        <h4>快捷键说明：</h4>  
-                        <p><strong>F1</strong> - 显示帮助信息</p>  
-                        <p><strong>F9</strong> - 加载优化默认值</p>  
-                        <p><strong>F10</strong> - 保存设置并退出</p>  
-                        <p><strong>ESC</strong> - 退出不保存</p>  
-                        <br>  
-                        <h4>操作说明：</h4>  
-                        <p>• 点击设置值可以切换选项</p>  
-                        <p>• 使用鼠标滚轮可以滚动页面</p>  
-                        <p>• 修改设置后记得保存</p>  
-                    </div>  
-                `,   
-                null  
-            );  
-        }  
-        
-        // 清除安全密钥  
-        function clearSecurityKeys() {  
-            showDialog(  
-                '清除安全密钥',   
-                '<span style="color: #ff6b6b;">⚠️ 警告：这将清除所有安全启动密钥！<br>系统可能无法正常启动，确定继续吗？</span>',   
-                () => {  
-                    hasUnsavedChanges = true;  
-                }  
-            );  
-        }  
-        
-        // 恢复出厂密钥  
-        function restoreFactoryKeys() {  
-            showDialog(  
-                '恢复出厂密钥',   
-                '这将恢复Microsoft和主板厂商的默认安全启动密钥，确定继续吗？',   
-                () => {  
-                    hasUnsavedChanges = true;  
-                }  
-            );  
-        }  
-        
-        // 设置启动密码  
-        function setBootPassword() {  
-            setPassword('boot');  
-        }  
-        
-        // 内存测试  
-        function memoryTest() {  
-            showDialog(  
-                '内存测试',   
-                '开始完整内存测试？这可能需要几分钟时间。',   
-                () => {  
-                    // 显示内存测试界面  
-                    const overlay = document.getElementById('dialog-overlay');  
-                    overlay.innerHTML = `  
-                        <div class="dialog-box" style="width: 500px;">  
-                            <div class="dialog-title">内存测试进行中...</div>  
-                            <div class="dialog-content">  
-                                <div class="memory-test-info">  
-                                    <div>测试进度: <span id="test-progress">0</span>%</div>  
-                                    <div>当前地址: <span id="test-address">0x00000000</span></div>  
-                                    <div>错误计数: <span id="error-count">0</span></div>  
-                                </div>  
-                                <div class="progress-bar">  
-                                    <div class="progress-fill" id="mem-test-progress"></div>  
-                                </div>  
-                            </div>  
-                        </div>  
-                    `;  
-                    
-                    // 模拟内存测试  
-                    let progress = 0;  
-                    const testInterval = setInterval(() => {  
-                        progress += Math.random() * 3;  
-                        if (progress >= 100) {  
-                            progress = 100;  
-                            clearInterval(testInterval);  
-                            setTimeout(() => {  
-                                closeDialog();  
-                                showDialog('内存测试完成', '✅ 内存测试通过，未发现错误', null);  
-                            }, 500);  
-                        }  
+                        <div class="ez-option" onclick="applyPreset('work')">
+                            <div class="ez-icon">💼</div>
+                            <div>
+                                <div class="ez-name">工作模式</div>
+                                <div class="ez-desc">平衡性能与功耗</div>
+                            </div>
+                        </div>
                         
-                        document.getElementById('test-progress').textContent = Math.round(progress);  
-                        document.getElementById('mem-test-progress').style.width = progress + '%';  
-                        document.getElementById('test-address').textContent = '0x' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0');  
-                    }, 100);  
-                }  
-            );  
-        }  
-    </script>  
-    
-    <style>  
-        /* 基础样式保持不变，添加新的样式 */  
-        
-        /* 滚动条样式 */  
-        .bios-container::-webkit-scrollbar {  
-            width: 8px;  
-        }  
-        
-        .bios-container::-webkit-scrollbar-track {  
-            background: #1a1a1a;  
-        }  
-        
-        .bios-container::-webkit-scrollbar-thumb {  
-            background: #444;  
-            border-radius: 4px;  
-        }  
-        
-        .bios-container::-webkit-scrollbar-thumb:hover {  
-            background: #555;  
-        }  
-        
-        /* 底部功能栏样式 */  
-        .bottom-bar {  
-            position: fixed;  
-            bottom: 0;  
-            left: 0;  
-            right: 0;  
-            background: linear-gradient(135deg, #1e3c72, #2a5298);  
-            border-top: 2px solid #4a90e2;  
-            padding: 10px 20px;  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-            z-index: 1000;  
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);  
-        }  
-        
-        .help-text {  
-            display: flex;  
-            gap: 20px;  
-            color: #ccc;  
-            font-size: 14px;  
-        }  
-        
-        .key {  
-            background: #333;  
-            color: #fff;  
-            padding: 2px 6px;  
-            border-radius: 3px;  
-            font-weight: bold;  
-            border: 1px solid #555;  
-        }  
-        
-        .action-buttons {  
-            display: flex;  
-            gap: 10px;  
-        }  
-        
-        .action-btn {  
-            background: linear-gradient(135deg, #444, #666);  
-            color: #fff;  
-            border: 1px solid #777;  
-            padding: 8px 16px;  
-            border-radius: 5px;  
-            cursor: pointer;  
-            display: flex;  
-            align-items: center;  
-            gap: 5px;  
-            font-size: 14px;  
-            transition: all 0.3s;  
-                    }  
-        
-        .action-btn:hover {  
-            background: linear-gradient(135deg, #555, #777);  
-            transform: translateY(-1px);  
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);  
-        }  
-        
-        .save-btn {  
-            background: linear-gradient(135deg, #2ecc71, #27ae60);  
-            border-color: #27ae60;  
-        }  
-        
-        .save-btn:hover {  
-            background: linear-gradient(135deg, #27ae60, #229954);  
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);  
-        }  
-        
-        .btn-icon {  
-            font-size: 16px;  
-        }  
-        
-        /* 版本信息样式 */  
-        .version-info {  
-            position: fixed;  
-            bottom: 60px;  
-            left: 50%;  
-            transform: translateX(-50%);  
-            background: rgba(0,0,0,0.8);  
-            color: #999;  
-            padding: 5px 15px;  
-            border-radius: 15px;  
-            font-size: 12px;  
-            backdrop-filter: blur(5px);  
-            border: 1px solid rgba(255,255,255,0.1);  
-        }  
-        
-        /* 重启和退出界面样式 */  
-        .reboot-screen, .exit-screen, .boot-screen {  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100%;  
-            background: linear-gradient(135deg, #1e3c72, #2a5298);  
-            display: flex;  
-            justify-content: center;  
-            align-items: center;  
-            z-index: 9999;  
-        }  
-        
-        .reboot-content, .exit-content, .boot-content {  
-            text-align: center;  
-            color: #fff;  
-        }  
-        
-        .reboot-icon, .exit-icon {  
-            font-size: 80px;  
-            margin-bottom: 20px;  
-            animation: pulse 2s infinite;  
-        }  
-        
-        .reboot-title, .exit-title {  
-            font-size: 28px;  
-            font-weight: bold;  
-            margin-bottom: 15px;  
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);  
-        }  
-        
-        .reboot-message, .exit-message {  
-            font-size: 18px;  
-            margin-bottom: 30px;  
-            color: #ccc;  
-        }  
-        
-        .reboot-progress {  
-            width: 300px;  
-            height: 6px;  
-            background: rgba(255,255,255,0.2);  
-            border-radius: 3px;  
-            overflow: hidden;  
-            margin: 0 auto;  
-        }  
-        
-        .reboot-progress-bar {  
-            width: 100%;  
-            height: 100%;  
-            background: linear-gradient(90deg, #4a90e2, #357abd);  
-            animation: progress-slide 3s ease-out;  
-        }  
-        
-        .boot-logo {  
-            font-size: 48px;  
-            font-weight: bold;  
-            color: #4a90e2;  
-            margin-bottom: 20px;  
-            text-shadow: 0 0 20px rgba(74, 144, 226, 0.5);  
-        }  
-        
-        .boot-text {  
-            font-size: 20px;  
-            color: #fff;  
-            margin-bottom: 20px;  
-        }  
-        
-        .boot-dots {  
-            font-size: 24px;  
-            color: #4a90e2;  
-        }  
-        
-        .boot-dots span {  
-            animation: dot-bounce 1.4s infinite;  
-        }  
-        
-        .boot-dots span:nth-child(2) {  
-            animation-delay: 0.2s;  
-        }  
-        
-        .boot-dots span:nth-child(3) {  
-            animation-delay: 0.4s;  
-        }  
-        
-        /* 成功消息样式 */  
-        .success-message {  
-            position: fixed;  
-            top: 50%;  
-            left: 50%;  
-            transform: translate(-50%, -50%);  
-            background: linear-gradient(135deg, #2ecc71, #27ae60);  
-            color: #fff;  
-            padding: 15px 30px;  
-            border-radius: 25px;  
-            font-size: 18px;  
-            font-weight: bold;  
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);  
-            z-index: 10000;  
-            animation: successSlide 2s ease-out;  
-        }  
-        
-        /* 优化步骤样式 */  
-        .optimization-steps {  
-            text-align: left;  
-            margin: 20px 0;  
-        }  
-        
-        .step {  
-            padding: 8px 0;  
-            color: #999;  
-            transition: all 0.3s;  
-        }  
-        
-        .step.active {  
-            color: #4a90e2;  
-            font-weight: bold;  
-        }  
-        
-        .step.completed {  
-            color: #2ecc71;  
-        }  
-        
-        /* 内存测试样式 */  
-        .memory-test-info {  
-            display: grid;  
-            grid-template-columns: 1fr 1fr;  
-            gap: 10px;  
-            margin-bottom: 15px;  
-            font-family: 'Courier New', monospace;  
-        }  
-        
-        /* EZ模式样式优化 */  
-        .ez-option {  
-            background: linear-gradient(135deg, #2c3e50, #3498db);  
-            border: 2px solid transparent;  
-            border-radius: 12px;  
-            padding: 20px;  
-            margin: 10px 0;  
-            cursor: pointer;  
-            transition: all 0.3s;  
-            display: flex;  
-            align-items: center;  
-            gap: 15px;  
-        }  
-        
-        .ez-option:hover {  
-            border-color: #4a90e2;  
-            transform: translateX(5px);  
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);  
-        }  
-        
-        .ez-icon {  
-            font-size: 32px;  
-            min-width: 50px;  
-        }  
-        
-        .ez-name {  
-            font-size: 18px;  
-            font-weight: bold;  
-            color: #fff;  
-        }  
-        
-        .ez-desc {  
-            font-size: 14px;  
-            color: #bbb;  
-            margin-top: 5px;  
-        }  
-        
-        /* 状态计量器样式 */  
-        .status-meter {  
-            margin: 15px 0;  
-        }  
-        
-        .meter-label {  
-            font-size: 14px;  
-            color: #ccc;  
-            margin-bottom: 5px;  
-        }  
-        
-        .meter-bar {  
-            background: rgba(255,255,255,0.1);  
-            height: 8px;  
-            border-radius: 4px;  
-            overflow: hidden;  
-            position: relative;  
-        }  
-        
-        .meter-fill {  
-            height: 100%;  
-            background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71);  
-            border-radius: 4px;  
-            transition: width 1s ease-out;  
-            position: relative;  
-        }  
-        
-        .meter-fill::after {  
-            content: '';  
-            position: absolute;  
-            top: 0;  
-            left: 0;  
-            right: 0;  
-            bottom: 0;  
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);  
-            animation: meter-shine 2s infinite;  
-        }  
-        
-        .meter-value {  
-            font-size: 12px;  
-            color: #4a90e2;  
-            font-weight: bold;  
-            margin-top: 3px;  
-            text-align: right;  
-        }  
-        
-        /* EZ按钮样式 */  
-        .ez-button {  
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);  
-            border: none;  
-            border-radius: 10px;  
-            padding: 15px 20px;  
-            margin: 8px 0;  
-            cursor: pointer;  
-            display: flex;  
-            align-items: center;  
-            gap: 12px;  
-            color: #fff;  
-            font-size: 16px;  
-            transition: all 0.3s;  
-        }  
-        
-        .ez-button:hover {  
-            background: linear-gradient(135deg, #9b59b6, #a569bd);  
-            transform: translateY(-2px);  
-            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.4);  
-        }  
-        
-        .ez-button-icon {  
-            font-size: 20px;  
-        }  
-        
-        /* 动画效果 */  
-        @keyframes progress-slide {  
-            0% { transform: translateX(-100%); }  
-            100% { transform: translateX(0); }  
-        }  
-        
-        @keyframes dot-bounce {  
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }  
-            40% { transform: scale(1); opacity: 1; }  
-        }  
-        
-        @keyframes successSlide {  
-            0% {  
-                transform: translate(-50%, -50%) scale(0.5);  
-                opacity: 0;  
-            }  
-            20% {  
-                transform: translate(-50%, -50%) scale(1.1);  
-                opacity: 1;  
-            }  
-            100% {  
-                transform: translate(-50%, -50%) scale(1);  
-                opacity: 1;  
-            }  
-        }  
-        
-        @keyframes meter-shine {  
-            0% { transform: translateX(-100%); }  
-            100% { transform: translateX(100%); }  
-        }  
-        
-        /* 优化底部栏目样式 */  
-        .bottom-bar {  
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);  
-            border-top: 3px solid #4a90e2;  
-            padding: 15px 25px;  
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);  
-            backdrop-filter: blur(10px);  
-        }  
-        
-        .help-text {  
-            display: flex;  
-            gap: 25px;  
-            align-items: center;  
-        }  
-        
-        .key {  
-            background: linear-gradient(135deg, #4a90e2, #357abd);  
-            color: #fff;  
-            padding: 4px 10px;  
-            border-radius: 6px;  
-            font-weight: bold;  
-            font-size: 12px;  
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);  
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);  
-            border: 1px solid rgba(255,255,255,0.2);  
-        }  
-        
-        .action-btn {  
-            background: linear-gradient(135deg, #34495e, #2c3e50);  
-            border: 1px solid #4a90e2;  
-            padding: 10px 18px;  
-            border-radius: 8px;  
-            font-size: 14px;  
-            font-weight: 500;  
-            letter-spacing: 0.5px;  
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);  
-        }  
-        
-        .action-btn:hover {  
-            background: linear-gradient(135deg, #3498db, #2980b9);  
-            transform: translateY(-2px);  
-            box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);  
-        }  
-        
-        .save-btn {  
-            background: linear-gradient(135deg, #27ae60, #2ecc71);  
-            border-color: #2ecc71;  
-            position: relative;  
-            overflow: hidden;  
-        }  
-        
-        .save-btn::before {  
-            content: '';  
-            position: absolute;  
-            top: 0;  
-            left: -100%;  
-            width: 100%;  
-            height: 100%;  
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);  
-            transition: left 0.5s;  
-        }  
-        
-        .save-btn:hover::before {  
-            left: 100%;  
-        }  
-        
-        .save-btn:hover {  
-            background: linear-gradient(135deg, #2ecc71, #27ae60);  
-            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);  
-        }  
-        
-        /* 版本信息优化 */  
-        .version-info {  
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));  
-            border: 1px solid rgba(74, 144, 226, 0.3);  
-            padding: 8px 20px;  
-            border-radius: 20px;  
-            backdrop-filter: blur(15px);  
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);  
-        }  
-    </style>  
-</body>  
+                        <div class="ez-option" onclick="applyPreset('silent')">
+                            <div class="ez-icon">🔇</div>
+                            <div>
+                                <div class="ez-name">静音模式</div>
+                                <div class="ez-desc">最低噪音运行</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="right-panel">
+                    <div class="info-card">
+                        <div class="card-title">📊 系统状态</div>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">CPU使用率</span>
+                                <span class="info-value">15%</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">内存使用率</span>
+                                <span class="info-value">8.2GB / 32GB</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">系统运行时间</span>
+                                <span class="info-value">2小时15分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 保存选项卡 -->
+            <div id="save-tab" class="tab-content">
+                <div class="save-actions">
+                    <div class="save-section">
+                        <button class="save-button" onclick="saveAndExit()">
+                            <span class="save-icon">💾</span>
+                            保存并退出
+                        </button>
+                        
+                        <button class="save-button reset-button" onclick="loadDefaults()">
+                            <span class="save-icon">🔄</span>
+                            恢复默认设置
+                        </button>
+                        
+                        <button class="save-button" onclick="saveChanges()">
+                            <span class="save-icon">✅</span>
+                            保存更改
+                        </button>
+                    </div>
+                    
+                    <div class="save-section">
+                        <button class="save-button danger-button" onclick="exitWithoutSaving()">
+                            <span class="save-icon">❌</span>
+                            不保存退出
+                        </button>
+                        
+                        <button class="save-button reset-button" onclick="loadOptimizedDefaults()">
+                            <span class="save-icon">⚡</span>
+                            加载优化默认值
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部快捷键栏 -->
+        <div class="bios-footer">
+            <div class="footer-key">
+                <span class="key-highlight">F1</span>
+                <span>帮助</span>
+            </div>
+            <div class="footer-key">
+                <span class="key-highlight">F9</span>
+                <span>优化默认值</span>
+            </div>
+            <div class="footer-key">
+                <span class="key-highlight">F10</span>
+                <span>保存并退出</span>
+            </div>
+            <div class="footer-key">
+                <span class="key-highlight">ESC</span>
+                <span>退出</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 对话框 -->
+    <div class="dialog-overlay" id="dialog-overlay">
+        <div class="dialog-box">
+            <div class="dialog-title" id="dialog-title">确认操作</div>
+            <div class="dialog-content" id="dialog-content">您确定要执行此操作吗？</div>
+            <div class="dialog-buttons">
+                <button class="dialog-btn confirm-btn" id="confirm-btn">确认</button>
+                <button class="dialog-btn cancel-btn" onclick="hideDialog()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+            const dateStr = now.toLocaleDateString('zh-CN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('current-time').textContent = timeStr;
+            document.getElementById('current-date').textContent = dateStr;
+        }
+
+        // 标签切换功能
+        function switchTab(tabName, event) {
+            // 隐藏所有标签内容
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 移除所有导航按钮的active类
+            const allNavTabs = document.querySelectorAll('.nav-tab');
+            allNavTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的标签内容
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // 添加active类到点击的按钮
+            event.target.classList.add('active');
+        }
+
+        // 设置项切换功能 - 修复点击事件
+        function toggleSetting(element, options) {
+            event.stopPropagation(); // 阻止事件冒泡
+            const currentValue = element.textContent;
+            const currentIndex = options.indexOf(currentValue);
+            const nextIndex = (currentIndex + 1) % options.length;
+            element.textContent = options[nextIndex];
+            
+            // 添加视觉反馈
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        // 显示对话框
+        function showDialog(title, content, confirmCallback) {
+            document.getElementById('dialog-title').textContent = title;
+            document.getElementById('dialog-content').textContent = content;
+            document.getElementById('dialog-overlay').style.display = 'flex';
+            
+            // 设置确认按钮的点击事件
+            document.getElementById('confirm-btn').onclick = function() {
+                hideDialog();
+                if (confirmCallback) confirmCallback();
+            };
+        }
+
+        // 隐藏对话框
+        function hideDialog() {
+            document.getElementById('dialog-overlay').style.display = 'none';
+        }
+
+        // 保存并退出 - 修复重定向
+        function saveAndExit() {
+            showDialog('保存设置', '您确定要保存设置并退出BIOS吗？', function() {
+                showSuccessMessage('设置已保存！');
+                setTimeout(() => {
+                    window.location.href = 'boot.html'; // 确保重定向到boot.html
+                }, 1000);
+            });
+        }
+
+        // 不保存退出 - 修复重定向
+        function exitWithoutSaving() {
+            showDialog('退出确认', '您确定要不保存更改并退出吗？所有未保存的更改将丢失！', function() {
+                window.location.href = 'boot.html'; // 确保重定向到boot.html
+            });
+        }
+
+        // 保存更改
+        function saveChanges() {
+            showDialog('保存更改', '您确定要保存当前更改吗？', function() {
+                showSuccessMessage('更改已保存！');
+            });
+        }
+
+        // 恢复默认设置
+        function loadDefaults() {
+            showDialog('恢复默认设置', '您确定要恢复所有设置为默认值吗？这将覆盖当前所有自定义设置！', function() {
+                showSuccessMessage('已恢复默认设置！');
+                // 这里可以添加重置所有设置的逻辑
+            });
+        }
+
+        // 加载优化默认值
+        function loadOptimizedDefaults() {
+            showDialog('加载优化设置', '您确定要加载优化的默认设置吗？', function() {
+                showSuccessMessage('已加载优化设置！');
+            });
+        }
+
+        // 显示成功消息
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(successDiv);
+            }, 2000);
+        }
+
+        // EZ模式功能
+        function toggleOverclock() {
+            showDialog('EZ超频', '您确定要启用EZ超频功能吗？这将自动优化CPU和内存设置。', function() {
+                showSuccessMessage('EZ超频已启用！');
+            });
+        }
+
+        function applyPreset(preset) {
+            const presetNames = {
+                'gaming': '游戏模式',
+                'work': '工作模式',
+                'silent': '静音模式'
+            };
+            
+            showDialog('应用预设', `您确定要应用${presetNames[preset]}吗？`, function() {
+                showSuccessMessage(`已应用${presetNames[preset]}！`);
+            });
+        }
+
+        // 密码对话框
+        function showPasswordDialog(type) {
+            const typeName = type === 'admin' ? '管理员' : '用户';
+            showDialog('设置密码', `您确定要设置${typeName}密码吗？`, function() {
+                showSuccessMessage(`${typeName}密码设置完成！`);
+            });
+        }
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'F1':
+                    event.preventDefault();
+                    showDialog('帮助', 'XPtech BIOS Setup Utility 帮助信息\n\n使用方向键导航，回车键确认，ESC键退出。');
+                    break;
+                case 'F9':
+                    event.preventDefault();
+                    loadOptimizedDefaults();
+                    break;
+                case 'F10':
+                    event.preventDefault();
+                    saveAndExit();
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    exitWithoutSaving();
+                    break;
+            }
+        });
+
+        // 初始化
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 温度模拟更新
+        function updateTemperatures() {
+            const temps = ['cpu-temp', 'mb-temp', 'gpu-temp'];
+            temps.forEach(tempId => {
+                const element = document.getElementById(tempId);
+                if (element) {
+                    const baseTemp = parseInt(element.textContent);
+                    const variation = Math.floor(Math.random() * 6) - 3; // -3 to +3 度变化
+                    const newTemp = Math.max(25, Math.min(85, baseTemp + variation));
+                    element.textContent = newTemp + '°C';
+                }
+            });
+        }
+
+        // 每10秒更新一次温度
+        setInterval(updateTemperatures, 10000);
+    </script>
+</body>
 </html>
