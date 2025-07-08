@@ -12,7 +12,7 @@ const timer = setInterval(() => {
         if (timer !== undefined) {
             clearInterval(timer);
         }
-        window.location.href = './boot.html';
+        window.location.href = './desktop.html';
     }
 }, 300);
 
