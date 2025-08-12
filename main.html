@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win12 Web Version</title>
+    <body>
+    <style>
+    body {
+      background-image: url("img/img0.jpg");
+      background-size: 100%;
+    }
+    #startmunuButton {
+      position: fixed;
+      transform: translateX(-50%);
+      bottom: 0;
+      left: 50%;
+      display: flex;
+      justify-content: center; /* 水平居中 */
+      align-items: center;
+      border: none;
+      height: 50px;
+      width: 50px;
+      border-radius: 8px 8px 8px 8px;
+      background-color: rgba(255, 255, 255, 0.2); 
+      backdrop-filter: blur(50px);
+    }
+    #background {
+      height: 40px;
+      width: 40px;
+    }
+    #startmunu {
+      height: 330px;
+      position: fixed;       
+      transform: translateX(-50%);
+      bottom: -100%;          /*  初始状态，隐藏在屏幕底部。百分比基于容器高度*/
+      left: 50%;
+      width: 370px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      text-align: center;
+      color: #efe8f5;
+      transition: bottom 0.3s ease-in-out; /* 过渡效果 */
+      box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1)
+      border-radius: 20px; 
+      backdrop-filter: blur(100px); /* 毛玻璃 */
+    }
+    #startmunu.show {
+      bottom: 60px !important;
+    }
+    </style>
+    </head>
+    <button id="startmunuButton">
+      <img src="icon/logo.png"id="background"></img>
+      </button>
+      <div id="startmunu">待更新…</div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {  // 确保 DOM 加载完成后执行
+      const myButton = document.getElementById('startmunuButton');
+      const myElement = document.getElementById('startmunu');
+      if (startmunuButton && startmunu) {
+        myButton.addEventListener('click', function() {
+        myElement.classList.toggle('show');
+      });
+     } else {
+        console.error("错误!元素未找到");
+      }
+     });
+        </script>
+      </body>
+      </html>
