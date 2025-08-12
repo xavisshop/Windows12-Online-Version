@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win12 Web Version</title>
+    <title>Win12-Online-Version</title>
      <link rel="icon" href="icon/logo.png" type="image/png">
     <style>
         body {
@@ -26,9 +26,9 @@
         .logo {
             width: 120px;
             height: 120px;
-            margin: 0 auto 20px;
+            margin: 0 auto 40px;
             opacity: 0;
-            animation: logoFadeIn 1s ease-out 0.5s forwards;
+            animation: logoFadeIn 0.8s ease-out 0.2s forwards;
         }
 
         .logo img {
@@ -43,27 +43,119 @@
             width: 40px;
             height: 40px;
             margin: 0 auto;
-        }
-
-        .loading-text {
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 300;
-            margin-top: 25px;
             opacity: 0;
-            animation: textFadeIn 1s ease-out 1.5s forwards;
+            animation: spinnerFadeIn 0.5s ease-out 1s forwards;
         }
 
         @keyframes logoFadeIn {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: scale(0.8);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
+
+        @keyframes spinnerFadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .logo {
+                width: 90px;
+                height: 90px;
+                margin-bottom: 30px;
+            }
+            
+            .loading-spinner {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="boot-container">
+        <div class="logo">
+            <img src="icon/logo.png" alt="Logo">
+        </div>
+        
+        <div class="loading-spinner">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+                <!-- 大圆环 - 更粗的线条 -->
+                <circle 
+                    cx="20" 
+                    cy="20" 
+                    r="16" 
+                    fill="none" 
+                    stroke="#ffffff" 
+                    stroke-width="4" 
+                    stroke-linecap="round"
+                    opacity="1">
+                    
+                    <!-- 长短变化动画 -->
+                    <animate 
+                        attributeName="stroke-dasharray" 
+                        values="8 92;35 65;18 82;8 92" 
+                        dur="1.1s" 
+                        repeatCount="indefinite"/>
+                    
+                    <!-- 更快的旋转动画 -->
+                    <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        values="0 20 20;360 20 20" 
+                        dur="0.7s" 
+                        repeatCount="indefinite"/>
+                </circle>
+                
+                <!-- 辅助圆环 - 更粗的线条 -->
+                <circle 
+                    cx="20" 
+                    cy="20" 
+                    r="16" 
+                    fill="none" 
+                    stroke="#ffffff" 
+                    stroke-width="4" 
+                    stroke-linecap="round"
+                    opacity="0.3">
+                    
+                    <!-- 不同的长短变化 -->
+                    <animate 
+                        attributeName="stroke-dasharray" 
+                        values="25 75;10 90;30 70;25 75" 
+                        dur="1.3s" 
+                        repeatCount="indefinite"/>
+                    
+                    <!-- 反向旋转 -->
+                    <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        values="180 20 20;-180 20 20" 
+                        dur="1s" 
+                        repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // 模拟启动完成
+        setTimeout(() => {
+            console.log('系统启动完成！');
+            // window.location.href = 'main.html';
+        }, 5000);
+    </script>
+</body>
+</html>        }
 
         @keyframes textFadeIn {
             0% {
