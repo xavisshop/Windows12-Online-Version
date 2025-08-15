@@ -7,15 +7,21 @@
     <style>
     body {
       background-image: url("img/img0.jpg");
-      background-size: 100%;
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
     }
+    
     #startmunuButton {
       position: fixed;
       transform: translateX(-50%);
       bottom: 0;
       left: 50%;
       display: flex;
-      justify-content: center; /* 水平居中 */
+      justify-content: center;
       align-items: center;
       border: none;
       height: 50px;
@@ -23,29 +29,107 @@
       border-radius: 8px 8px 8px 8px;
       background-color: rgba(255, 255, 255, 0.2); 
       backdrop-filter: blur(50px);
+      cursor: pointer;
     }
+    
     #background {
       height: 40px;
       width: 40px;
     }
+    
     #startmunu {
       height: 330px;
       position: fixed;       
       transform: translateX(-50%);
-      bottom: -100%;          /*  初始状态，隐藏在屏幕底部。百分比基于容器高度*/
+      bottom: -100%;
       left: 50%;
       width: 370px;
       background-color: rgba(255, 255, 255, 0.05);
       padding: 20px;
       text-align: center;
       color: #efe8f5;
-      transition: bottom 0.3s ease-in-out; /* 过渡效果 */
+      transition: bottom 0.3s ease-in-out;
       box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
       border-radius: 20px; 
-      backdrop-filter: blur(100px); /* 毛玻璃 */
+      backdrop-filter: blur(100px);
     }
+    
     #startmunu.show {
       bottom: 60px !important;
+    }
+    
+    /* 移动端遮罩层 */
+    #mobileOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 105, 180, 0.8) 0%, rgba(255, 20, 147, 0.8) 50%, rgba(199, 21, 133, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-family: 'Microsoft YaHei', sans-serif;
+    }
+    
+    #mobileOverlay .rotate-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: rotate 2s linear infinite;
+    }
+    
+    #mobileOverlay .message {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    #mobileOverlay .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 响应式设计 */
+    @media screen and (max-width: 768px) {
+      #mobileOverlay {
+        display: flex !important;
+      }
+    }
+    
+    @media screen and (max-height: 480px) and (orientation: landscape) {
+      #mobileOverlay {
+        display: none !important;
+      }
+    }
+    
+    /* 平板和小屏设备适配 */
+    @media screen and (max-width: 480px) {
+      #startmunu {
+        width: 90%;
+        max-width: 350px;
+      }
+      
+      #startmunuButton {
+        height: 45px;
+        width: 45px;
+      }
+      
+      #background {
+        height: 35px;
+        width: 35px;
+      }
     }
     </style>
 </head>
@@ -54,18 +138,54 @@
       <img src="icon/logo.png" id="background">
     </button>
     <div id="startmunu">待更新…</div>
+    
+    <!-- 移动端提示遮罩 -->
+    <div id="mobileOverlay">
+      <div class="message">横屏体验更佳</div>
+      <div class="subtitle">请将设备横向放置以获得最佳体验</div>
+    </div>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {  // 确保 DOM 加载完成后执行
-      const myButton = document.getElementById('startmunuButton');
-      const myElement = document.getElementById('startmunu');
-      if (myButton && myElement) {
-        myButton.addEventListener('click', function() {
-        myElement.classList.toggle('show');
-      });
-     } else {
-        console.error("错误!元素未找到");
-      }
-     });
+        document.addEventListener('DOMContentLoaded', function() {
+            const myButton = document.getElementById('startmunuButton');
+            const myElement = document.getElementById('startmunu');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            
+            if (myButton && myElement) {
+                myButton.addEventListener('click', function() {
+                    myElement.classList.toggle('show');
+                });
+            } else {
+                console.error("错误!元素未找到");
+            }
+            
+            // 检测屏幕方向变化
+            function checkOrientation() {
+                if (window.innerWidth <= 768) {
+                    if (window.innerHeight > window.innerWidth) {
+                        // 竖屏状态，显示遮罩
+                        mobileOverlay.style.display = 'flex';
+                    } else {
+                        // 横屏状态，隐藏遮罩
+                        mobileOverlay.style.display = 'none';
+                    }
+                } else {
+                    // 桌面设备，隐藏遮罩
+                    mobileOverlay.style.display = 'none';
+                }
+            }
+            
+            // 初始检测
+            checkOrientation();
+            
+            // 监听屏幕方向变化
+            window.addEventListener('orientationchange', function() {
+                setTimeout(checkOrientation, 100);
+            });
+            
+            // 监听窗口大小变化
+            window.addEventListener('resize', checkOrientation);
+        });
     </script>
 </body>
 </html>
