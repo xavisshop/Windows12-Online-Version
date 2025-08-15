@@ -1,0 +1,117 @@
+/* 移动端遮罩层 */
+#mobileOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 150, 150, 0.4) 0%, rgba(255, 200, 200, 0.2) 60%, rgba(200, 150, 255, 0.3) 100%);
+  backdrop-filter: blur(20px);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  font-family: 'Microsoft YaHei', sans-serif;
+}
+
+#mobileOverlay .phone-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+/* 原始手机图标（变为虚像） */
+.phone-original {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 70px;
+  background-color: white;
+  border-radius: 8px;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  animation: fadeToGhost 2s ease-in-out forwards;
+  z-index: 1;
+}
+
+.phone-original::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background-color: #ddd;
+  border-radius: 2px;
+}
+
+.phone-original::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+}
+
+/* 复制的手机图标（实像旋转） */
+.phone-copy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 70px;
+  background-color: white;
+  border-radius: 8px;
+  transform-origin: 0% 100%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: rotateAndStay 2s ease-in-out forwards;
+  z-index: 2;
+}
+
+.phone-copy::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background-color: #ddd;
+  border-radius: 2px;
+}
+
+.phone-copy::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+}
+
+#mobileOverlay .message {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+#mobileOverlay .subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
