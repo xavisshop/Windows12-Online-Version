@@ -65,7 +65,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(255, 105, 180, 0.8) 0%, rgba(255, 20, 147, 0.8) 50%, rgba(199, 21, 133, 0.8) 100%);
+      background: linear-gradient(135deg, rgba(255, 182, 193, 0.6) 0%, rgba(255, 218, 224, 0.4) 100%);
       backdrop-filter: blur(20px);
       z-index: 9999;
       display: none;
@@ -77,10 +77,109 @@
       font-family: 'Microsoft YaHei', sans-serif;
     }
     
-    #mobileOverlay .rotate-icon {
-      font-size: 80px;
+    #mobileOverlay .phone-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
       margin-bottom: 20px;
-      animation: rotate 2s linear infinite;
+    }
+    
+    /* 实心手机图标 */
+    .phone-solid {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 70px;
+      background-color: white;
+      border-radius: 8px;
+      animation: rotateSolid 2s linear infinite;
+      z-index: 2;
+    }
+    
+    .phone-solid::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background-color: #ddd;
+      border-radius: 2px;
+    }
+    
+    .phone-solid::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+    }
+    
+    /* 虚线手机图标 */
+    .phone-outline {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      width: 40px;
+      height: 70px;
+      border: 3px dashed rgba(255, 255, 255, 0.6);
+      border-radius: 8px;
+      z-index: 1;
+    }
+    
+    .phone-outline::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      border: 2px dashed rgba(255, 255, 255, 0.6);
+      border-radius: 2px;
+    }
+    
+    .phone-outline::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border: 2px dashed rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+    }
+    
+    @keyframes rotateSolid {
+      0% { 
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+      }
+      25% { 
+        transform: translate(-50%, -50%) rotate(-90deg);
+        opacity: 0.3;
+      }
+      50% { 
+        transform: translate(-50%, -50%) rotate(-90deg);
+        opacity: 0;
+      }
+      75% { 
+        transform: translate(-50%, -50%) rotate(-90deg);
+        opacity: 0.3;
+      }
+      100% { 
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+      }
     }
     
     #mobileOverlay .message {
@@ -94,11 +193,6 @@
       font-size: 16px;
       opacity: 0.9;
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-    
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
     
     /* 响应式设计 */
@@ -141,6 +235,10 @@
     
     <!-- 移动端提示遮罩 -->
     <div id="mobileOverlay">
+      <div class="phone-container">
+        <div class="phone-solid"></div>
+        <div class="phone-outline"></div>
+      </div>
       <div class="message">横屏体验更佳</div>
       <div class="subtitle">请将设备横向放置以获得最佳体验</div>
     </div>
