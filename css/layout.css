@@ -1,0 +1,52 @@
+body {
+  background-image: url("../img/img0.jpg");
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#startmunuButton {
+  position: fixed;
+  transform: translateX(-50%);
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  height: 50px;
+  width: 50px;
+  border-radius: 8px 8px 8px 8px;
+  background-color: rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(50px);
+  cursor: pointer;
+}
+
+#background {
+  height: 40px;
+  width: 40px;
+}
+
+#startmunu {
+  height: 330px;
+  position: fixed;       
+  transform: translateX(-50%);
+  bottom: -100%;
+  left: 50%;
+  width: 370px;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  text-align: center;
+  color: #efe8f5;
+  transition: bottom 0.3s ease-in-out;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 20px; 
+  backdrop-filter: blur(100px);
+}
+
+#startmunu.show {
+  bottom: 60px !important;
+}
