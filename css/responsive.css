@@ -1,0 +1,30 @@
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  #mobileOverlay {
+    display: flex !important;
+  }
+}
+
+@media screen and (max-height: 480px) and (orientation: landscape) {
+  #mobileOverlay {
+    display: none !important;
+  }
+}
+
+/* 平板和小屏设备适配 */
+@media screen and (max-width: 480px) {
+  #startmunu {
+    width: 90%;
+    max-width: 350px;
+  }
+  
+  #startmunuButton {
+    height: 45px;
+    width: 45px;
+  }
+  
+  #background {
+    height: 35px;
+    width: 35px;
+  }
+}
