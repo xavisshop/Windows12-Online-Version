@@ -117,7 +117,7 @@
             document.body.style.opacity = '0';
             
             setTimeout(() => {
-                window.location.href = 'main.html';
+                window.location.href = 'desktop.html';
             }, 500);
             
         }, loadingTime);
