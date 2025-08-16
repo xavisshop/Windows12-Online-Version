@@ -5,82 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows12-Online-Version</title>
     <link rel="icon" href="icon/logo.png" type="image/png">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
-
-        .boot-container {
-            text-align: center;
-            position: relative;
-        }
-
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: logoFadeIn 0.8s ease-out 0.2s forwards;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: brightness(1.1);
-        }
-
-        .loading-spinner {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            margin: 0 auto;
-            opacity: 0;
-            animation: spinnerFadeIn 0.5s ease-out 1s forwards;
-        }
-
-        @keyframes logoFadeIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes spinnerFadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .logo {
-                width: 80px;
-                height: 80px;
-                margin-bottom: 20px;
-            }
-            
-            .loading-spinner {
-                width: 35px;
-                height: 35px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/desktop.css">
 </head>
 <body>
     <div class="boot-container">
@@ -147,12 +72,6 @@
         </div>
     </div>
 
-    <script>
-        // 模拟启动完成
-        setTimeout(() => {
-            console.log('系统启动完成！');
-            window.location.href = 'main.html';
-        }, 5000);
-    </script>
+    <script src="scripts/desktop.js"></script>
 </body>
 </html>
