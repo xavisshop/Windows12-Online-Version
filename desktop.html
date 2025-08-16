@@ -127,9 +127,8 @@
     </div>
 
     <script>
-        // 启动序列控制
+        // 启动序列控制 - 3秒后跳转
         function initializeBootSequence() {
-            // 3秒后隐藏启动界面，显示主界面
             setTimeout(() => {
                 const bootContainer = document.getElementById('bootContainer');
                 const mainInterface = document.getElementById('mainInterface');
@@ -139,11 +138,20 @@
                 setTimeout(() => {
                     mainInterface.classList.add('visible');
                 }, 500);
-            }, 3000);
+            }, 3000); // 3秒后跳转
         }
 
-        // 初始化启动序列
-        document.addEventListener('DOMContentLoaded', initializeBootSequence);
+        // 页面加载完成后立即开始启动序列
+        window.addEventListener('load', () => {
+            initializeBootSequence();
+        });
+
+        // 如果DOM加载完成但资源还未加载完，也开始序列（备用方案）
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.readyState === 'complete') {
+                initializeBootSequence();
+            }
+        });
     </script>
 
     <!-- 原有的脚本文件 -->
