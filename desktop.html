@@ -6,9 +6,45 @@
     <title>Windows12-Online-Version</title>
     <link rel="icon" href="icon/logo.png" type="image/png">
     <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        /* 启动界面和主界面切换的过渡样式 */
+        .boot-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+            transition: opacity 1s ease-out;
+        }
+
+        .boot-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .main-interface {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .main-interface.visible {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="boot-container">
+    <!-- 启动界面 -->
+    <div class="boot-container" id="bootContainer">
         <div class="logo">
             <img src="icon/logo.png" alt="Logo">
         </div>
@@ -72,6 +108,47 @@
         </div>
     </div>
 
+    <!-- 主界面 -->
+    <div class="main-interface" id="mainInterface">
+        <button id="startmunuButton">
+            <img src="icon/logo.png" id="background">
+        </button>
+        <div id="startmunu">待更新…</div>
+        
+        <!-- 移动端提示遮罩 -->
+        <div id="mobileOverlay">
+            <div class="phone-container">
+                <div class="phone-original"></div>
+                <div class="phone-copy"></div>
+            </div>
+            <div class="message">横屏体验更佳</div>
+            <div class="subtitle">请将设备横向放置以获得最佳体验</div>
+        </div>
+    </div>
+
+    <script>
+        // 启动序列控制
+        function initializeBootSequence() {
+            // 3秒后隐藏启动界面，显示主界面
+            setTimeout(() => {
+                const bootContainer = document.getElementById('bootContainer');
+                const mainInterface = document.getElementById('mainInterface');
+                
+                bootContainer.classList.add('hidden');
+                
+                setTimeout(() => {
+                    mainInterface.classList.add('visible');
+                }, 500);
+            }, 3000);
+        }
+
+        // 初始化启动序列
+        document.addEventListener('DOMContentLoaded', initializeBootSequence);
+    </script>
+
+    <!-- 原有的脚本文件 -->
     <script src="scripts/desktop.js"></script>
+    <script src="scripts/interface-handler.js"></script>
+    <script src="scripts/orientation-detector.js"></script>
 </body>
 </html>
