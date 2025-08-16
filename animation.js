@@ -110,16 +110,22 @@
         
         // 模拟启动完成
         setTimeout(() => {
-            console.log('系统启动完成！');
-            
             // 添加淡出效果
             document.body.style.transition = 'opacity 0.5s ease-out';
             document.body.style.opacity = '0';
             
             setTimeout(() => {
+                // 隐藏加载动画
+                const container = document.querySelector('.boot-container');
+                if (container) {
+                    container.style.display = 'none';
+                }
+                
+                // 跳转到桌面页面
                 window.location.href = 'desktop.html';
             }, 500);
             
+            console.log('系统启动完成！');
         }, loadingTime);
     }
     
