@@ -1,3 +1,5 @@
+[![Powered by OrcaRouter](https://img.shields.io/badge/Powered_by-OrcaRouter-2563eb)](https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14)
+
 ## 公告
 
 ### 超超超超超重要！
@@ -117,5 +119,6 @@ xavisshop：
 ## 贡献须知
 
 详情请见 [贡献指南](./.github/CONTRIBUTING.md)。
+
 
 
