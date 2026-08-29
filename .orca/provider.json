@@ -1,0 +1,10 @@
+{
+  "name": "Windows 12 Online",
+  "description": "A web-based Windows 12 experience — built by two middle school students, running in your browser",
+  "website": "https://win12.hub-xptech.com",
+  "repository": "https://github.com/xavisshop/windows12-online-version",
+  "icon": "icon/favicon.ico",
+  "categories": ["web-app", "demo", "ui"],
+  "technologies": ["HTML", "CSS", "JavaScript"],
+  "orcarouter_ref": "ref_57e9d042b829968c3b14"
+}
