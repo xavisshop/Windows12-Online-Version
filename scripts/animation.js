@@ -1,4 +1,4 @@
-/* 开机动画：猫 + 标语展示 → spinner → 淡出进桌面
+/* 开机动画：霓虹徽标绘制 → spinner → 淡出进桌面
  * 无布局抖动：全部 CSS 动画，JS 只负责计时跳转 */
 (function () {
 'use strict';
@@ -13,14 +13,14 @@ function goDesktop() {
 }
 
 function init() {
-    // spinner 在猫与标语展示后淡入
+    // spinner 在徽标绘制完成后淡入
     setTimeout(function () {
         var sp = document.getElementById('spinner');
         if (sp) sp.classList.add('show');
-    }, 900);
+    }, 1500);
 
-    // 总时长：展示约 4s → 淡出
-    setTimeout(goDesktop, 4300);
+    // 总时长：绘制 1.75s + 展示 2.6s → 淡出
+    setTimeout(goDesktop, 4400);
 }
 
 if (document.readyState === 'loading') {
