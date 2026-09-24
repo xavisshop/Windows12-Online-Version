@@ -228,14 +228,14 @@ function fileIcon(name, thumbIdx) {
 const WEEK = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 function tickClock() {
     const n = new Date();
-    const hh = String(n.getHours()).padStart(2, '0'), mm = String(n.getMinutes()).padStart(2, '0');
-    $('#clockTime').textContent = `${hh}:${mm}`;
-    $('#clockDate').textContent = `${n.getMonth() + 1}/${n.getDate()}`;
+    const hh = String(n.getHours()).padStart(2, '0'), mm = String(n.getMinutes()).padStart(2, '0'), ss = String(n.getSeconds()).padStart(2, '0');
+    $('#clockTime').textContent = `${hh}:${mm}:${ss}`;
+    $('#clockDate').textContent = `${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()}`;
     $('#lockTime').textContent = `${hh}:${mm}`;
     $('#lockDate').textContent = `${n.getFullYear()} 年 ${n.getMonth() + 1} 月 ${n.getDate()} 日 ${WEEK[n.getDay()]}`;
     const wc = $('#wgClock'); if (wc) wc.textContent = `${hh}:${mm}`;
 }
-setInterval(tickClock, 10000);
+setInterval(tickClock, 1000);
 
 /* ================= 任务栏 ================= */
 function renderTaskbar() {
@@ -347,21 +347,27 @@ function renderWidgets() {
 }
 
 /* ================= 快捷设置 ================= */
+const SVG_ICONS = {
+    a11y: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><path d="M4 9.5c2.7.8 5.3 1.2 8 1.2s5.3-.4 8-1.2M12 10.7v5.3m0 0l-3.2 6m3.2-6l3.2 6"/></svg>',
+    saver: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-5 0-8-3.5-8-8 0-5.5 4.5-9 10-10-.5 5.5-1 10-2 12"/><path d="M12 21c0-6 2-10 7-13-1 6-3 10-7 13z"/></svg>',
+    captions: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M7 11h4M7 14h7M15 11h2"/></svg>',
+    night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>',
+    display: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+};
 const QS = [
-    { id: 'wifi', name: 'WLAN', icon: '📶', on: true },
-    { id: 'bt', name: '蓝牙', icon: '🔵', on: false },
-    { id: 'plane', name: '飞行模式', icon: '✈️', on: false },
-    { id: 'saver', name: '节能模式', icon: '🔋', on: false },
-    { id: 'night', name: '夜间模式', icon: '🌙', on: false },
-    { id: 'theme', name: '深色模式', icon: '🌗', on: true },
+    { id: 'a11y', name: '辅助功能', icon: 'a11y', on: false, chev: true },
+    { id: 'saver', name: '节能模式', icon: 'saver', on: false },
+    { id: 'captions', name: '实时字幕', icon: 'captions', on: false },
+    { id: 'night', name: '夜间模式', icon: 'night', on: false },
+    { id: 'share', name: '就近共享', icon: 'share', on: false },
+    { id: 'display', name: '有线显示器', icon: 'display', on: true, chev: true },
 ];
 function renderQS() {
     $('#qsToggles').innerHTML = QS.map(q =>
-        `<button class="qs-t${q.on ? ' on' : ''}" data-q="${q.id}"><span class="qs-ico">${q.icon}</span><span>${q.name}</span></button>`).join('');
+        `<button class="qs-t${q.on ? ' on' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}${q.chev ? '<span class="chev">›</span>' : ''}</span><span>${q.name}</span></button>`).join('');
 }
 function applyQS() {
-    const theme = QS.find(q => q.id === 'theme').on ? 'dark' : 'light';
-    document.documentElement.dataset.theme = theme;
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
 }
 
