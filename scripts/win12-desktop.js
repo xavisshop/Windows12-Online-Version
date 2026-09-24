@@ -94,7 +94,7 @@ Object.assign(ICONS, {
     navAccess: S('<circle cx="12" cy="5.4" r="2.6" fill="#4cc2ff"/><path d="M12 9.5V15M4.8 11.5l7.2-1.2 7.2 1.2M12 15l-3.2 5.6M12 15l3.2 5.6" fill="none" stroke="#4cc2ff" stroke-width="2" stroke-linecap="round"/>'),
     navPrivacy: S('<path d="M12 2.8l7.2 2.6v5.3c0 5.2-3.1 8.8-7.2 10.3-4.1-1.5-7.2-5.1-7.2-10.3V5.4L12 2.8z" fill="#9aa0a6"/>'),
     navUpdate: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
-    navAi: S('<path d="M4 4.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9.5L4 20V5.5a1 1 0 0 1 1-1z" fill="#a855f7"/><circle cx="9" cy="10" r="1.3" fill="#fff"/><circle cx="13" cy="10" r="1.3" fill="#fff"/><circle cx="17" cy="10" r="1.3" fill="#fff"/>'),
+    aiSpark: S('<path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1-2.1 5.9-2.1-5.9-5.9-2.1 5.9-2.1z" fill="#a855f7"/><path d="M19 3.5l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="#e0449e"/><path d="M5.5 15.5l.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z" fill="#38bdf8"/>'),
     /* 通用占位头像（默认系统头像，不用真人信息） */
     rAvatar: S('<circle cx="12" cy="12" r="11.5" fill="#3a3a40"/><circle cx="12" cy="9.3" r="4" fill="#9a9a9a"/><path d="M4.9 19.6a7.3 7.3 0 0 1 14.2 0" fill="#9a9a9a"/>'),
     /* 行图标（白色线稿） */
@@ -206,6 +206,7 @@ const APPS = [
     { id: 'weather', name: '天气', icon: 'weather', pinned: false },
     { id: 'calc', name: '计算器', icon: 'calc', pinned: false },
     { id: 'camera', name: '相机', icon: 'camera', pinned: false },
+    { id: 'ai', name: 'AI 助手', icon: 'aiSpark', pinned: true },
 ];
 const appById = id => APPS.find(a => a.id === id);
 
@@ -356,7 +357,6 @@ function renderQS() {
 function applyQS() {
     const theme = QS.find(q => q.id === 'theme').on ? 'dark' : 'light';
     document.documentElement.dataset.theme = theme;
-    store.set('theme', theme);
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
 }
 
@@ -388,14 +388,14 @@ function openApp(appId, arg) {
     const app = appById(appId);
     if (!app) return;
     // 单例应用：已开则聚焦
-    const single = ['explorer', 'settings', 'store'].includes(appId);
+    const single = ['explorer', 'settings', 'store', 'ai'].includes(appId);
     if (single) {
         const ex = wins.find(w => w.app === appId && !w.closed && !w.min);
         if (ex) { focusWin(ex); return; }
         const exMin = wins.find(w => w.app === appId && !w.closed);
-        if (exMin) { exMin.min = false; exMin.el.classList.remove('min'); focusWin(exMin); return; }
+        if (exMin) { restoreWin(exMin); return; }
     }
-    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore };
+    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore, ai: buildAiApp };
     const simple = ['photos', 'mail', 'calendar', 'word', 'excel', 'ppt', 'todo', 'clock', 'weather', 'calc', 'camera'];
     let bodyHtml, w = 880, h = 560, title = app.name;
     if (builders[appId]) { const r = builders[appId](arg); bodyHtml = r.html; w = r.w || w; h = r.h || h; title = r.title || title; }
@@ -420,9 +420,9 @@ function createWin(app, title, bodyHtml, w, h) {
             <span class="t-ico">${ICONS[app.icon]}</span>
             <span class="t-name">${esc(title)}</span>
             <div class="win-btns">
-                <button data-wb="min" title="最小化">—</button>
-                <button data-wb="max" title="最大化">▢</button>
-                <button data-wb="close" class="close" title="关闭">✕</button>
+                <button data-wb="min" title="最小化" aria-label="最小化"><svg viewBox="0 0 10 10"><path d="M1 5 H9" stroke="currentColor" stroke-width="1"/></svg></button>
+                <button data-wb="max" title="最大化" aria-label="最大化或还原"><span class="wb-max"><svg viewBox="0 0 10 10"><rect x="1.5" y="1.5" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1"/></svg></span><span class="wb-restore"><svg viewBox="0 0 10 10"><rect x="3.5" y="1" width="5" height="5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="1.5" y="3.5" width="5" height="5" fill="var(--win-bg)" stroke="currentColor" stroke-width="1"/></svg></span></button>
+                <button data-wb="close" class="close" title="关闭" aria-label="关闭"><svg viewBox="0 0 10 10"><path d="M1.5 1.5 L8.5 8.5 M8.5 1.5 L1.5 8.5" stroke="currentColor" stroke-width="1"/></svg></button>
             </div>
         </div>
         <div class="win-body">${bodyHtml}</div>`;
@@ -445,6 +445,35 @@ function closeWin(win) {
     win.el.classList.add('closing');
     setTimeout(() => { win.el.remove(); refreshTaskbarDots(); }, 160);
     const i = wins.indexOf(win); if (i >= 0) wins.splice(i, 1);
+}
+
+/* 最小化：先播下沉动画，结束后再 display:none */
+function minimizeWin(win) {
+    if (win.min || win.closed) return;
+    win.min = true;
+    const el = win.el;
+    el.classList.add('minimizing');
+    const done = () => {
+        el.removeEventListener('animationend', done);
+        el.classList.remove('minimizing');
+        el.classList.add('min');
+    };
+    el.addEventListener('animationend', done);
+    setTimeout(done, 240); // 兜底：animationend 没触发时也隐藏
+    refreshTaskbarDots();
+}
+
+/* 恢复：取消隐藏并反向播放入场 */
+function restoreWin(win) {
+    if (!win.min || win.closed) return;
+    win.min = false;
+    const el = win.el;
+    el.classList.remove('min');
+    el.classList.add('restoring');
+    const done = () => { el.removeEventListener('animationend', done); el.classList.remove('restoring'); };
+    el.addEventListener('animationend', done);
+    setTimeout(done, 240);
+    focusWin(win);
 }
 
 function toggleMax(win) {
@@ -480,7 +509,7 @@ function wireWin(win) {
         const k = b.dataset.wb;
         if (k === 'close') closeWin(win);
         else if (k === 'max') toggleMax(win);
-        else if (k === 'min') { win.min = true; el.classList.add('min'); refreshTaskbarDots(); }
+        else if (k === 'min') minimizeWin(win);
     }));
     bar.addEventListener('dblclick', e => { if (!e.target.closest('.win-btns')) toggleMax(win); });
     // 拖拽 + 边缘贴靠
@@ -488,6 +517,7 @@ function wireWin(win) {
     bar.addEventListener('pointerdown', e => {
         if (e.target.closest('.win-btns') || e.button !== 0) return;
         dragging = true; sx = e.clientX; sy = e.clientY; ox = win.x; oy = win.y;
+        el.classList.add('no-trans'); // 拖拽时关闭 left/top 过渡
         bar.setPointerCapture(e.pointerId);
     });
     bar.addEventListener('pointermove', e => {
@@ -509,12 +539,14 @@ function wireWin(win) {
     bar.addEventListener('pointerup', e => {
         if (!dragging) return;
         dragging = false;
+        el.classList.remove('no-trans');
         el.classList.remove('snap-hint-l', 'snap-hint-r');
         if (e.clientX < 8) snapWin(win, 'left');
         else if (e.clientX > innerWidth - 8) snapWin(win, 'right');
         else if (e.clientY < 4) snapWin(win, 'max');
         hint = null;
     });
+    bar.addEventListener('pointercancel', () => { dragging = false; el.classList.remove('no-trans'); });
 }
 
 /* 点击任务栏运行中应用 → 聚焦/最小化切换 */
@@ -864,8 +896,9 @@ function buildSimpleApp(app) {
 }
 
 /* ================= 设置（Win11 截图 1:1） ================= */
-/* 壁纸：纯 CSS 手绘场景，不再引用 AI 生成图片 */
+/* 壁纸：视频壁纸图片 + 纯 CSS 手绘场景 */
 const WALLPAPERS = [
+    { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
     { id: 'ribbon', name: '紫韵丝带', cls: 'wp-ribbon', accent: '#e0449e' },
     { id: 'tide', name: '青蓝潮汐', cls: 'wp-tide', accent: '#38bdf8' },
     { id: 'pastel', name: '暖阳粉彩', cls: 'wp-pastel', accent: '#f59e0b' },
@@ -873,13 +906,19 @@ const WALLPAPERS = [
     { id: 'neon', name: '霓虹紫', cls: 'wp-neon', accent: '#a855f7' },
     { id: 'lake', name: '湖畔晨光', cls: 'wp-lake', accent: '#2dd4bf' },
 ];
-function setWallpaper(id) {
+/* 仅切换壁纸 class，不写 localStorage（首次访问保持纯净） */
+function applyWallpaper(id) {
     const w = WALLPAPERS.find(x => x.id === id) || WALLPAPERS[0];
     ['#wallpaper', '#lockscreen'].forEach(sel => {
         const el = $(sel);
         WALLPAPERS.forEach(x => el.classList.remove(x.cls));
         el.classList.add(w.cls);
     });
+}
+/* 用户主动切换壁纸时才落盘 */
+function userSetWallpaper(id) {
+    const w = WALLPAPERS.find(x => x.id === id) || WALLPAPERS[0];
+    applyWallpaper(w.id);
     store.set('wallpaper', w.id);
 }
 
@@ -896,7 +935,6 @@ const SET_NAV = [
     { id: 'access', name: '辅助功能', icon: 'navAccess' },
     { id: 'privacy', name: '隐私和安全性', icon: 'navPrivacy' },
     { id: 'update', name: 'Windows 更新', icon: 'navUpdate' },
-    { id: 'ai', name: 'AI 助手', icon: 'navAi' },
 ];
 
 /* 行 / 卡片 / 控件 */
@@ -908,7 +946,7 @@ const wcard = inner => `<div class="wcard">${inner}</div>`;
 const wsec = t => `<div class="wsec">${t}</div>`;
 const wlink = label => `<button class="wlink" data-demo>${label}</button>`;
 const wtoggle = on => `<button class="wtoggle${on ? ' on' : ''}" data-tg aria-label="开关"></button>`;
-const wpCur = () => WALLPAPERS.find(w => w.id === store.get('wallpaper', 'ribbon')) || WALLPAPERS[0];
+const wpCur = () => WALLPAPERS.find(w => w.id === store.get('wallpaper', 'video')) || WALLPAPERS[0];
 const wheoInner = () => {
     const w = wpCur();
     return `<span class="wdev ${w.cls}"></span>
@@ -1149,30 +1187,10 @@ function pgUpdate() {
     <button class="wlink whehelp" data-demo><span class="wrow-ico sm">${ICONS.rHelp}</span>获取帮助</button>`;
 }
 
-function pgAi() {
-    const key = store.get('orcarouter_key', '');
-    return `<div class="wtitle">AI 助手</div>
-    ${wcard(`<div class="wrow" style="cursor:default"><span class="wrow-ico">${ICONS.navAi}</span>
-        <span class="wrow-tx"><b>AI 助手（由 OrcaRouter 驱动）</b>
-        <i>通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。Built with OrcaRouter。</i></span>
-        <button class="wbtn" data-orca>了解更多</button></div>`)}
-    ${wcard(`<div class="wcard-h"><b>API Key</b><i>Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。</i></div>
-        <div class="wform">
-            <input type="password" class="winput" data-aikey placeholder="输入你的 OrcaRouter API Key" value="${esc(key)}" spellcheck="false">
-            <div class="wform-row"><button class="wbtn" data-aisave>保存</button><button class="wbtn2" data-aiclear>清除</button>
-            <span class="waistat" data-aistat>${key ? '已保存' : '未设置'}</span></div>
-        </div>`)}
-    ${wcard(`<div class="wcard-h"><b>模型</b><i>默认使用自动路由，也可填写任意模型 ID。</i></div>
-        <div class="wform"><input class="winput" data-aimodel value="${esc(store.get('orcarouter_model', 'orcarouter/auto'))}" spellcheck="false"></div>`)}
-    ${wcard(`<div class="wcard-h"><b>连接测试</b><i>发送一条测试消息，验证 Key 与接口是否可用。</i></div>
-        <div class="wform"><div class="wform-row"><button class="wbtn" data-aitest>发送测试</button></div>
-        <div class="wairesult" data-airesult>尚未测试。</div></div>`)}`;
-}
-
 const SET_PAGES = {
     home: pgHome, system: pgSystem, bt: pgBt, net: pgNet, personal: pgPersonal,
     apps: pgApps, account: pgAccount, time: pgTime, gaming: pgGaming,
-    access: pgAccess, privacy: pgPrivacy, update: pgUpdate, ai: pgAi,
+    access: pgAccess, privacy: pgPrivacy, update: pgUpdate,
 };
 
 function initSettings(root) {
@@ -1184,16 +1202,14 @@ function initSettings(root) {
         page.innerHTML = (SET_PAGES[p] || pgHome)();
         page.scrollTop = 0;
     }
-    const aiStat = t => { const s = $('[data-aistat]', root); if (s) s.textContent = t; };
-    const aiResult = t => { const s = $('[data-airesult]', root); if (s) s.textContent = t; };
     root.addEventListener('click', e => {
         const n = e.target.closest('.set-nav'); if (n) { paint(n.dataset.p); return; }
         if (e.target.closest('[data-back]')) { paint('home'); return; }
         const th = e.target.closest('[data-theme]');
-        if (th) { setWallpaper(th.dataset.theme); paint(cur); toast('已应用主题「' + (WALLPAPERS.find(w => w.id === th.dataset.theme) || {}).name + '」'); return; }
+        if (th) { userSetWallpaper(th.dataset.theme); paint(cur); toast('已应用主题「' + (WALLPAPERS.find(w => w.id === th.dataset.theme) || {}).name + '」'); return; }
         if (e.target.closest('[data-ddmode]')) {
             const q = QS.find(x => x.id === 'theme'); q.on = !q.on;
-            renderQS(); applyQS(); paint(cur);
+            renderQS(); applyQS(); store.set('theme', q.on ? 'dark' : 'light'); paint(cur);
             toast(q.on ? '已切换深色模式' : '已切换浅色模式'); return;
         }
         const tg = e.target.closest('[data-tg]');
@@ -1215,17 +1231,6 @@ function initSettings(root) {
             if (nm && nm.trim()) { store.set('pcname', nm.trim().slice(0, 32)); paint(cur); }
             return;
         }
-        if (e.target.closest('[data-orca]')) { window.open('https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14', '_blank'); return; }
-        if (e.target.closest('[data-aisave]')) {
-            const k = $('[data-aikey]', root).value.trim();
-            if (!k) { aiStat('请先输入 API Key'); return; }
-            store.set('orcarouter_key', k); aiStat('已保存到本机'); toast('API Key 已保存到本机'); return;
-        }
-        if (e.target.closest('[data-aiclear]')) {
-            store.set('orcarouter_key', ''); const i = $('[data-aikey]', root); if (i) i.value = '';
-            aiStat('已清除'); toast('已清除 API Key'); return;
-        }
-        if (e.target.closest('[data-aitest]')) { aiTest(); return; }
         if (e.target.closest('[data-demo]')) { toast('演示版本暂未实现此功能'); return; }
     });
     const sq = $('[data-sq]', root);
@@ -1235,24 +1240,130 @@ function initSettings(root) {
             r.style.display = (!q || r.textContent.toLowerCase().includes(q)) ? '' : 'none';
         });
     });
-    async function aiTest() {
-        const key = store.get('orcarouter_key', '');
-        if (!key) { aiResult('请先保存 API Key。'); return; }
-        const model = ($('[data-aimodel]', root).value || '').trim() || 'orcarouter/auto';
-        store.set('orcarouter_model', model);
-        aiResult('请求中…');
+    paint('home');
+}
+/* ================= AI 助手 ================= */
+const ORCA_REF = 'https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14';
+const ORCA_API = 'https://api.orcarouter.ai/v1/chat/completions';
+const ORCA_DEFAULT_MODEL = 'orcarouter/auto';
+const AI_WELCOME = '你好！我是 AI 助手，由 OrcaRouter 驱动，可接入多种主流大模型。有什么可以帮你的？';
+
+function buildAiApp() {
+    const html = `
+    <div class="aiapp" data-aiapp style="display:flex;flex-direction:column;height:100%">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)">
+            ${ico('aiSpark')}
+            <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:600">AI 助手</div>
+                <div style="font-size:11.5px;color:var(--text-dim)">OrcaRouter 模型路由 · 多模型接入 · 按量计费</div>
+            </div>
+            <button class="wbtn2" data-aigear title="设置">设置</button>
+        </div>
+        <div data-aiset hidden style="border-bottom:1px solid rgba(255,255,255,.08);padding:12px 14px;background:rgba(0,0,0,.18)">
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px">接入设置</div>
+            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">API Key</div>
+            <input type="password" class="winput" data-aikey placeholder="输入你的 OrcaRouter API Key" spellcheck="false" style="margin-bottom:10px">
+            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">模型 <span style="opacity:.75">默认自动路由，也可填写任意模型 ID</span></div>
+            <input class="winput" data-aimodel spellcheck="false" style="margin-bottom:10px">
+            <div style="display:flex;gap:8px;align-items:center">
+                <button class="wbtn" data-aisave>保存</button>
+                <button class="wbtn2" data-aiclear>清除</button>
+                <span data-aistat style="font-size:12.5px;color:#a3a3a3"></span>
+            </div>
+            <div style="font-size:11.5px;color:#8a8a8a;margin-top:8px;line-height:1.7">Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。</div>
+        </div>
+        <div data-aimsgs style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px">
+            <div data-aiempty style="margin:auto;text-align:center;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:10px"></div>
+        </div>
+        <div style="display:flex;gap:8px;padding:12px 14px;border-top:1px solid rgba(255,255,255,.08)">
+            <input class="winput" data-aiin placeholder="输入消息，Enter 发送…" spellcheck="false">
+            <button class="wbtn" data-aisend>发送</button>
+        </div>
+    </div>`;
+    setTimeout(() => initAiApp($('[data-aiapp]')), 0);
+    return { html, w: 660, h: 580, title: 'AI 助手' };
+}
+
+function initAiApp(root) {
+    if (!root) return;
+    const getKey = () => store.get('orcarouter_key', '');
+    const getModel = () => (store.get('orcarouter_model', '') || '').trim() || ORCA_DEFAULT_MODEL;
+    const msgs = $('[data-aimsgs]', root);
+    const input = $('[data-aiin]', root);
+    const hist = [];
+    const stat = t => { const s = $('[data-aistat]', root); if (s) s.textContent = t; };
+    const scroll = () => { msgs.scrollTop = msgs.scrollHeight; };
+    const addMsg = (role, text) => {
+        const em = $('[data-aiempty]', root); if (em) em.remove();
+        const d = document.createElement('div');
+        d.style.cssText = role === 'user'
+            ? 'align-self:flex-end;max-width:82%;background:#0f6cbd;border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word'
+            : 'align-self:flex-start;max-width:88%;background:#2d2d33;border:1px solid rgba(255,255,255,.08);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word';
+        d.textContent = text;
+        msgs.appendChild(d); scroll();
+        return d;
+    };
+    function paintEmpty() {
+        const em = $('[data-aiempty]', root); if (!em) return;
+        if (getKey()) { em.remove(); addMsg('ai', AI_WELCOME); return; }
+        em.innerHTML = `${ico('aiSpark')}<b style="font-size:14px">开始使用 AI 助手</b>
+            <div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">输入你的 OrcaRouter API Key 才能开始对话。<br>OrcaRouter 模型路由 · 多模型接入 · 按量计费。</div>
+            <button class="wlink" data-aiget style="font-size:13px">获取 Key</button>`;
+        const g = $('[data-aiget]', em);
+        if (g) g.onclick = () => window.open(ORCA_REF, '_blank');
+    }
+    async function send() {
+        const text = input.value.trim();
+        if (!text) return;
+        if (!getKey()) {
+            toast('请先填写 API Key');
+            $('[data-aiset]', root).hidden = false;
+            return;
+        }
+        input.value = '';
+        hist.push({ role: 'user', content: text });
+        addMsg('user', text);
+        const ph = addMsg('ai', '思考中…');
         try {
-            const r = await fetch('https://api.orcarouter.ai/v1/chat/completions', {
+            const r = await fetch(ORCA_API, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-                body: JSON.stringify({ model, messages: [{ role: 'user', content: '你好，请用一句话介绍你自己。' }] }),
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getKey() },
+                body: JSON.stringify({ model: getModel(), messages: hist }),
             });
             const j = await r.json().catch(() => ({}));
-            if (!r.ok) aiResult('失败 ' + r.status + '：' + String((j.error && j.error.message) || JSON.stringify(j)).slice(0, 200));
-            else aiResult('成功：' + String((j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || JSON.stringify(j)).slice(0, 300));
-        } catch (err) { aiResult('网络错误：' + err.message); }
+            if (!r.ok) {
+                ph.textContent = '请求失败 ' + r.status + '：' + String((j.error && j.error.message) || '未知错误').slice(0, 300);
+                hist.pop(); scroll(); return;
+            }
+            const content = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '（空回复）';
+            hist.push({ role: 'assistant', content });
+            ph.textContent = content;
+        } catch (err) { ph.textContent = '网络错误：' + err.message; hist.pop(); }
+        scroll();
     }
-    paint('home');
+    // 设置区
+    const keyInput = $('[data-aikey]', root), modelInput = $('[data-aimodel]', root);
+    keyInput.value = getKey();
+    modelInput.value = store.get('orcarouter_model', '') || ORCA_DEFAULT_MODEL;
+    stat(getKey() ? '已保存' : '未设置');
+    $('[data-aigear]', root).onclick = () => { const p = $('[data-aiset]', root); p.hidden = !p.hidden; };
+    const saveKey = () => {
+        const k = keyInput.value.trim();
+        if (!k) { stat('请先输入 API Key'); return; }
+        store.set('orcarouter_key', k);
+        store.set('orcarouter_model', (modelInput.value || '').trim() || ORCA_DEFAULT_MODEL);
+        stat('已保存到本机'); toast('API Key 已保存到本机');
+        if (!hist.length) paintEmpty();
+    };
+    $('[data-aisave]', root).onclick = saveKey;
+    $('[data-aiclear]', root).onclick = () => {
+        store.set('orcarouter_key', ''); keyInput.value = '';
+        stat('已清除'); toast('已清除 API Key');
+    };
+    [keyInput, modelInput].forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); }));
+    $('[data-aisend]', root).onclick = send;
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+    paintEmpty();
 }
 /* ================= Edge ================= */
 function buildEdge() {
@@ -1423,9 +1534,9 @@ function ctxAction(k) {
     if (k === 'refresh') { location.reload(); }
     else if (k === 'personal') openApp('settings');
     else if (k === 'nextwp') {
-        const cur = store.get('wallpaper', 'concept');
+        const cur = store.get('wallpaper', 'video');
         const ids = WALLPAPERS.map(w => w.id);
-        setWallpaper(ids[(ids.indexOf(cur) + 1) % ids.length]);
+        userSetWallpaper(ids[(ids.indexOf(cur) + 1) % ids.length]);
         toast('已切换到下一个场景');
     }
     else if (k === 'terminal') openApp('terminal');
@@ -1485,7 +1596,7 @@ function wireGlobal() {
         if (t) {
             const q = QS.find(x => x.id === t.dataset.q);
             q.on = !q.on; t.classList.toggle('on', q.on); applyQS();
-            if (q.id === 'theme') toast(q.on ? '已切换深色模式' : '已切换浅色模式', q.on ? '🌙' : '☀️');
+            if (q.id === 'theme') { store.set('theme', q.on ? 'dark' : 'light'); toast(q.on ? '已切换深色模式' : '已切换浅色模式', q.on ? '🌙' : '☀️'); }
             return;
         }
         if (e.target.closest('#qsSettings')) { closePanels(); openApp('settings'); }
@@ -1541,13 +1652,15 @@ function init() {
     renderStartMenu();
     renderSearch();
     renderWidgets();
+    // 主题只读存储应用、不写入（首次访问保持纯净）
+    QS.find(q => q.id === 'theme').on = store.get('theme', 'dark') === 'dark';
     renderQS();
     renderCal();
     renderDesktopIcons();
     wireGlobal();
     tickClock();
     applyQS();
-    setWallpaper(store.get('wallpaper', 'ribbon'));
+    applyWallpaper(store.get('wallpaper', 'video'));
     const sav = $('#smAvatar'); if (sav) sav.innerHTML = ICONS.rAvatar;
     setTimeout(() => toast('欢迎来到 Windows 12 网页版 🎉', '🐭'), 900);
 }
