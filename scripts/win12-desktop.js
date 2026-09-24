@@ -157,7 +157,12 @@ Object.assign(ICONS, {
     rCheck: L('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
     rUpdateBig: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
 });
-const ico = (n, cls) => `<span class="${cls || 'a-ico'}">${ICONS[n] || ICONS.exe}</span>`;
+const ico = (n, cls) => {
+    if (typeof n === 'string' && n.startsWith('img:')) {
+        return `<span class="${cls || 'a-ico'}"><img src="${n.slice(4)}" alt="" draggable="false"></span>`;
+    }
+    return `<span class="${cls || 'a-ico'}">${ICONS[n] || ICONS.exe}</span>`;
+};
 
 /* 图片缩略图：CSS 渐变（视频里的彩色 png 墙） */
 const THUMBS = [
@@ -206,7 +211,7 @@ const APPS = [
     { id: 'weather', name: '天气', icon: 'weather', pinned: false },
     { id: 'calc', name: '计算器', icon: 'calc', pinned: false },
     { id: 'camera', name: '相机', icon: 'camera', pinned: false },
-    { id: 'ai', name: 'AI 助手', icon: 'aiSpark', pinned: true },
+    { id: 'ai', name: 'AI 助手', icon: 'img:img/icons/copilot.svg', pinned: true },
 ];
 const appById = id => APPS.find(a => a.id === id);
 
@@ -396,7 +401,7 @@ function openApp(appId, arg) {
         const exMin = wins.find(w => w.app === appId && !w.closed);
         if (exMin) { restoreWin(exMin); return; }
     }
-    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore, ai: buildAiApp };
+    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore, ai: buildAiApp, recycle: buildRecycle };
     const simple = ['photos', 'mail', 'calendar', 'word', 'excel', 'ppt', 'todo', 'clock', 'weather', 'calc', 'camera'];
     let bodyHtml, w = 880, h = 560, title = app.name;
     if (builders[appId]) { const r = builders[appId](arg); bodyHtml = r.html; w = r.w || w; h = r.h || h; title = r.title || title; }
@@ -1313,7 +1318,7 @@ function aiPanelMsg(role, text) {
 function initAiPanel() {
     if (initAiPanel.done) return;
     initAiPanel.done = true;
-    $('#aiPanelIco').innerHTML = ICONS.aiSpark;
+    $('#aiPanelIco').innerHTML = '<img src="img/icons/copilot.svg" alt="" draggable="false">';
     $('#aiPanelKey').value = store.get('orcarouter_key', '');
     $('#aiPanelModel').value = store.get('orcarouter_model', '');
     $('#aiPanelGear').onclick = () => { const s = $('#aiPanelSet'); s.hidden = !s.hidden; };
@@ -1387,7 +1392,7 @@ function buildAiApp() {
     const html = `
     <div class="aiapp" data-aiapp style="display:flex;flex-direction:column;height:100%">
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)">
-            ${ico('aiSpark')}
+            ${ico('img:img/icons/copilot.svg')}
             <div style="flex:1;min-width:0">
                 <div style="font-size:14px;font-weight:600">AI 助手</div>
                 <div style="font-size:11.5px;color:var(--text-dim)">OrcaRouter 模型路由 · 多模型接入 · 按量计费</div>
@@ -1441,7 +1446,7 @@ function initAiApp(root) {
     function paintEmpty() {
         const em = $('[data-aiempty]', root); if (!em) return;
         if (getKey()) { em.remove(); addMsg('ai', AI_WELCOME); return; }
-        em.innerHTML = `${ico('aiSpark')}<b style="font-size:14px">开始使用 AI 助手</b>
+        em.innerHTML = `${ico('img:img/icons/copilot.svg')}<b style="font-size:14px">开始使用 AI 助手</b>
             <div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">输入你的 OrcaRouter API Key 才能开始对话。<br>OrcaRouter 模型路由 · 多模型接入 · 按量计费。</div>
             <button class="wlink" data-aiget style="font-size:13px">获取 Key</button>`;
         const g = $('[data-aiget]', em);
@@ -1551,6 +1556,30 @@ function initEdge(root) {
 }
 
 /* ================= 记事本 ================= */
+function buildRecycle() {
+    const html = `
+    <div class="rcb" data-rcb>
+        <div class="rcb-bar">
+            <button class="cb" data-cmd="empty">${ICONS.trash}<span>清空回收站</span></button>
+            <button class="cb" data-cmd="restore"><span>还原所有项目</span></button>
+        </div>
+        <div class="rcb-body" data-body>
+            <div class="rcb-empty">
+                <div class="rcb-empty-ico">${ICONS.trash}</div>
+                <div>回收站是空的</div>
+            </div>
+        </div>
+        <div class="rcb-status" data-st>0 个项目</div>
+    </div>`;
+    setTimeout(() => {
+        const root = $('[data-rcb]');
+        root.addEventListener('click', e => {
+            const b = e.target.closest('[data-cmd]'); if (!b) return;
+            toast(b.dataset.cmd === 'empty' ? '回收站已经是空的' : '没有可还原的项目');
+        });
+    }, 0);
+    return { html, w: 860, h: 560, title: '回收站' };
+}
 function buildNotepad() {
     const html = `
     <div class="np" data-np>
@@ -1625,15 +1654,16 @@ function fillTray() {
 
 /* ================= 桌面图标 ================= */
 const DESK_ICONS = [
-    { name: '此电脑', icon: 'thispc', app: 'explorer' },
-    { name: '文件资源管理器', icon: 'explorer', app: 'explorer' },
-    { name: 'Microsoft Edge', icon: 'edge', app: 'edge' },
-    { name: '记事本', icon: 'notepad', app: 'notepad' },
-    { name: '回收站', icon: 'trash', app: null },
+    { name: '此电脑', icon: 'img:img/icons/explorer.svg', app: 'explorer' },
+    { name: 'Microsoft Edge', icon: 'img:img/icons/edge.svg', app: 'edge' },
+    { name: '记事本', icon: 'img:img/icons/notepad.svg', app: 'notepad' },
+    { name: '回收站', icon: 'trash', app: 'recycle' },
 ];
 function renderDesktopIcons() {
-    $('#desktopIcons').innerHTML = DESK_ICONS.map((d, i) =>
-        `<button class="dicon" data-i="${i}"><span class="di-img">${ICONS[d.icon]}</span><span>${d.name}</span></button>`).join('');
+    $('#desktopIcons').innerHTML = DESK_ICONS.map((d, i) => {
+        const iconHtml = d.icon.startsWith('img:') ? `<img src="${d.icon.slice(4)}" alt="" draggable="false">` : ICONS[d.icon];
+        return `<button class="dicon" data-i="${i}"><span class="di-img">${iconHtml}</span><span>${d.name}</span></button>`;
+    }).join('');
     let sel = -1;
     $('#desktopIcons').addEventListener('click', e => {
         const b = e.target.closest('.dicon'); if (!b) return;
@@ -1825,7 +1855,6 @@ function init() {
     applyWallpaper(store.get('wallpaper', 'video'));
     const sav = $('#smAvatar'); if (sav) sav.innerHTML = ICONS.rAvatar;
     renderLockWidgets();
-    setTimeout(() => toast('欢迎来到 Windows 12 网页版 🎉', '🐭'), 900);
 }
 document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
