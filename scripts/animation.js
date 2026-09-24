@@ -78,6 +78,11 @@
     function init() {
         console.log('系统启动中...');
         
+        // F2 进入 BIOS（与 boot.html 保持一致）
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'F2' || e.keyCode === 113) window.location.href = 'bios.html';
+        });
+        
         // 设置初始视窗高度
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--vh', `${vh}px`);
