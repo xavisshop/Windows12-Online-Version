@@ -1,4 +1,16 @@
-[![Powered by OrcaRouter](https://img.shields.io/badge/Powered_by-OrcaRouter-2563eb)](https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14)
+[![Built with OrcaRouter](https://img.shields.io/badge/Built_with-OrcaRouter-7c3aed)](https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14)
+
+## 关于 OrcaRouter
+
+本项目由 [OrcaRouter](https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14) 提供支持。
+
+OrcaRouter 是一个大模型 API 路由网关：一次接入，即可通过统一接口调用多种主流大模型，按实际调用量计费，免去为每个模型单独对接的麻烦。
+
+- 🔀 **模型路由**：统一接口，按需切换不同的模型
+- 💰 **按量计费**：用多少付多少，无需预付套餐
+- 🧩 **多模型接入**：一次对接，打通多个模型的能力
+
+> 注：本网页演示版目前尚未内置在线 AI 功能；上述介绍是对 OrcaRouter 服务本身的说明。
 
 ## 公告
 

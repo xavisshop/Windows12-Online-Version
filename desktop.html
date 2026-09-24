@@ -1,32 +1,154 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows12-Online-Version</title>
-    <link rel="icon" type="image/png" href="icon/logo.png">
-    <link rel="stylesheet" href="css/layout.css">
+    <title>Windows 12</title>
+    <link rel="icon" type="image/png" href="icon/logo-sm.png">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/win12-desktop.css">
 </head>
 <body>
-    <button id="startmunuButton">
-      <img src="icon/logo.png" id="background">
-    </button>
-    <div id="startmunu">待更新…</div>
-    
-    <!-- 移动端提示遮罩 -->
-    <div id="mobileOverlay">
-      <div class="phone-container">
-        <div class="phone-original"></div>
-        <div class="phone-copy"></div>
-      </div>
-      <div class="message">横屏体验更佳</div>
-      <div class="subtitle">请将设备横向放置以获得最佳体验</div>
+    <!-- 壁纸（视频同款紫红流体） -->
+    <div id="wallpaper"></div>
+
+    <!-- 锁屏 -->
+    <div id="lockscreen">
+        <div class="lock-clock">
+            <div class="lock-time" id="lockTime">--:--</div>
+            <div class="lock-date" id="lockDate"></div>
+        </div>
+        <div class="lock-hint">点击任意处进入</div>
     </div>
-    
-    <script src="scripts/interface-handler.js"></script>
+
+    <!-- 桌面图标 -->
+    <div id="desktopIcons"></div>
+
+    <!-- 小组件面板（视频：大时钟 + 卡片网格） -->
+    <div id="widgetsPanel">
+        <div class="wg-clock" id="wgClock">--:--</div>
+        <div class="wg-grid">
+            <div class="wg-card wg-cal">
+                <div class="wg-card-h"><span>📅 日历</span><span class="wg-more">···</span></div>
+                <div class="wg-cal-month" id="wgCalMonth"></div>
+                <div class="wg-events" id="wgEvents"></div>
+            </div>
+            <div class="wg-card wg-photos">
+                <div class="wg-card-h"><span>🖼️ 照片</span><span class="wg-more">···</span></div>
+                <div class="wg-ph-title">往日今日</div>
+                <div class="wg-ph-row" id="wgPhotos"></div>
+            </div>
+            <div class="wg-card wg-todo">
+                <div class="wg-card-h"><span>✅ 待办</span><span class="wg-more">···</span></div>
+                <div class="wg-todo-title">我的一天 ▾</div>
+                <div id="wgTodoList"></div>
+            </div>
+            <div class="wg-card wg-weather">
+                <div class="wg-card-h"><span>🌤️ 天气</span><span class="wg-more">···</span></div>
+                <div class="wg-w-main"><span class="wg-w-ico">⛅</span><span class="wg-w-t">24°C</span></div>
+                <div class="wg-w-sub">多云 · 北京</div>
+                <div class="wg-w-days" id="wgDays"></div>
+            </div>
+        </div>
+        <div class="wg-hint">点击空白处关闭</div>
+    </div>
+
+    <!-- 悬浮任务栏（视频 1:1：深色、悬浮、整宽圆角条；左小组件 / 中应用 / 右托盘时钟） -->
+    <nav id="taskbar">
+        <div class="tb-left" id="tbWidgets">
+            <button class="tb-widget" id="tbWeather" title="天气"><span class="wx-ico">⛅</span><span>24°C</span></button>
+            <button class="tb-widget" id="tbStock" title="股市"><span class="st-up">▲</span><span>MSFT<br><b>+0.46</b></span></button>
+            <button class="tb-widget tb-media" id="tbMedia" title="媒体">
+                <span class="md-art"></span>
+                <span class="md-meta"><b>Wheezing</b><i>Dylan Sitts</i></span>
+                <span class="md-btns"><i data-m="prev">⏮</i><i data-m="play">⏸</i><i data-m="next">⏭</i></span>
+            </button>
+        </div>
+        <div class="tb-center" id="tbApps"></div>
+        <div class="tb-right">
+            <button class="tb-tray" id="tbQuick" title="快捷设置">
+                <span class="ti" data-ti="wifi"></span><span class="ti" data-ti="vol"></span><span class="ti" data-ti="bat"></span>
+            </button>
+            <button class="tb-clock" id="tbClock" title="日期和时间">
+                <span id="clockTime">--:--</span><span id="clockDate">--/--</span>
+                <span class="ntf-badge" id="ntfBadge">3</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 开始菜单（视频：Pinned 网格 + Recent + 用户 + All Apps） -->
+    <section id="startMenu" class="flyout">
+        <div class="sm-main">
+            <div class="sm-search"><span class="s-ico"></span><input id="smSearch" placeholder="在这里输入进行搜索"></div>
+            <div class="sm-sec"><span>已固定</span></div>
+            <div class="sm-grid" id="smPinned"></div>
+            <div class="sm-sec"><span>推荐 ›</span></div>
+            <div class="sm-rec" id="smRecent"></div>
+            <div class="sm-foot">
+                <button class="sm-user"><span class="avatar">🐭</span><span>xavisshop</span></button>
+                <button class="sm-allapps" id="smAllAppsBtn" title="所有应用"><span>☰</span></button>
+                <button class="sm-power" id="smPower" title="电源">⏻</button>
+            </div>
+            <div class="sm-power-menu" id="smPowerMenu">
+                <button data-pw="lock">🔒 锁定</button>
+                <button data-pw="sleep">💤 睡眠</button>
+                <button data-pw="restart">🔄 重启</button>
+            </div>
+        </div>
+        <div class="sm-allapps-panel" id="smAllAppsPanel">
+            <div class="sm-sec"><span>所有应用</span><button class="sm-back" id="smAllAppsBack">‹ 返回</button></div>
+            <div class="sm-search"><span class="s-ico"></span><input id="smAllSearch" placeholder="搜索应用"></div>
+            <div class="sm-abc" id="smAbcList"></div>
+        </div>
+    </section>
+
+    <!-- 搜索浮出 -->
+    <section id="searchPanel" class="flyout">
+        <div class="sp-search"><span class="s-ico"></span><input id="spInput" placeholder="在这里输入进行搜索"></div>
+        <div class="sp-sec">热门应用</div>
+        <div class="sp-grid" id="spApps"></div>
+        <div class="sp-sec">最近</div>
+        <div class="sp-list" id="spRecent"></div>
+    </section>
+
+    <!-- 快捷设置 -->
+    <section id="quickSettings" class="flyout">
+        <div class="qs-grid" id="qsToggles"></div>
+        <div class="qs-slider"><span>🔆</span><input type="range" id="qsBrightness" min="25" max="100" value="100"></div>
+        <div class="qs-slider"><span>🔊</span><input type="range" id="qsVolume" min="0" max="100" value="60"></div>
+        <div class="qs-foot"><span id="qsBat">🔋 100%</span><button id="qsSettings" title="设置">⚙</button></div>
+    </section>
+
+    <!-- 日历 / 通知 -->
+    <section id="calPanel" class="flyout">
+        <div class="cal-head"><span id="calTitle"></span><div><button id="calPrev">‹</button><button id="calToday">今天</button><button id="calNext">›</button></div></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="sp-sec">通知</div>
+        <div class="ntf-list" id="ntfList"></div>
+    </section>
+
+    <!-- 窗口层 -->
+    <div id="windowLayer"></div>
+
+    <!-- 右键菜单 -->
+    <div id="ctxMenu"></div>
+
+    <!-- Toast -->
+    <div id="toasts"></div>
+
+    <!-- 移动端提示遮罩（保留原有） -->
+    <div id="mobileOverlay">
+        <div class="phone-container">
+            <div class="phone-original"></div>
+            <div class="phone-copy"></div>
+        </div>
+        <div class="message">横屏体验更佳</div>
+        <div class="subtitle">请将设备横向放置以获得最佳体验</div>
+    </div>
+
+    <script src="scripts/win12-desktop.js"></script>
     <script src="scripts/orientation-detector.js"></script>
 </body>
 </html>
