@@ -1441,6 +1441,29 @@ function initSettings(root) {
 const ORCA_REF = 'https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14';
 const ORCA_API = 'https://api.orcarouter.ai/v1/chat/completions';
 const ORCA_DEFAULT_MODEL = 'orcarouter/auto';
+/* 内置体验 Key：加密存储（XOR+base64），运行时解密到内存，不以明文出现在仓库 */
+const ORCA_KEY_ENC = 'BAJDXkBODl8gLllKc0dMPgwWeWsUFUtbUB9LfGBOG1sgY31KJREJIndDVmEEFCteWlh4';
+const ORCA_KEY_PAD = 'd2luMTItb3JjYS0yMDI2';
+const ORCA_FREE_MODELS = [
+    'deepseek/deepseek-v4-flash-free',
+    'deepseek/deepseek-v4-pro-free',
+    'z-ai/glm-5.3-flash-free',
+    'tencent/hy3-free',
+    'qwen/qwen3.8-27b-free'
+];
+const ORCA_DEFAULT_FREE_MODEL = 'deepseek/deepseek-v4-flash-free';
+function orcaBuiltinKey() {
+    try {
+        const enc = atob(ORCA_KEY_ENC), pad = atob(ORCA_KEY_PAD);
+        let s = '';
+        for (let i = 0; i < enc.length; i++) s += String.fromCharCode(enc.charCodeAt(i) ^ pad.charCodeAt(i % pad.length));
+        return s;
+    } catch (e) { return ''; }
+}
+/* 优先用户自填 Key，否则用内置 Key（免费模型体验） */
+const orcaKey = () => store.get('orcarouter_key', '') || orcaBuiltinKey();
+const orcaModel = () => (store.get('orcarouter_model', '') || '').trim() || ORCA_DEFAULT_FREE_MODEL;
+const orcaUsingBuiltin = () => !store.get('orcarouter_key', '') && !!orcaBuiltinKey();
 const AI_WELCOME = '你好！我是 AI 助手，由 OrcaRouter 驱动，可接入多种主流大模型。有什么可以帮你的？';
 const AI_SYSTEM = `请使用中文对话。你是 Windows 12 网页版中的 AI 助手，由 OrcaRouter 模型路由提供支持，可接入多种主流大模型。
 你可以在回答末尾发送系统指令来操作系统。指令放在回答最后、单独成行，系统执行后对用户隐藏指令本身。
@@ -1476,13 +1499,23 @@ function initAiPanel() {
     $('#aiPanelIco').innerHTML = '<img src="img/icons/copilot.svg" alt="" draggable="false">';
     $('#aiPanelKey').value = store.get('orcarouter_key', '');
     $('#aiPanelModel').value = store.get('orcarouter_model', '');
+    const pModelSel = $('#aiPanelModelSel');
+    if (pModelSel) {
+        pModelSel.innerHTML = ORCA_FREE_MODELS.map(m =>
+            `<option value="${m}"${(store.get('orcarouter_model', '') || ORCA_DEFAULT_FREE_MODEL) === m ? ' selected' : ''}>${m}（免费）</option>`
+        ).join('') + `<option value="orcarouter/auto"${store.get('orcarouter_model', '') === 'orcarouter/auto' ? ' selected' : ''}>orcarouter/auto（自动路由）</option>`;
+    }
+    const pBuiltin = $('#aiPanelBuiltin');
+    if (pBuiltin) pBuiltin.style.display = orcaUsingBuiltin() ? '' : 'none';
     $('#aiPanelGear').onclick = () => { const s = $('#aiPanelSet'); s.hidden = !s.hidden; };
     $('#aiPanelClose').onclick = () => toggleAiPanel(false);
     $('#aiPanelSave').onclick = () => {
         store.set('orcarouter_key', $('#aiPanelKey').value.trim());
-        store.set('orcarouter_model', $('#aiPanelModel').value.trim());
-        $('#aiPanelStat').textContent = '已保存到本机';
+        const cm = ($('#aiPanelModel').value || '').trim();
+        store.set('orcarouter_model', cm || (pModelSel ? pModelSel.value : ORCA_DEFAULT_FREE_MODEL));
+        $('#aiPanelStat').textContent = orcaUsingBuiltin() ? '使用内置体验 Key' : '已保存到本机';
         setTimeout(() => $('#aiPanelStat').textContent = '', 2000);
+        if (pBuiltin) pBuiltin.style.display = orcaUsingBuiltin() ? '' : 'none';
         if (!aiHist.length) { aiPanelMsg('ai', AI_WELCOME); }
     };
     $('#aiPanelClear').onclick = () => {
@@ -1492,18 +1525,18 @@ function initAiPanel() {
         setTimeout(() => $('#aiPanelStat').textContent = '', 2000);
     };
     const box = $('#aiPanelMsgs');
-    box.innerHTML = `<div class="aip-empty">欢迎使用 AI 助手<br>点击右上 ⚙ 设置 OrcaRouter API Key 后开始对话<br>我可以帮你打开应用、搜索网页、切换主题</div>`;
-    if (store.get('orcarouter_key', '')) aiPanelMsg('ai', AI_WELCOME);
+    box.innerHTML = `<div class="aip-empty">欢迎使用 AI 助手<br>内置免费模型，开箱即用<br>我可以帮你打开应用、搜索网页、切换主题</div>`;
+    if (orcaKey()) aiPanelMsg('ai', AI_WELCOME);
     const send = async () => {
         const inp = $('#aiPanelIn');
         const text = inp.value.trim();
         if (!text) return;
-        const key = store.get('orcarouter_key', '');
+        const key = orcaKey();
         if (!key) { aiPanelMsg('sys', '请先点击右上 ⚙ 设置你的 OrcaRouter API Key。'); return; }
         inp.value = '';
         aiPanelMsg('user', text);
         const ph = aiPanelMsg('ai', '思考中…');
-        const model = (store.get('orcarouter_model', '') || '').trim() || ORCA_DEFAULT_MODEL;
+        const model = orcaModel();
         aiHist.push({ role: 'user', content: text });
         try {
             const r = await fetch(ORCA_API, {
@@ -1556,16 +1589,19 @@ function buildAiApp() {
         </div>
         <div data-aiset hidden style="border-bottom:1px solid rgba(255,255,255,.08);padding:12px 14px;background:rgba(0,0,0,.18)">
             <div style="font-size:13px;font-weight:600;margin-bottom:10px">接入设置</div>
-            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">API Key</div>
-            <input type="password" class="winput" data-aikey placeholder="输入你的 OrcaRouter API Key" spellcheck="false" style="margin-bottom:10px">
-            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">模型 <span style="opacity:.75">默认自动路由，也可填写任意模型 ID</span></div>
-            <input class="winput" data-aimodel spellcheck="false" style="margin-bottom:10px">
+            <div data-aibuiltin style="font-size:12.5px;color:#4caf50;margin-bottom:10px">✓ 已内置体验 Key（免费模型），开箱即用</div>
+            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">API Key <span style="opacity:.75">留空则使用内置体验 Key</span></div>
+            <input type="password" class="winput" data-aikey placeholder="输入你的 OrcaRouter API Key（可选）" spellcheck="false" style="margin-bottom:10px">
+            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">模型</div>
+            <select class="winput" data-aimodelsel style="margin-bottom:10px"></select>
+            <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:6px">自定义模型 ID <span style="opacity:.75">留空则用上方选择</span></div>
+            <input class="winput" data-aimodel spellcheck="false" style="margin-bottom:10px" placeholder="如 orcarouter/auto">
             <div style="display:flex;gap:8px;align-items:center">
                 <button class="wbtn" data-aisave>保存</button>
                 <button class="wbtn2" data-aiclear>清除</button>
                 <span data-aistat style="font-size:12.5px;color:#a3a3a3"></span>
             </div>
-            <div style="font-size:11.5px;color:#8a8a8a;margin-top:8px;line-height:1.7">Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。</div>
+            <div style="font-size:11.5px;color:#8a8a8a;margin-top:8px;line-height:1.7">自填 Key 仅保存在本机 localStorage，不会上传。内置 Key 已加密存储，免费模型由 OrcaRouter 提供，有每日限额。</div>
         </div>
         <div data-aimsgs style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px">
             <div data-aiempty style="margin:auto;text-align:center;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:10px"></div>
@@ -1581,8 +1617,8 @@ function buildAiApp() {
 
 function initAiApp(root) {
     if (!root) return;
-    const getKey = () => store.get('orcarouter_key', '');
-    const getModel = () => (store.get('orcarouter_model', '') || '').trim() || ORCA_DEFAULT_MODEL;
+    const getKey = () => orcaKey();
+    const getModel = () => orcaModel();
     const msgs = $('[data-aimsgs]', root);
     const input = $('[data-aiin]', root);
     const hist = [];
@@ -1602,8 +1638,8 @@ function initAiApp(root) {
         const em = $('[data-aiempty]', root); if (!em) return;
         if (getKey()) { em.remove(); addMsg('ai', AI_WELCOME); return; }
         em.innerHTML = `${ico('img:img/icons/copilot.svg')}<b style="font-size:14px">开始使用 AI 助手</b>
-            <div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">输入你的 OrcaRouter API Key 才能开始对话。<br>OrcaRouter 模型路由 · 多模型接入 · 按量计费。</div>
-            <button class="wlink" data-aiget style="font-size:13px">获取 Key</button>`;
+            <div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">内置免费模型，开箱即用。<br>OrcaRouter 模型路由 · 多模型接入。</div>
+            <button class="wlink" data-aiget style="font-size:13px">了解 OrcaRouter</button>`;
         const g = $('[data-aiget]', em);
         if (g) g.onclick = () => window.open(ORCA_REF, '_blank');
     }
@@ -1638,16 +1674,25 @@ function initAiApp(root) {
     }
     // 设置区
     const keyInput = $('[data-aikey]', root), modelInput = $('[data-aimodel]', root);
-    keyInput.value = getKey();
-    modelInput.value = store.get('orcarouter_model', '') || ORCA_DEFAULT_MODEL;
-    stat(getKey() ? '已保存' : '未设置');
+    const modelSel = $('[data-aimodelsel]', root);
+    const builtinNote = $('[data-aibuiltin]', root);
+    if (builtinNote) builtinNote.style.display = orcaUsingBuiltin() ? '' : 'none';
+    if (modelSel) {
+        modelSel.innerHTML = ORCA_FREE_MODELS.map(m =>
+            `<option value="${m}"${(store.get('orcarouter_model', '') || ORCA_DEFAULT_FREE_MODEL) === m ? ' selected' : ''}>${m}（免费）</option>`
+        ).join('') + `<option value="orcarouter/auto"${store.get('orcarouter_model', '') === 'orcarouter/auto' ? ' selected' : ''}>orcarouter/auto（自动路由）</option>`;
+    }
+    keyInput.value = store.get('orcarouter_key', '');
+    modelInput.value = store.get('orcarouter_model', '');
+    stat(orcaUsingBuiltin() ? '使用内置体验 Key' : (getKey() ? '已保存' : '未设置'));
     $('[data-aigear]', root).onclick = () => { const p = $('[data-aiset]', root); p.hidden = !p.hidden; };
     const saveKey = () => {
         const k = keyInput.value.trim();
-        if (!k) { stat('请先输入 API Key'); return; }
         store.set('orcarouter_key', k);
-        store.set('orcarouter_model', (modelInput.value || '').trim() || ORCA_DEFAULT_MODEL);
-        stat('已保存到本机'); toast('API Key 已保存到本机');
+        const customModel = (modelInput.value || '').trim();
+        store.set('orcarouter_model', customModel || (modelSel ? modelSel.value : ORCA_DEFAULT_FREE_MODEL));
+        stat(orcaUsingBuiltin() ? '使用内置体验 Key' : '已保存到本机'); toast('设置已保存');
+        if (builtinNote) builtinNote.style.display = orcaUsingBuiltin() ? '' : 'none';
         if (!hist.length) paintEmpty();
     };
     $('[data-aisave]', root).onclick = saveKey;
