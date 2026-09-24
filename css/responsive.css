@@ -1,11 +1,11 @@
-/* 响应式设计 */
-@media screen and (max-width: 768px) {
+/* 响应式设计：仅竖屏小屏显示横屏提示，横屏时必须能进入桌面 */
+@media screen and (max-width: 768px) and (orientation: portrait) {
   #mobileOverlay {
-    display: flex !important;
+    display: flex;
   }
 }
 
-@media screen and (max-height: 480px) and (orientation: landscape) {
+@media screen and (max-width: 768px) and (orientation: landscape) {
   #mobileOverlay {
     display: none !important;
   }
