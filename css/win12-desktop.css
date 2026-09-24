@@ -43,7 +43,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
-    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    font-family: "Segoe UI", "Microsoft YaHei", "微软雅黑", sans-serif;
     overflow: hidden;
     color: var(--text);
     user-select: none;
@@ -278,20 +278,40 @@ input { font-family: inherit; }
     position: absolute; pointer-events: auto; display: flex; flex-direction: column;
     background: var(--win-bg); border: 1px solid var(--bar-border); border-radius: 14px;
     box-shadow: var(--shadow); overflow: hidden; min-width: 480px; min-height: 320px;
-    animation: winIn 0.22s ease;
+    animation: winIn 200ms cubic-bezier(0.1, 0.9, 0.2, 1);
+    transition: left 200ms ease, top 200ms ease, width 200ms ease, height 200ms ease;
 }
-@keyframes winIn { from { opacity: 0; transform: scale(0.96); } }
-.win.closing { animation: winOut 0.16s ease forwards; }
-@keyframes winOut { to { opacity: 0; transform: scale(0.96); } }
+/* 拖拽时关掉几何过渡，避免窗口滞后于光标 */
+.win.no-trans { transition: none; }
+@keyframes winIn { from { opacity: 0; transform: scale(0.95); } }
+.win.closing { animation: winOut 160ms cubic-bezier(0.1, 0.9, 0.2, 1) forwards; pointer-events: none; }
+@keyframes winOut { to { opacity: 0; transform: scale(0.95); } }
+/* 最小化：下沉 + 缩小 + 淡出，动画结束后再 display:none（JS 换 .min） */
+.win.minimizing { animation: winMin 200ms cubic-bezier(0.1, 0.9, 0.2, 1) forwards; pointer-events: none; }
+@keyframes winMin { to { opacity: 0; transform: translateY(48px) scale(0.92); } }
 .win.min { display: none; }
+/* 从任务栏恢复：反向播放入场 */
+.win.restoring { animation: winRestore 200ms cubic-bezier(0.1, 0.9, 0.2, 1); }
+@keyframes winRestore { from { opacity: 0; transform: translateY(48px) scale(0.92); } }
 .win.max { border-radius: 0; }
-.titlebar { height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 14px; background: var(--win-titlebar); flex-shrink: 0; cursor: default; }
-.titlebar .t-ico { width: 20px; height: 20px; } .titlebar .t-ico svg { width: 20px; height: 20px; }
-.titlebar .t-name { font-size: 13px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.win-btns { display: flex; }
-.win-btns button { width: 46px; height: 44px; font-size: 13px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-.win-btns button:hover { background: var(--hover); color: var(--text); }
+.titlebar { height: 32px; display: flex; align-items: center; gap: 6px; padding: 0 0 0 12px; background: var(--win-titlebar); flex-shrink: 0; cursor: default; }
+.titlebar .t-ico { width: 16px; height: 16px; display: flex; } .titlebar .t-ico svg { width: 16px; height: 16px; }
+.titlebar .t-name { font-size: 12px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win-btns { display: flex; align-self: stretch; }
+.win-btns button { width: 46px; height: 32px; color: var(--text); display: flex; align-items: center; justify-content: center; }
+.win-btns button svg { width: 10px; height: 10px; display: block; }
+.win-btns button:hover { background: rgba(255, 255, 255, .08); }
+.win-btns button:active { background: rgba(255, 255, 255, .14); }
 .win-btns .close:hover { background: #e81123; color: #fff; }
+.win-btns .close:active { background: #f1707a; color: #fff; }
+/* 未聚焦窗口字形变暗 */
+.win:not(.focused) .win-btns button { color: var(--text-faint); }
+.win:not(.focused) .win-btns .close:hover { color: #fff; }
+/* 最大化时切换为还原图标（两个 span 显隐） */
+.win-btns .wb-restore { display: none; }
+.win.max .win-btns .wb-max { display: none; }
+.win.max .win-btns .wb-restore { display: flex; }
+.win-btns .wb-restore svg { overflow: visible; }
 .win-body { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
 .win.snap-hint-l { box-shadow: -4px 0 0 var(--accent), var(--shadow); }
 .win.snap-hint-r { box-shadow: 4px 0 0 var(--accent), var(--shadow); }
@@ -416,6 +436,11 @@ input { font-family: inherit; }
         radial-gradient(100% 55% at 90% 90%, rgba(45,212,191,.50), rgba(45,212,191,0) 60%),
         radial-gradient(80% 45% at 10% 85%, rgba(56,189,248,.40), rgba(56,189,248,0) 60%),
         linear-gradient(180deg, #d9efe9 0%, #c4e6dd 55%, #b3dcd2 100%);
+}
+.wp-video {
+    background-image: url('../img/wallpaper-video.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 /* ---------- 设置（Win11 截图 1:1，深色） ---------- */
