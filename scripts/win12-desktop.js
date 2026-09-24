@@ -11,38 +11,38 @@ const RSQ = (fill, inner) => S(`<rect x="1" y="1" width="22" height="22" rx="5.5
 const GLYPH = (bg, fg, t, fs) => RSQ(bg, `<text x="12" y="${15 + (fs ? 0 : 0)}" text-anchor="middle" font-size="${fs || 13}" font-weight="700" fill="${fg}" font-family="Segoe UI, Arial">${t}</text>`);
 
 const ICONS = {
-    search: S('<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#e0449e" stroke-width="2.6"/><line x1="15.3" y1="15.3" x2="21" y2="21" stroke="#e0449e" stroke-width="2.6" stroke-linecap="round"/>'),
+    search: S('<circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="#93a0b4" stroke-width="2.4"/><line x1="15.2" y1="15.2" x2="20.6" y2="20.6" stroke="#93a0b4" stroke-width="2.4" stroke-linecap="round"/>'),
     widgets: S('<rect x="2" y="2" width="11" height="11" rx="3" fill="#8b5cf6"/><rect x="11" y="11" width="11" height="11" rx="3" fill="#e0449e"/>'),
-    explorer: S('<path d="M2.5 6.5c0-1.4 1.1-2.5 2.5-2.5h4.6c.8 0 1.6.4 2 1.1l1.2 1.9h6.2c1.4 0 2.5 1.1 2.5 2.5v8c0 1.4-1.1 2.5-2.5 2.5H5c-1.4 0-2.5-1.1-2.5-2.5v-11z" fill="#ffc83d"/><path d="M2.5 10.5h19v7c0 1.4-1.1 2.5-2.5 2.5H5c-1.4 0-2.5-1.1-2.5-2.5v-7z" fill="#ffab1a"/><rect x="7" y="13" width="10" height="4.6" rx="2.3" fill="#ff8f6b" opacity=".85"/>'),
-    edge: S('<path d="M12 2a10 10 0 1 0 9.5 13.2c-.3-1-1.4-1.6-2.4-1.3-2.9.9-6.1-.4-7.4-3.2-.4-.9.1-2 1.1-2.2 2.5-.6 5.2.5 6.3 2.8.4.9 1.6 1.1 2.4.5A10 10 0 0 0 12 2z" fill="#0c88c1"/><path d="M12 6.5c-3 0-5.5 2.4-5.5 5.5 0 .8.6 1.4 1.3 1.3 2-.3 4 .8 4.7 2.7.3.8 1.3 1 2 .4A5.5 5.5 0 0 0 12 6.5z" fill="#37c6d0"/>'),
+    explorer: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/>'),
+    edge: S('<defs><linearGradient id="edgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset=".55" stop-color="#22b8cf"/><stop offset="1" stop-color="#1971c2"/></linearGradient></defs><path d="M12 2a10 10 0 1 0 9.6 13.1c-.3-1-1.4-1.6-2.4-1.3-2.9.9-6.1-.4-7.4-3.2-.4-.9.1-2 1.1-2.2 2.5-.6 5.2.5 6.3 2.8.4.9 1.6 1.1 2.4.5A10 10 0 0 0 12 2z" fill="url(#edgg)"/><path d="M12 6.5c-3 0-5.5 2.4-5.5 5.5 0 .8.6 1.4 1.3 1.3 2-.3 4 .8 4.7 2.7.3.8 1.3 1 2 .4A5.5 5.5 0 0 0 12 6.5z" fill="#a5f3fc" opacity=".9"/>'),
     photos: S('<rect x="2" y="4" width="20" height="16" rx="3" fill="#0ea5e9"/><circle cx="8.5" cy="10" r="2" fill="#fef9c3"/><path d="M2 17l5.5-5 4 4 3.5-3.5L22 19v1a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3z" fill="#4ade80"/>'),
-    store: S('<path d="M5 8h14l-1.2 12.1a1.5 1.5 0 0 1-1.5 1.4H7.7a1.5 1.5 0 0 1-1.5-1.4L5 8z" fill="#3b82f6"/><path d="M8.5 8V6.8a3.5 3.5 0 0 1 7 0V8" fill="none" stroke="#1d4ed8" stroke-width="2"/>'),
-    settings: S('<circle cx="12" cy="12" r="3.4" fill="#9ca3af"/><path d="M12 2.8l1.2 2.7 2.9-.6 1 2.8 2.9.7-.3 3 2.3 1.9-1.9 2.3.6 2.9-2.8 1-1 2.8-2.9-.6-1.2 2.7-1.2-2.7-2.9.6-1-2.8-2.9-.7.3-3-2.3-1.9 1.9-2.3-.6-2.9 2.8-1 1-2.8 2.9.6z" fill="#9ca3af" opacity=".55"/>'),
-    terminal: RSQ('#111', '<text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="700" fill="#4ade80" font-family="Consolas, monospace">&gt;_</text>'),
-    notepad: S('<rect x="5" y="2.5" width="14" height="19" rx="2" fill="#fff"/><rect x="5" y="2.5" width="14" height="5" rx="2" fill="#3b82f6"/><line x1="8" y1="12" x2="16" y2="12" stroke="#cbd5e1" stroke-width="1.6"/><line x1="8" y1="15.5" x2="16" y2="15.5" stroke="#cbd5e1" stroke-width="1.6"/><line x1="8" y1="19" x2="14" y2="19" stroke="#cbd5e1" stroke-width="1.6"/>'),
-    mail: S('<rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="#0ea5e9"/><path d="M3 7l9 6 9-6" fill="none" stroke="#fff" stroke-width="2"/>'),
-    calendar: S('<rect x="3" y="4.5" width="18" height="17" rx="2.5" fill="#fff"/><rect x="3" y="4.5" width="18" height="5.5" rx="2.5" fill="#e0449e"/><rect x="7" y="2.5" width="2.4" height="5" rx="1.2" fill="#64748b"/><rect x="14.6" y="2.5" width="2.4" height="5" rx="1.2" fill="#64748b"/><text x="12" y="18.5" text-anchor="middle" font-size="8" font-weight="700" fill="#334155">12</text>'),
-    todo: S('<circle cx="12" cy="12" r="10" fill="#0ea5e9"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'),
-    clock: S('<circle cx="12" cy="12" r="9.5" fill="#fff"/><circle cx="12" cy="12" r="9.5" fill="none" stroke="#64748b" stroke-width="1.6"/><path d="M12 7v5.4l3.6 2.2" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"/>'),
-    weather: S('<circle cx="9" cy="9" r="4.4" fill="#fbbf24"/><ellipse cx="15" cy="16" rx="6" ry="4" fill="#e2e8f0"/><ellipse cx="12" cy="14.5" rx="4.4" ry="3.2" fill="#f1f5f9"/>'),
-    calc: S('<rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="#334155"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#a5f3fc"/><circle cx="9" cy="14" r="1.3" fill="#e2e8f0"/><circle cx="12" cy="14" r="1.3" fill="#e2e8f0"/><circle cx="15" cy="14" r="1.3" fill="#e2e8f0"/><circle cx="9" cy="17.5" r="1.3" fill="#e2e8f0"/><circle cx="12" cy="17.5" r="1.3" fill="#e2e8f0"/><circle cx="15" cy="17.5" r="1.3" fill="#e2e8f0"/>'),
-    word: GLYPH('#2b579a', '#fff', 'W'),
-    excel: GLYPH('#217346', '#fff', 'X'),
-    ppt: GLYPH('#d24726', '#fff', 'P'),
+    store: S('<path d="M5 8h14l-1.2 11.6a1.6 1.6 0 0 1-1.6 1.4H7.8a1.6 1.6 0 0 1-1.6-1.4L5 8z" fill="#3b9bf0"/><path d="M5 8h14l-.25 2.4H5.25L5 8z" fill="#2f7fd6" opacity=".55"/><path d="M8.5 8V6.6a3.5 3.5 0 0 1 7 0V8" fill="none" stroke="#1e6fd0" stroke-width="2"/><g fill="#fff" opacity=".95"><rect x="9.3" y="12.2" width="2.3" height="2.3"/><rect x="12.4" y="12.2" width="2.3" height="2.3"/><rect x="9.3" y="15.3" width="2.3" height="2.3"/><rect x="12.4" y="15.3" width="2.3" height="2.3"/></g>'),
+    settings: S('<g fill="#9fb0c3"><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(45 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(90 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(135 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(180 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(225 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(270 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(315 12 12)"/><circle cx="12" cy="12" r="6.6"/><circle cx="12" cy="12" r="2.7" fill="#6b7686"/></g>'),
+    terminal: S('<defs><linearGradient id="tmg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262f3b"/><stop offset="1" stop-color="#0e1218"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="5.5" fill="url(#tmg)"/><rect x="1" y="1" width="22" height="22" rx="5.5" fill="none" stroke="#ffffff" stroke-opacity=".08"/><text x="12" y="16.8" text-anchor="middle" font-size="11" font-weight="700" fill="#4ade80" font-family="Consolas, monospace">&gt;_</text>'),
+    notepad: S('<rect x="5.5" y="2.5" width="13" height="19" rx="2" fill="#fff" stroke="#d7dfea"/><path d="M5.5 4.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3h-12v-3z" fill="#3f9bf0"/><rect x="5.5" y="5.5" width="13" height="2" fill="#3f9bf0"/><g stroke="#c3cedb" stroke-width="1.6" stroke-linecap="round"><line x1="8.5" y1="11.5" x2="15.5" y2="11.5"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="8.5" y1="18.5" x2="13.5" y2="18.5"/></g>'),
+    mail: S('<defs><linearGradient id="mailg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0284c7"/></linearGradient></defs><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="url(#mailg)"/><path d="M3.8 7.8L12 13.2l8.2-5.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
+    calendar: S('<rect x="3" y="4.5" width="18" height="17" rx="2.5" fill="#fff" stroke="#e2e8f0"/><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5V10H3V7.5z" fill="#f0506e"/><rect x="7" y="2.8" width="2.4" height="5" rx="1.2" fill="#64748b"/><rect x="14.6" y="2.8" width="2.4" height="5" rx="1.2" fill="#64748b"/><text x="12" y="18.8" text-anchor="middle" font-size="8.5" font-weight="700" fill="#334155" font-family="Segoe UI, Arial">12</text>'),
+    todo: S('<defs><linearGradient id="tdg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0284c7"/></linearGradient></defs><circle cx="12" cy="12" r="10" fill="url(#tdg)"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'),
+    clock: S('<circle cx="12" cy="12" r="9.5" fill="#fff" stroke="#8b98a9" stroke-width="1.6"/><path d="M12 7v5.2l3.4 2.1" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.3" fill="#334155"/>'),
+    weather: S('<g stroke="#fbbf24" stroke-width="1.7" stroke-linecap="round"><path d="M9 2.6v1.7M3.6 9h1.7M5.1 5.1l1.2 1.2M12.9 5.1l-1.2 1.2"/></g><circle cx="9" cy="9" r="4.2" fill="#fbbf24"/><ellipse cx="15.5" cy="16.2" rx="5.8" ry="3.8" fill="#dbe7f3"/><ellipse cx="12.6" cy="14.4" rx="4.2" ry="3" fill="#f4f8fc"/>'),
+    calc: S('<defs><linearGradient id="calg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d4a5f"/><stop offset="1" stop-color="#232c3b"/></linearGradient></defs><rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="url(#calg)"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#a5f3fc" opacity=".92"/><g fill="#e2e8f0"><circle cx="9" cy="14" r="1.3"/><circle cx="12" cy="14" r="1.3"/><circle cx="15" cy="14" r="1.3"/><circle cx="9" cy="17.5" r="1.3"/><circle cx="12" cy="17.5" r="1.3"/><circle cx="15" cy="17.5" r="1.3"/></g>'),
+    word: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#2b579a"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">W</text>'),
+    excel: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#217346"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">X</text>'),
+    ppt: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#d24726"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">P</text>'),
     adobe: GLYPH('#1f1f2e', '#e0449e', 'A', 14),
     ae: GLYPH('#1f1f3a', '#a78bfa', 'Ae', 11),
-    pdf: GLYPH('#dc2626', '#fff', 'PDF', 8),
-    mp4: RSQ('#7c3aed', '<path d="M10 8.5l6 3.5-6 3.5z" fill="#fff"/>'),
-    txt: RSQ('#e2e8f0', '<line x1="7" y1="8" x2="17" y2="8" stroke="#64748b" stroke-width="1.8"/><line x1="7" y1="12" x2="17" y2="12" stroke="#64748b" stroke-width="1.8"/><line x1="7" y1="16" x2="14" y2="16" stroke="#64748b" stroke-width="1.8"/>'),
-    exe: RSQ('#475569', '<text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" fill="#fff">EXE</text>'),
-    zip: GLYPH('#a16207', '#fff', 'ZIP', 8),
-    home: S('<path d="M3 11.5L12 4l9 7.5" fill="none" stroke="#e0449e" stroke-width="2.4" stroke-linecap="round"/><path d="M5.5 10.5V20h13v-9.5" fill="none" stroke="#e0449e" stroke-width="2.4" stroke-linejoin="round"/>'),
+    pdf: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#dc2626"/><text x="8" y="20.4" text-anchor="middle" font-size="4.6" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">PDF</text>'),
+    mp4: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#7c3aed"/><path d="M6.9 16.4l3.9 1.9-3.9 1.9z" fill="#fff"/>'),
+    txt: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><g stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="13.5" x2="16" y2="13.5"/><line x1="8" y1="17" x2="13.5" y2="17"/></g>'),
+    exe: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#475569"/><text x="8" y="20.4" text-anchor="middle" font-size="5.6" font-weight="800" fill="#fff" font-family="Consolas, monospace">&gt;_</text>'),
+    zip: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#b45309"/><text x="8" y="20.4" text-anchor="middle" font-size="4.6" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">ZIP</text>'),
+    home: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#f472b6"/><path d="M14 16.7l2.8-2.4 2.8 2.4v3.3h-5.6v-3.3z" fill="#fff"/>'),
     cloud: S('<ellipse cx="12" cy="15" rx="7.5" ry="4.6" fill="#38bdf8"/><ellipse cx="12" cy="13" rx="5.4" ry="3.8" fill="#7dd3fc"/>'),
-    desktopIco: S('<rect x="2.5" y="4" width="19" height="13" rx="1.6" fill="#8b5cf6"/><rect x="9" y="17" width="6" height="2.4" fill="#8b5cf6"/><rect x="7" y="20.4" width="10" height="1.8" rx=".9" fill="#8b5cf6"/>'),
-    documents: S('<rect x="5" y="2.5" width="14" height="19" rx="2" fill="#e2e8f0"/><line x1="8" y1="8" x2="16" y2="8" stroke="#94a3b8" stroke-width="1.8"/><line x1="8" y1="12" x2="16" y2="12" stroke="#94a3b8" stroke-width="1.8"/><line x1="8" y1="16" x2="13" y2="16" stroke="#94a3b8" stroke-width="1.8"/>'),
-    downloads: S('<circle cx="12" cy="12" r="10" fill="#38bdf8"/><path d="M12 6v9m0 0l-3.6-3.6M12 15l3.6-3.6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
-    pictures: S('<rect x="2" y="4" width="20" height="16" rx="3" fill="#a78bfa"/><circle cx="8.5" cy="10" r="2" fill="#fef9c3"/><path d="M2 17l5.5-5 4 4 3.5-3.5L22 19v1a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3z" fill="#c4b5fd"/>'),
-    thispc: S('<rect x="2.5" y="4" width="19" height="12.5" rx="1.6" fill="#38bdf8"/><rect x="4.5" y="6" width="15" height="8.5" fill="#e0f2fe"/><rect x="9" y="16.5" width="6" height="2.2" fill="#38bdf8"/><rect x="7" y="20" width="10" height="1.8" rx=".9" fill="#38bdf8"/>'),
+    desktopIco: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#8b5cf6"/><rect x="14.1" y="14.7" width="5.4" height="3.6" rx="1" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M15.2 19.6h3.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>'),
+    documents: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#fff"/><circle cx="16.8" cy="16.8" r="5.4" fill="none" stroke="#dbe3ec" stroke-width="1"/><path d="M14.6 14.6h4.4M14.6 16.8h4.4M14.6 19h3" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>'),
+    downloads: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#0ea5e9"/><path d="M16.8 14.2v5.2m0 0l-2.1-2.1m2.1 2.1l2.1-2.1" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
+    pictures: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#fff"/><circle cx="16.8" cy="16.8" r="5.4" fill="none" stroke="#dbe3ec" stroke-width="1"/><circle cx="15.3" cy="15.7" r="1" fill="#fbbf24"/><path d="M13.6 19.2l2-2.3 1.3 1.3 1.2-1.2 1.5 2.2z" fill="#8b5cf6"/>'),
+    thispc: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/><circle cx="16.8" cy="16.8" r="5.4" fill="#0ea5e9"/><rect x="14.1" y="14.5" width="5.4" height="3.8" rx="1" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M16.8 18.3v1.1M15.3 20.3h3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>'),
     network: S('<circle cx="12" cy="12" r="2.4" fill="#38bdf8"/><circle cx="5" cy="5.5" r="2" fill="#38bdf8" opacity=".7"/><circle cx="19" cy="5.5" r="2" fill="#38bdf8" opacity=".7"/><circle cx="5" cy="18.5" r="2" fill="#38bdf8" opacity=".7"/><circle cx="19" cy="18.5" r="2" fill="#38bdf8" opacity=".7"/><path d="M6.5 7l4 3.4M17.5 7l-4 3.4M6.5 17l4-3.4M17.5 17l-4-3.4" stroke="#38bdf8" stroke-width="1.4" opacity=".6"/>'),
     wifi: S('<path d="M2.5 9a15 15 0 0 1 19 0M5.5 12.5a10 10 0 0 1 13 0M8.6 16a5 5 0 0 1 6.8 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/>'),
     vol: S('<path d="M4 9v6h4l5 4.5v-15L8 9H4z" fill="currentColor"/><path d="M16 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'),
@@ -64,7 +64,7 @@ const ICONS = {
     fwd: S('<path d="M9.5 5.5L16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
     up: S('<path d="M12 19V6m0 0l-6 6m6-6l6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
     refresh: S('<path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v4.5h-4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
-    folderUp: S('<path d="M2.5 6.5c0-1.4 1.1-2.5 2.5-2.5h4.6c.8 0 1.6.4 2 1.1l1.2 1.9h6.2c1.4 0 2.5 1.1 2.5 2.5v8c0 1.4-1.1 2.5-2.5 2.5H5c-1.4 0-2.5-1.1-2.5-2.5v-11z" fill="#ffc83d"/>'),
+    folderUp: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/>'),
     power: S('<path d="M12 3v8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M6.3 6.5a8 8 0 1 0 11.4 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'),
     lock: S('<rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2"/>'),
     user: S('<circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0" fill="currentColor"/>'),
@@ -73,7 +73,7 @@ const ICONS = {
     sun: S('<circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'),
     plane: S('<path d="M10.5 13.5L3 11l1.5-1.5L11 11l3.5-5.5c.8-1.2 2.6-1.4 3.5-.5.9.9.7 2.7-.5 3.5L13 12l1.5 6.5L13 20l-2.5-6.5z" fill="currentColor"/>'),
     saver: S('<path d="M13 2L4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
-    camera: S('<rect x="2.5" y="7" width="19" height="13" rx="2.5" fill="#8b5cf6"/><circle cx="12" cy="13" r="4" fill="#fff"/><rect x="8" y="4.5" width="8" height="3" rx="1.5" fill="#6d28d9"/>'),
+    camera: S('<defs><linearGradient id="camg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect x="8" y="4.3" width="8" height="3.6" rx="1.7" fill="#6d28d9"/><rect x="2.5" y="7" width="19" height="13" rx="3" fill="url(#camg)"/><circle cx="12" cy="13.2" r="4.3" fill="#221d33"/><circle cx="12" cy="13.2" r="2.9" fill="#3d3670"/><circle cx="10.9" cy="12.1" r="1" fill="#c4b5fd"/>'),
     game: S('<rect x="2" y="7" width="20" height="11" rx="5.5" fill="#22c55e"/><path d="M8 10.5v4M6 12.5h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.5" cy="11.5" r="1.3" fill="#fff"/><circle cx="18" cy="14" r="1.3" fill="#fff"/>'),
     music: S('<circle cx="8" cy="17.5" r="3" fill="#f59e0b"/><circle cx="17" cy="15.5" r="3" fill="#f59e0b"/><path d="M11 17.5V6l9-2v11.5" fill="none" stroke="#f59e0b" stroke-width="2.4"/>'),
 };
@@ -94,7 +94,7 @@ Object.assign(ICONS, {
     navAccess: S('<circle cx="12" cy="5.4" r="2.6" fill="#4cc2ff"/><path d="M12 9.5V15M4.8 11.5l7.2-1.2 7.2 1.2M12 15l-3.2 5.6M12 15l3.2 5.6" fill="none" stroke="#4cc2ff" stroke-width="2" stroke-linecap="round"/>'),
     navPrivacy: S('<path d="M12 2.8l7.2 2.6v5.3c0 5.2-3.1 8.8-7.2 10.3-4.1-1.5-7.2-5.1-7.2-10.3V5.4L12 2.8z" fill="#9aa0a6"/>'),
     navUpdate: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
-    aiSpark: S('<path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1-2.1 5.9-2.1-5.9-5.9-2.1 5.9-2.1z" fill="#a855f7"/><path d="M19 3.5l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="#e0449e"/><path d="M5.5 15.5l.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z" fill="#38bdf8"/>'),
+    aiSpark: S('<defs><linearGradient id="aisg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0abfc"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1-2.1 5.9-2.1-5.9-5.9-2.1 5.9-2.1z" fill="url(#aisg)"/><path d="M19 3.5l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="#f5d0fe"/><path d="M5.5 15.5l.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8z" fill="#7dd3fc"/>'),
     /* 通用占位头像（默认系统头像，不用真人信息） */
     rAvatar: S('<circle cx="12" cy="12" r="11.5" fill="#3a3a40"/><circle cx="12" cy="9.3" r="4" fill="#9a9a9a"/><path d="M4.9 19.6a7.3 7.3 0 0 1 14.2 0" fill="#9a9a9a"/>'),
     /* 行图标（白色线稿） */
@@ -384,11 +384,12 @@ const wins = [];
 let zTop = 510, winSeq = 0;
 
 function openApp(appId, arg) {
+    if (appId === 'ai') { toggleAiPanel(); return; }
     closePanels();
     const app = appById(appId);
     if (!app) return;
     // 单例应用：已开则聚焦
-    const single = ['explorer', 'settings', 'store', 'ai'].includes(appId);
+    const single = ['explorer', 'settings', 'store'].includes(appId);
     if (single) {
         const ex = wins.find(w => w.app === appId && !w.closed && !w.min);
         if (ex) { focusWin(ex); return; }
@@ -480,7 +481,7 @@ function toggleMax(win) {
     const el = win.el;
     if (!win.max) {
         win.prev = { x: win.x, y: win.y, w: win.w, h: win.h };
-        Object.assign(win, { x: 8, y: 8, w: innerWidth - 16, h: innerHeight - 96, max: true });
+        Object.assign(win, { x: 0, y: 0, w: innerWidth, h: innerHeight - 60, max: true });
     } else {
         Object.assign(win, win.prev, { max: false });
     }
@@ -493,8 +494,8 @@ function snapWin(win, side) {
     if (side === 'max') { if (!win.max) toggleMax(win); return; }
     if (win.max) toggleMax(win);
     win.prev = { x: win.x, y: win.y, w: win.w, h: win.h };
-    win.w = Math.floor((innerWidth - 24) / 2); win.h = innerHeight - 96; win.y = 8;
-    win.x = side === 'left' ? 8 : 8 + win.w + 8;
+    win.w = Math.floor(innerWidth / 2); win.h = innerHeight - 60; win.y = 0;
+    win.x = side === 'left' ? 0 : win.w;
     const el = win.el;
     el.classList.remove('max');
     el.style.left = win.x + 'px'; el.style.top = win.y + 'px';
@@ -899,6 +900,8 @@ function buildSimpleApp(app) {
 /* 壁纸：视频壁纸图片 + 纯 CSS 手绘场景 */
 const WALLPAPERS = [
     { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
+    { id: 'v1', name: '绛紫流光', cls: 'wp-v1', accent: '#a855f7' },
+    { id: 'v4', name: '粉彩晨曦', cls: 'wp-v4', accent: '#f59e0b' },
     { id: 'ribbon', name: '紫韵丝带', cls: 'wp-ribbon', accent: '#e0449e' },
     { id: 'tide', name: '青蓝潮汐', cls: 'wp-tide', accent: '#38bdf8' },
     { id: 'pastel', name: '暖阳粉彩', cls: 'wp-pastel', accent: '#f59e0b' },
@@ -942,7 +945,10 @@ const wchev = '<span class="wchev">›</span>';
 /* 用 div 而非 button，避免右侧控件出现嵌套按钮 */
 const wrow = (icon, title, sub, right) =>
     `<div class="wrow" data-demo role="button" tabindex="0"><span class="wrow-ico">${icon ? ICONS[icon] : ''}</span><span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${right === undefined ? wchev : right}</span></div>`;
+const wrowPage = (icon, title, sub, page) =>
+    `<div class="wrow" data-gopage="${page}" role="button" tabindex="0"><span class="wrow-ico">${icon ? ICONS[icon] : ''}</span><span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${wchev}</span></div>`;
 const wcard = inner => `<div class="wcard">${inner}</div>`;
+const wsw = on => `<span class="wtoggle${on ? ' on' : ''}"></span>`;
 const wsec = t => `<div class="wsec">${t}</div>`;
 const wlink = label => `<button class="wlink" data-demo>${label}</button>`;
 const wtoggle = on => `<button class="wtoggle${on ? ' on' : ''}" data-tg aria-label="开关"></button>`;
@@ -961,6 +967,7 @@ const wthemes = () => {
 function buildSettings() {
     const html = `
     <div class="set" data-set>
+        <div class="set-splash" data-splash><span class="splash-gear">${ICONS.rSettings}</span></div>
         <div class="set-top">
             <button class="set-back" data-back title="返回">${ICONS.rBack}</button>
             <span class="set-title">设置</span>
@@ -975,11 +982,30 @@ function buildSettings() {
             <div class="set-main"><div class="wpage" data-page></div></div>
         </div>
     </div>`;
-    setTimeout(() => initSettings($('[data-set]')), 0);
+    setTimeout(() => {
+        const root = $('[data-set]');
+        initSettings(root);
+        // 启动动画：居中齿轮显示后淡出
+        setTimeout(() => {
+            const sp = root.querySelector('[data-splash]');
+            if (sp) { sp.classList.add('done'); setTimeout(() => sp.remove(), 400); }
+        }, 650);
+    }, 0);
     return { html, w: 980, h: 620, title: '设置' };
 }
 
 /* ---------------- 各页面 ---------------- */
+/* 锁屏界面设置（底部小组件由用户配置） */
+function pgLockScreen() {
+    const cfg = getLockWidgets();
+    const rows = cfg.map(w =>
+        `<div class="wrow" data-lw="${w.id}" role="button" tabindex="0"><span class="wrow-tx"><b>${w.name}</b><i>在锁屏底部显示</i></span><span class="wrow-r">${wsw(w.on)}</span></div>`
+    ).join('');
+    return `${wsec('锁屏界面')}
+    ${wcard(rows)}
+    <p style="font-size:12px;color:var(--text-dim);margin:12px 4px">选择要在锁屏界面底部显示的小组件。关闭全部则锁屏底部不显示任何内容。</p>
+    ${wsec('预览')}<p style="font-size:12px;color:var(--text-dim);margin:0 4px 12px">按 <b>Win+L</b> 锁定屏幕以查看效果。</p>`;
+}
 function pgHome() {
     const m365 = [['W', '#2b88d8'], ['X', '#217346'], ['P', '#d24726'], ['O', '#0f6cbd'], ['N', '#7719aa'], ['D', '#0078d4']]
         .map(([t, c]) => `<span class="m365a" style="background:${c}">${t}</span>`).join('');
@@ -1070,7 +1096,7 @@ function pgPersonal() {
     ${wcard(wrow('rColor', '颜色', '主题色、透明效果、颜色主题'))}
     ${wcard(wrow('rTheme', '主题', '安装、创建、管理'))}
     ${wcard(wrow('rLight', '动态光效', '连接的设备、效果、应用设置'))}
-    ${wcard(wrow('rLockScr', '锁屏界面', '锁定屏幕图像、应用和动画'))}
+    ${wcard(wrowPage('rLockScr', '锁屏界面', '锁定屏幕图像、小组件和动画', 'lockscreen'))}
     ${wcard(wrow('rKeyboard', '文本输入', '触摸键盘、语音输入、表情符号等、输入法编辑器'))}
     ${wcard(wrow('grid', '开始', '最近使用的应用和项目、文件夹'))}
     ${wcard(wrow('rTaskbar', '任务栏', '任务栏行为、系统固定项'))}
@@ -1190,7 +1216,7 @@ function pgUpdate() {
 const SET_PAGES = {
     home: pgHome, system: pgSystem, bt: pgBt, net: pgNet, personal: pgPersonal,
     apps: pgApps, account: pgAccount, time: pgTime, gaming: pgGaming,
-    access: pgAccess, privacy: pgPrivacy, update: pgUpdate,
+    access: pgAccess, privacy: pgPrivacy, update: pgUpdate, lockscreen: pgLockScreen,
 };
 
 function initSettings(root) {
@@ -1205,6 +1231,15 @@ function initSettings(root) {
     root.addEventListener('click', e => {
         const n = e.target.closest('.set-nav'); if (n) { paint(n.dataset.p); return; }
         if (e.target.closest('[data-back]')) { paint('home'); return; }
+        const gp = e.target.closest('[data-gopage]');
+        if (gp) { paint(gp.dataset.gopage); return; }
+        const lw = e.target.closest('[data-lw]');
+        if (lw) {
+            const cfg = getLockWidgets();
+            const it = cfg.find(w => w.id === lw.dataset.lw);
+            if (it) { it.on = !it.on; store.set('lock_widgets', JSON.stringify(cfg)); renderLockWidgets(); }
+            paint(cur); return;
+        }
         const th = e.target.closest('[data-theme]');
         if (th) { userSetWallpaper(th.dataset.theme); paint(cur); toast('已应用主题「' + (WALLPAPERS.find(w => w.id === th.dataset.theme) || {}).name + '」'); return; }
         if (e.target.closest('[data-ddmode]')) {
@@ -1247,6 +1282,106 @@ const ORCA_REF = 'https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14';
 const ORCA_API = 'https://api.orcarouter.ai/v1/chat/completions';
 const ORCA_DEFAULT_MODEL = 'orcarouter/auto';
 const AI_WELCOME = '你好！我是 AI 助手，由 OrcaRouter 驱动，可接入多种主流大模型。有什么可以帮你的？';
+const AI_SYSTEM = `请使用中文对话。你是 Windows 12 网页版中的 AI 助手，由 OrcaRouter 模型路由提供支持，可接入多种主流大模型。
+你可以在回答末尾发送系统指令来操作系统。指令放在回答最后、单独成行，系统执行后对用户隐藏指令本身。
+绝不能在正常对话内容中间提到或引用指令，也绝不能要求用户执行指令。
+可用指令：
+1. {openapp appid} 打开某个应用。用以下 id 代替 appid：explorer（文件资源管理器）、settings（设置）、edge（浏览器）、notepad（记事本）、terminal（终端）、store（应用商店）、calc（计算器）。
+   比如用户说"打开计算器"，你回答"好的，现在帮你打开计算器。\\n{openapp calc}"。
+2. {openurl url} 在 Edge 浏览器中打开网址。用户想搜索内容时，用 Bing 搜索。
+3. {settheme theme} 切换深色/浅色模式，用 dark 或 light 代替 theme。
+仅回复与用户问题相关的内容，不要编造系统功能。`;
+
+/* AI 侧边栏 */
+let aiHist = [];
+function toggleAiPanel(force) {
+    const p = $('#aiPanel');
+    const show = force !== undefined ? force : !p.classList.contains('open');
+    p.classList.toggle('open', show);
+    if (show) { initAiPanel(); setTimeout(() => $('#aiPanelIn').focus(), 350); }
+}
+function aiPanelMsg(role, text) {
+    const box = $('#aiPanelMsgs');
+    const em = $('.aip-empty', box); if (em) em.remove();
+    const d = document.createElement('div');
+    d.className = 'aip-msg ' + role;
+    d.textContent = text;
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+    return d;
+}
+function initAiPanel() {
+    if (initAiPanel.done) return;
+    initAiPanel.done = true;
+    $('#aiPanelIco').innerHTML = ICONS.aiSpark;
+    $('#aiPanelKey').value = store.get('orcarouter_key', '');
+    $('#aiPanelModel').value = store.get('orcarouter_model', '');
+    $('#aiPanelGear').onclick = () => { const s = $('#aiPanelSet'); s.hidden = !s.hidden; };
+    $('#aiPanelClose').onclick = () => toggleAiPanel(false);
+    $('#aiPanelSave').onclick = () => {
+        store.set('orcarouter_key', $('#aiPanelKey').value.trim());
+        store.set('orcarouter_model', $('#aiPanelModel').value.trim());
+        $('#aiPanelStat').textContent = '已保存到本机';
+        setTimeout(() => $('#aiPanelStat').textContent = '', 2000);
+        if (!aiHist.length) { aiPanelMsg('ai', AI_WELCOME); }
+    };
+    $('#aiPanelClear').onclick = () => {
+        store.del('orcarouter_key'); store.del('orcarouter_model');
+        $('#aiPanelKey').value = ''; $('#aiPanelModel').value = '';
+        $('#aiPanelStat').textContent = '已清除';
+        setTimeout(() => $('#aiPanelStat').textContent = '', 2000);
+    };
+    const box = $('#aiPanelMsgs');
+    box.innerHTML = `<div class="aip-empty">欢迎使用 AI 助手<br>点击右上 ⚙ 设置 OrcaRouter API Key 后开始对话<br>我可以帮你打开应用、搜索网页、切换主题</div>`;
+    if (store.get('orcarouter_key', '')) aiPanelMsg('ai', AI_WELCOME);
+    const send = async () => {
+        const inp = $('#aiPanelIn');
+        const text = inp.value.trim();
+        if (!text) return;
+        const key = store.get('orcarouter_key', '');
+        if (!key) { aiPanelMsg('sys', '请先点击右上 ⚙ 设置你的 OrcaRouter API Key。'); return; }
+        inp.value = '';
+        aiPanelMsg('user', text);
+        const ph = aiPanelMsg('ai', '思考中…');
+        const model = (store.get('orcarouter_model', '') || '').trim() || ORCA_DEFAULT_MODEL;
+        aiHist.push({ role: 'user', content: text });
+        try {
+            const r = await fetch(ORCA_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+                body: JSON.stringify({ model, messages: [{ role: 'system', content: AI_SYSTEM }, ...aiHist.slice(-12)] })
+            });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const j = await r.json();
+            let reply = j.choices && j.choices[0] && j.choices[0].message ? j.choices[0].message.content : '';
+            if (!reply) throw new Error('空回复');
+            aiHist.push({ role: 'assistant', content: reply });
+            // 解析并执行系统指令（对用户隐藏）
+            const lines = reply.split('\n');
+            const visible = [];
+            for (const ln of lines) {
+                const m = ln.trim().match(/^\{(openapp|openurl|settheme)\s+([^}]+)\}$/);
+                if (m) { runAiCmd(m[1], m[2].trim()); } else { visible.push(ln); }
+            }
+            ph.textContent = visible.join('\n').trim() || reply;
+        } catch (e) {
+            ph.textContent = '请求失败：' + e.message + '。请检查 Key 与网络后重试。';
+        }
+        box.scrollTop = box.scrollHeight;
+    };
+    $('#aiPanelSend').onclick = send;
+    $('#aiPanelIn').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+}
+function runAiCmd(cmd, arg) {
+    if (cmd === 'openapp') { toggleAiPanel(false); setTimeout(() => openApp(arg), 300); }
+    else if (cmd === 'openurl') { openApp('edge', arg); }
+    else if (cmd === 'settheme') {
+        const dark = arg === 'dark';
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        store.set('theme', dark ? 'dark' : 'light');
+        const q = QS.find(q => q.id === 'theme'); if (q) { q.on = dark; renderQS(); }
+    }
+}
 
 function buildAiApp() {
     const html = `
@@ -1643,7 +1778,34 @@ function wireGlobal() {
     // 锁屏
     $('#lockscreen').addEventListener('click', () => $('#lockscreen').classList.add('hide'));
 }
-function lockScreen() { $('#lockscreen').classList.remove('hide'); }
+function lockScreen() { $('#lockscreen').classList.remove('hide'); renderLockWidgets(); }
+
+/* 锁屏底部小组件（用户在设置中配置） */
+const LOCK_WIDGETS_DEF = [
+    { id: 'weather', name: '天气', on: true },
+    { id: 'market', name: '股市', on: false },
+    { id: 'calendar', name: '日历', on: false },
+];
+function getLockWidgets() {
+    try {
+        const s = JSON.parse(store.get('lock_widgets', ''));
+        if (Array.isArray(s)) return s;
+    } catch (e) {}
+    return LOCK_WIDGETS_DEF;
+}
+function renderLockWidgets() {
+    const box = $('#lockWidgets');
+    if (!box) return;
+    const cfg = getLockWidgets().filter(w => w.on);
+    if (!cfg.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+    box.style.display = '';
+    box.innerHTML = cfg.map(w => {
+        if (w.id === 'weather') return `<div class="lock-wg"><div class="lw-row"><span class="wx-ico">⛅</span><span class="lw-big">24°</span></div><div class="lw-sub">多云 · 点击设置城市</div></div>`;
+        if (w.id === 'market') return `<div class="lock-wg"><div class="lw-row"><span class="lw-big" style="font-size:15px">S&P 500</span><span class="up">▲ 0.46%</span></div><div class="lw-sub">NASDAQ <span class="up">▲ 0.32%</span></div></div>`;
+        if (w.id === 'calendar') return `<div class="lock-wg"><div class="lw-row"><span class="lw-big" style="font-size:15px">📅</span><span>今日无日程</span></div><div class="lw-sub">点击查看日历</div></div>`;
+        return '';
+    }).join('');
+}
 
 /* ================= 启动 ================= */
 function init() {
@@ -1662,6 +1824,7 @@ function init() {
     applyQS();
     applyWallpaper(store.get('wallpaper', 'video'));
     const sav = $('#smAvatar'); if (sav) sav.innerHTML = ICONS.rAvatar;
+    renderLockWidgets();
     setTimeout(() => toast('欢迎来到 Windows 12 网页版 🎉', '🐭'), 900);
 }
 document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
