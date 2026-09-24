@@ -1,335 +1,377 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aptio Setup Utility</title>
+<title>COLORFUL UEFI BIOS Utility</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-        font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
-        font-size: clamp(12px, 1.05vw, 17px);
-        color: #000; background: #fff;
-        display: flex; flex-direction: column; height: 100vh;
-        overflow: hidden; user-select: none; -webkit-user-select: none;
+        background: #060607;
+        color: #d7d7db;
+        font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+        height: 100vh; overflow: hidden;
+        user-select: none; -webkit-user-select: none;
+        display: flex; flex-direction: column;
+        font-size: clamp(11px, 0.95vw, 15px);
     }
+    :root { --red: #d81f26; --red-dim: #7a1216; --panel: #0e0e11; --line: #26262c; }
 
-    /* ===== 顶部蓝色标题条 ===== */
-    #topbar {
-        flex-shrink: 0; background: #0000aa; color: #fff;
+    /* ===== 外框棱角装饰 ===== */
+    #frame { position: fixed; inset: 10px; pointer-events: none; z-index: 50; }
+    #frame i { position: absolute; width: 46px; height: 46px; border: 2px solid var(--red); }
+    #frame i:nth-child(1) { top: 0; left: 0; border-right: none; border-bottom: none; }
+    #frame i:nth-child(2) { top: 0; right: 0; border-left: none; border-bottom: none; }
+    #frame i:nth-child(3) { bottom: 0; left: 0; border-right: none; border-top: none; }
+    #frame i:nth-child(4) { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+    /* ===== 顶栏 ===== */
+    header {
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px; height: clamp(36px, 5.6vh, 54px);
-        font-weight: bold;
+        padding: 14px 42px 10px; flex-shrink: 0;
     }
-    #topbar .brand { font-size: 1.05em; letter-spacing: .01em; white-space: nowrap; }
-    #topbar .brand .copy { font-weight: normal; font-size: .78em; margin-left: 14px; }
-    #topbar .clock { font-size: .92em; white-space: nowrap; font-weight: normal; }
-    #topbar .clock span + span { margin-left: 18px; }
+    .clockbox { display: flex; align-items: center; gap: 10px; }
+    .clockbox .t { font-size: 2em; font-weight: 700; color: #fff; letter-spacing: .04em; line-height: 1; }
+    .clockbox .d { font-size: .82em; color: #bdbdc2; line-height: 1.5; }
+    .clockbox .d b { color: #fff; font-weight: 600; }
+    .brand {
+        font-size: 1.5em; font-weight: 800; letter-spacing: .14em; color: var(--red);
+        font-style: italic;
+    }
+    nav.tabs { display: flex; gap: 14px; }
+    nav.tabs button {
+        font-family: inherit; font-size: .92em; font-weight: 700; letter-spacing: .08em;
+        color: #e8e8ea; background: #141417;
+        border: 1px solid var(--red-dim);
+        padding: 9px 26px; cursor: pointer;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    }
+    nav.tabs button:hover { border-color: var(--red); color: #fff; }
+    nav.tabs button.on { background: var(--red); border-color: var(--red); color: #fff; }
 
-    /* ===== 标签页菜单栏 ===== */
-    #tabs {
-        flex-shrink: 0; display: flex; align-items: stretch;
-        background: #c0c0c0; border-bottom: 1px solid #808080;
-        padding: 0 12px; height: clamp(30px, 5vh, 46px);
+    /* ===== 主区三栏 ===== */
+    main {
+        flex: 1; display: flex; gap: 26px;
+        padding: 6px 42px; min-height: 0;
     }
-    #tabs button {
-        font-family: inherit; font-size: .95em; color: #0000aa;
-        background: none; border: none; cursor: pointer;
-        padding: 0 26px; white-space: nowrap;
-    }
-    #tabs button.active { background: #fff; color: #0000aa; font-weight: bold; }
+    .col-left { width: 27%; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .col-mid { width: 19%; min-width: 0; }
+    .col-right { flex: 1; min-width: 0; }
 
-    /* ===== 主体：选项区 + 帮助区 ===== */
-    #content {
-        flex: 1; display: flex; min-height: 0;
-        padding: clamp(10px, 2vh, 22px) clamp(14px, 2.4vw, 36px);
-        gap: clamp(14px, 2.4vw, 36px);
+    .panel {
+        background: var(--panel); border: 1px solid var(--line);
+        padding: 12px 16px; position: relative;
     }
-    #pane { flex: 1; min-width: 0; overflow: auto; padding: 4px 2px; }
-    .row {
-        display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-        align-items: center; padding: 3px 10px; cursor: default; line-height: 1.7;
-        white-space: nowrap;
+    .panel h3 {
+        color: var(--red); font-size: .86em; letter-spacing: .18em; font-weight: 700;
+        border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px;
     }
-    .row .k { overflow: hidden; text-overflow: ellipsis; }
-    .row .v { color: #000; }
-    .row.opt .v { color: #0000aa; }
-    .row.sel { background: #0000aa; color: #fff; }
-    .row.sel .v { color: #fff; }
+    .kv { display: flex; justify-content: space-between; padding: 3px 0; font-size: .86em; }
+    .kv .k { color: #9a9aa0; }
+    .kv .v { color: var(--red); font-weight: 600; }
+    .helpinfo { margin-top: auto; }
+    .helpinfo p { font-size: .82em; color: #c9a227; padding-top: 6px; }
 
-    #help {
-        flex-shrink: 0; width: clamp(240px, 27vw, 400px);
-        border: 1px solid #808080; background: #fff;
-        padding: 10px 14px; align-self: flex-start;
-        max-height: 100%; overflow: auto;
+    /* 中间分类菜单 */
+    .menu { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
+    .menu button {
+        font-family: inherit; text-align: left; font-size: .95em; color: #cfcfd4;
+        background: none; border: none; border-left: 4px solid transparent;
+        padding: 11px 12px 11px 14px; cursor: pointer;
+        display: flex; align-items: center; gap: 10px;
     }
-    #help h2 {
-        font-size: .95em; font-weight: bold; color: #0000aa;
-        border-bottom: 1px solid #808080; padding-bottom: 6px; margin-bottom: 8px;
+    .menu button::before {
+        content: ""; width: 9px; height: 9px; background: var(--red); flex-shrink: 0;
     }
-    #help p { font-size: .88em; line-height: 1.9; color: #000; }
+    .menu button:hover { color: #fff; background: #15151a; }
+    .menu button.on {
+        color: #fff; background: #1b1b21; border-left-color: var(--red); font-weight: 600;
+    }
 
-    /* ===== 底部按键说明栏 ===== */
-    #keys {
-        flex-shrink: 0; background: #c0c0c0; border-top: 1px solid #808080;
-        display: flex; align-items: center; flex-wrap: wrap;
-        gap: 6px clamp(16px, 2.6vw, 40px);
-        padding: 0 20px; height: clamp(30px, 5vh, 46px);
-        font-size: .85em; color: #000; white-space: nowrap; overflow: hidden;
+    /* 右侧设置面板：棱角红框 */
+    .setwrap {
+        height: 100%; background: var(--panel);
+        border: 1px solid var(--red-dim);
+        clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+        padding: 20px 30px; overflow-y: auto;
     }
-    #keys b { color: #0000aa; margin-right: 6px; }
+    .srow {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 9px 4px; font-size: .9em; border-bottom: 1px solid #1b1b20;
+        cursor: default;
+    }
+    .srow .lab { color: #c6c6cb; }
+    .srow.sel .lab { color: #fff; }
+    .srow.sel { background: #1c1c22; }
+    .dd {
+        position: relative; min-width: 150px;
+    }
+    .dd .cur {
+        background: #2a2a31; color: #fff; padding: 5px 30px 5px 12px; cursor: pointer;
+        font-size: .88em; position: relative; text-align: center;
+    }
+    .dd .cur::after {
+        content: ""; position: absolute; right: 10px; top: 50%;
+        border: 5px solid transparent; border-top-color: #fff; transform: translateY(-2px);
+    }
+    .dd .opts {
+        display: none; position: absolute; right: 0; top: 100%; z-index: 20;
+        background: #33333b; min-width: 100%; box-shadow: 0 8px 24px rgba(0,0,0,.6);
+    }
+    .dd.open .opts { display: block; }
+    .dd .opts div { padding: 7px 12px; font-size: .86em; color: #d5d5da; cursor: pointer; text-align: center; }
+    .dd .opts div:hover { background: var(--red); color: #fff; }
 
-    /* ===== 朴素直角对话框 ===== */
-    #dlgWrap {
-        position: fixed; inset: 0; display: none;
-        align-items: center; justify-content: center; z-index: 10;
+    .bootlist { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+    .bootlist .b {
+        display: flex; align-items: center; gap: 12px; background: #15151a;
+        border: 1px solid var(--line); padding: 10px 14px; font-size: .88em; cursor: grab;
     }
-    #dlgWrap.show { display: flex; }
-    #dlg {
-        background: #fff; border: 2px solid #000;
-        min-width: min(440px, 88vw); padding: 26px 30px 22px; text-align: center;
+    .bootlist .b .n {
+        width: 24px; height: 24px; background: var(--red); color: #fff; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; font-size: .82em; flex-shrink: 0;
     }
-    #dlg p { margin-bottom: 22px; font-size: .95em; }
-    #dlg .btns { display: flex; gap: 18px; justify-content: center; }
-    #dlg button {
-        font-family: inherit; font-size: .92em; min-width: 96px;
-        padding: 5px 0; cursor: pointer;
-        background: #fff; color: #000; border: 1px solid #000;
+    .bigbtns { display: flex; gap: 16px; padding: 18px 0; }
+    .bigbtns button {
+        font-family: inherit; font-size: .95em; font-weight: 700; letter-spacing: .06em;
+        padding: 12px 34px; cursor: pointer;
+        background: #16161a; color: #fff; border: 1px solid var(--red);
+        clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
     }
-    #dlg button.focus { background: #0000aa; color: #fff; border-color: #0000aa; }
+    .bigbtns button:hover { background: var(--red); }
+    .langbtns { display: flex; gap: 16px; padding: 18px 0; }
+    .langbtns button {
+        font-family: inherit; font-size: 1em; padding: 12px 44px; cursor: pointer;
+        background: #16161a; color: #cfcfd4; border: 1px solid var(--line);
+    }
+    .langbtns button.on { border-color: var(--red); color: #fff; background: #1d1d23; }
+
+    /* ===== 底部功能键栏 ===== */
+    footer {
+        flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+        gap: clamp(18px, 3vw, 46px); padding: 12px 20px 20px;
+        color: #8e8e95; font-size: .8em; white-space: nowrap;
+    }
+    footer b { color: #c9c9ce; font-weight: 600; }
+    footer .tri { color: var(--red); font-size: 1.3em; letter-spacing: .1em; }
+
+    .hidden { display: none !important; }
 </style>
 </head>
 <body>
-    <header id="topbar">
-        <div class="brand">Aptio Setup Utility<span class="copy">Copyright (C) 2026 American Megatrends, Inc.</span></div>
-        <div class="clock"><span id="clkDate">--- --/--/----</span><span id="clkTime">--:--:--</span></div>
-    </header>
+<div id="frame"><i></i><i></i><i></i><i></i></div>
 
-    <nav id="tabs"></nav>
-
-    <div id="content">
-        <section id="pane"></section>
-        <aside id="help">
-            <h2>Item Specific Help</h2>
-            <p id="helpText"></p>
-        </aside>
+<header>
+    <div class="clockbox">
+        <div class="t" id="clk">--:--</div>
+        <div class="d"><b id="clkDow">----</b><br><span id="clkDate">----/--/--</span></div>
     </div>
+    <div class="brand">COLORFUL</div>
+    <nav class="tabs">
+        <button data-tab="oc">OC</button>
+        <button data-tab="adv" class="on">ADVANCED</button>
+        <button data-tab="bios">BIOS SETTING</button>
+        <button data-tab="lang">LANGUAGE</button>
+        <button data-tab="exit">EXIT</button>
+    </nav>
+</header>
 
-    <footer id="keys">
-        <span><b>&#8592;&#8594;</b>Select Screen</span>
-        <span><b>&#8593;&#8595;</b>Select Item</span>
-        <span><b>Enter</b>Select</span>
-        <span><b>F9</b>Optimized Defaults</span>
-        <span><b>F10</b>Save &amp; Exit</span>
-        <span><b>ESC</b>Exit</span>
-    </footer>
-
-    <div id="dlgWrap">
-        <div id="dlg">
-            <p id="dlgMsg"></p>
-            <div class="btns">
-                <button id="btnYes">Yes</button>
-                <button id="btnNo">No</button>
-            </div>
+<main>
+    <!-- 左：硬件信息 -->
+    <div class="col-left">
+        <div class="panel">
+            <h3>CPU</h3>
+            <div class="kv"><span class="k">Frequency</span><span class="k">Temperature</span></div>
+            <div class="kv"><span class="v">Max Speed: 4500 MHZ</span><span class="v">+43 °C</span></div>
+            <div class="kv"><span class="k">BCLK Frequency</span><span class="k">Voltage</span></div>
+            <div class="kv"><span class="v">100 Mhz</span><span class="v">1.400 V</span></div>
+        </div>
+        <div class="panel">
+            <h3>MEMORY</h3>
+            <div class="kv"><span class="k">Frequency</span><span class="k">Voltage</span></div>
+            <div class="kv"><span class="v">5200 MHz</span><span class="v">1.108 V</span></div>
+        </div>
+        <div class="panel">
+            <h3>VOLTAGE</h3>
+            <div class="kv"><span class="k">+12V</span><span class="k">+5V</span></div>
+            <div class="kv"><span class="v">12.192 V</span><span class="v">5.072 V</span></div>
+            <div class="kv"><span class="k">+3.3V</span><span></span></div>
+            <div class="kv"><span class="v">3.344 V</span><span></span></div>
+        </div>
+        <div class="panel helpinfo">
+            <h3>Help Info</h3>
+            <p id="helpTx">Set PCIEX16 Max Link Speed</p>
         </div>
     </div>
 
+    <!-- 中：分类 -->
+    <div class="col-mid">
+        <div class="menu" id="catMenu">
+            <button data-cat="advanced" class="on">Advanced</button>
+            <button data-cat="chipset">ChipSet</button>
+            <button data-cat="device">Device Setting</button>
+            <button data-cat="password">Password Setting</button>
+            <button data-cat="boot">Boot Setting</button>
+            <button data-cat="power">Power Setting</button>
+        </div>
+    </div>
+
+    <!-- 右：设置 -->
+    <div class="col-right">
+        <div class="setwrap" id="tab-adv">
+            <div id="set-advanced">
+                <div class="srow" data-help="Enable or disable CPU virtualization support"><span class="lab">SVM MODE</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+                <div class="srow" data-help="Select the primary display output"><span class="lab">Primary Display</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>IGFX</div><div>PEG</div><div>PCI</div></span></span></div>
+                <div class="srow" data-help="Integrated graphics controller"><span class="lab">Integrated Graphics Controller</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Enabled</div><div>Disabled</div></span></span></div>
+            </div>
+            <div id="set-chipset" class="hidden">
+                <div class="srow" data-help="Set PCIEX16 Max Link Speed"><span class="lab">PCIEX16 Max Link Speed</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Gen1</div><div>Gen2</div><div>Gen3</div><div>Gen4</div><div>Gen5</div></span></span></div>
+                <div class="srow" data-help="Set PCIEX4 Max Link Speed"><span class="lab">PCIEX4 Max Link Speed</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Gen1</div><div>Gen2</div><div>Gen3</div><div>Gen4</div></span></span></div>
+                <div class="srow" data-help="Enable 64-bit MMIO mapping above 4GB"><span class="lab">Above 4GB MMIO BIOS assignment</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+                <div class="srow" data-help="Allow resizing of PCI Express BAR"><span class="lab">Re-Size BAR Support</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Enabled</div><div>Disabled</div></span></span></div>
+            </div>
+            <div id="set-device" class="hidden">
+                <div class="srow" data-help="Onboard HD Audio controller"><span class="lab">HD Audio Controller</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+                <div class="srow" data-help="Onboard network controller"><span class="lab">Onboard LAN Controller</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+                <div class="srow" data-help="USB port configuration"><span class="lab">USB Configuration</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+            </div>
+            <div id="set-password" class="hidden">
+                <div class="srow" data-help="Set administrator password"><span class="lab">Administrator Password</span><span class="dd"><span class="cur">Not Set</span><span class="opts"><div>Not Set</div><div>Set</div></span></span></div>
+                <div class="srow" data-help="Set user password"><span class="lab">User Password</span><span class="dd"><span class="cur">Not Set</span><span class="opts"><div>Not Set</div><div>Set</div></span></span></div>
+            </div>
+            <div id="set-boot" class="hidden">
+                <div class="srow" data-help="Toggle fast boot"><span class="lab">Fast Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+                <div class="srow" data-help="Boot mode selection"><span class="lab">Boot Mode</span><span class="dd"><span class="cur">UEFI</span><span class="opts"><div>UEFI</div><div>Legacy</div></span></span></div>
+                <div class="bootlist">
+                    <div class="b"><span class="n">1</span>Windows Boot Manager</div>
+                    <div class="b"><span class="n">2</span>SATA SSD</div>
+                    <div class="b"><span class="n">3</span>USB Device</div>
+                    <div class="b"><span class="n">4</span>Network Boot</div>
+                </div>
+            </div>
+            <div id="set-power" class="hidden">
+                <div class="srow" data-help="Restore power state after AC loss"><span class="lab">Restore AC Power Loss</span><span class="dd"><span class="cur">Power Off</span><span class="opts"><div>Power Off</div><div>Power On</div><div>Last State</div></span></span></div>
+                <div class="srow" data-help="Deep sleep power saving"><span class="lab">Deep Sleep</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+            </div>
+        </div>
+
+        <div class="setwrap hidden" id="tab-oc">
+            <div class="srow" data-help="CPU overclocking mode"><span class="lab">CPU Overclocking Mode</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Manual</div></span></span></div>
+            <div class="srow" data-help="CPU core ratio multiplier"><span class="lab">CPU Core Ratio</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>45</div><div>46</div><div>47</div><div>48</div></span></span></div>
+            <div class="srow" data-help="Memory XMP profile"><span class="lab">XMP Profile</span><span class="dd"><span class="cur">Disabled</span><span class="opts"><div>Disabled</div><div>Profile 1</div><div>Profile 2</div></span></span></div>
+            <div class="srow" data-help="CPU core voltage"><span class="lab">CPU Core Voltage</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>1.350 V</div><div>1.400 V</div></span></span></div>
+        </div>
+
+        <div class="setwrap hidden" id="tab-bios">
+            <div class="srow" data-help="Toggle fast boot"><span class="lab">Fast Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+            <div class="srow" data-help="Boot mode selection"><span class="lab">Boot Mode</span><span class="dd"><span class="cur">UEFI</span><span class="opts"><div>UEFI</div><div>Legacy</div></span></span></div>
+            <div class="srow" data-help="Secure boot state"><span class="lab">Secure Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+            <div class="bootlist">
+                <div class="b"><span class="n">1</span>Windows Boot Manager</div>
+                <div class="b"><span class="n">2</span>SATA SSD</div>
+                <div class="b"><span class="n">3</span>USB Device</div>
+            </div>
+        </div>
+
+        <div class="setwrap hidden" id="tab-lang">
+            <div class="langbtns">
+                <button class="on">English</button>
+                <button>简体中文</button>
+            </div>
+            <p style="color:#8e8e95;font-size:.86em">Select BIOS display language. / 选择 BIOS 显示语言。</p>
+        </div>
+
+        <div class="setwrap hidden" id="tab-exit">
+            <div class="bigbtns">
+                <button id="saveExit">Save &amp; Exit</button>
+                <button id="discardExit">Discard &amp; Exit</button>
+            </div>
+            <p style="color:#8e8e95;font-size:.86em">Save changes and reset, or exit without saving.</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <span>General Help(<b>F1</b>)</span><span>Print Screen(<b>F8</b>)</span>
+    <span>Optimized Default(<b>F9</b>)</span><span class="tri">▲</span>
+    <span>Advanced(<b>F11</b>)</span><span>Save &amp; Reset(<b>F10</b>)</span>
+    <span>Choose(<b>Enter</b>)</span><span>Exit(<b>Esc</b>)</span>
+</footer>
+
 <script>
 (function () {
-'use strict';
+    'use strict';
+    function tick() {
+        var n = new Date(), p = function (x) { return (x < 10 ? '0' : '') + x; };
+        document.getElementById('clk').textContent = p(n.getHours()) + ':' + p(n.getMinutes());
+        var dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][n.getDay()];
+        document.getElementById('clkDow').textContent = dow;
+        document.getElementById('clkDate').textContent = n.getFullYear() + '/' + p(n.getMonth() + 1) + '/' + p(n.getDate());
+    }
+    tick(); setInterval(tick, 10000);
 
-var TABS = [
-    { id: 'main', name: 'Main', rows: [
-        { label: 'System Time', kind: 'clock',
-          help: 'Set the system time. Use Tab to switch between Time elements.' },
-        { label: 'System Date', kind: 'date',
-          help: 'Set the system date. Use Tab to switch between Date elements.' },
-        { label: 'Language', key: 'lang', def: 0,
-          options: ['English', 'Francais', 'Deutsch', 'Espanol', 'Japanese'],
-          help: 'Choose the default language.' },
-        { label: 'BIOS Version', info: 'W12.1.0',
-          help: 'Displays the BIOS version information.' },
-        { label: 'Processor', info: 'Virtual CPU @ 3.20GHz',
-          help: 'Displays the processor type and speed.' },
-        { label: 'Total Memory', info: '4096 MB',
-          help: 'Displays the total system memory size.' }
-    ]},
-    { id: 'adv', name: 'Advanced', rows: [
-        { label: 'Hyper-Threading Technology', key: 'ht', def: 0,
-          options: ['Enabled', 'Disabled'],
-          help: 'Enabled for Windows XP and Linux (OS optimized for Hyper-Threading Technology) and Disabled for other OS (OS not optimized for Hyper-Threading Technology).' },
-        { label: 'Intel(R) Virtualization Technology', key: 'vt', def: 0,
-          options: ['Enabled', 'Disabled'],
-          help: 'When enabled, a VMM can utilize the additional hardware capabilities provided by Vanderpool Technology.' },
-        { label: 'SATA Mode Selection', key: 'sata', def: 0,
-          options: ['AHCI', 'RAID', 'IDE'],
-          help: 'Determines how SATA controller(s) operate.' },
-        { label: 'USB Legacy Support', key: 'usb', def: 0,
-          options: ['Enabled', 'Disabled'],
-          help: 'Enables or disables Legacy USB support. Disable option will keep USB devices available only for EFI applications.' }
-    ]},
-    { id: 'boot', name: 'Boot', rows: [
-        { label: 'Boot Option #1', key: 'b1', def: 0,
-          options: ['Windows Boot Manager', 'UEFI: USB', 'Disabled'],
-          help: 'Sets the system boot order.' },
-        { label: 'Boot Option #2', key: 'b2', def: 1,
-          options: ['UEFI: USB', 'Windows Boot Manager', 'Disabled'],
-          help: 'Sets the system boot order.' },
-        { label: 'Fast Boot', key: 'fb', def: 1,
-          options: ['Enabled', 'Disabled'],
-          help: 'Enables or disables boot with initialization of a minimal set of devices required to launch active boot option.' }
-    ]},
-    { id: 'sec', name: 'Security', rows: [
-        { label: 'Administrator Password', key: 'apw', def: 0,
-          options: ['Not Installed', 'Installed'],
-          help: 'Set Administrator Password.' },
-        { label: 'User Password', key: 'upw', def: 0,
-          options: ['Not Installed', 'Installed'],
-          help: 'Set User Password.' },
-        { label: 'Secure Boot', key: 'sb', def: 0,
-          options: ['Enabled', 'Disabled'],
-          help: 'Secure Boot can be enabled if the system is running in User mode with an enrolled Platform Key (PK).' }
-    ]},
-    { id: 'exit', name: 'Save & Exit', rows: [
-        { label: 'Save Changes and Exit', action: 'save',
-          help: 'Exit system setup after saving the changes.' },
-        { label: 'Discard Changes and Exit', action: 'discard',
-          help: 'Exit system setup without saving any changes.' },
-        { label: 'Restore Defaults', action: 'defaults',
-          help: 'Load Optimized Defaults.' }
-    ]}
-];
-
-var state = { tab: 0, row: 0 };
-var vals = {};
-TABS.forEach(function (t) {
-    t.rows.forEach(function (r) { if (r.key) vals[r.key] = r.def || 0; });
-});
-function resetVals() {
-    TABS.forEach(function (t) {
-        t.rows.forEach(function (r) { if (r.key) vals[r.key] = r.def || 0; });
-    });
-}
-
-function $(s) { return document.querySelector(s); }
-function fmt(n) { return (n < 10 ? '0' : '') + n; }
-var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function tick() {
-    var d = new Date();
-    $('#clkTime').textContent = fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
-    $('#clkDate').textContent = DOW[d.getDay()] + ' ' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate()) + '/' + d.getFullYear();
-}
-setInterval(tick, 1000); tick();
-
-function rowVal(r) {
-    var d = new Date();
-    if (r.kind === 'clock') return fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
-    if (r.kind === 'date') return DOW[d.getDay()] + ' ' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate()) + '/' + d.getFullYear();
-    if (r.info !== undefined) return r.info;
-    if (r.options) return r.options[vals[r.key]];
-    return '';
-}
-
-function render() {
-    var t = TABS[state.tab];
-    $('#tabs').innerHTML = TABS.map(function (x, i) {
-        return '<button class="' + (i === state.tab ? 'active' : '') + '" data-i="' + i + '">' + x.name + '</button>';
-    }).join('');
-    $('#pane').innerHTML = t.rows.map(function (r, i) {
-        var v = rowVal(r), editable = !!r.options;
-        return '<div class="row' + (i === state.row ? ' sel' : '') + (editable ? ' opt' : '') + '" data-i="' + i + '">' +
-            '<span class="k">' + r.label + '</span>' +
-            '<span class="v">' + (v !== '' ? (editable ? '[' + v + ']' : v) : '') + '</span>' +
-            '</div>';
-    }).join('');
-    $('#helpText').textContent = t.rows[state.row].help || '';
-
-    Array.prototype.forEach.call($('#tabs').children, function (b) {
+    var tabs = document.querySelectorAll('nav.tabs button');
+    var panes = { oc: 'tab-oc', adv: 'tab-adv', bios: 'tab-bios', lang: 'tab-lang', exit: 'tab-exit' };
+    var midMenu = document.getElementById('catMenu');
+    tabs.forEach(function (b) {
         b.addEventListener('click', function () {
-            state.tab = +b.dataset.i; state.row = 0; render();
+            tabs.forEach(function (x) { x.classList.remove('on'); });
+            b.classList.add('on');
+            Object.keys(panes).forEach(function (k) {
+                document.getElementById(panes[k]).classList.add('hidden');
+            });
+            document.getElementById(panes[b.dataset.tab]).classList.remove('hidden');
+            midMenu.style.visibility = b.dataset.tab === 'adv' ? 'visible' : 'hidden';
         });
     });
-    Array.prototype.forEach.call($('#pane').children, function (el) {
-        el.addEventListener('click', function () {
-            state.row = +el.dataset.i; activate();
+
+    var cats = document.querySelectorAll('#catMenu button');
+    cats.forEach(function (b) {
+        b.addEventListener('click', function () {
+            cats.forEach(function (x) { x.classList.remove('on'); });
+            b.classList.add('on');
+            ['advanced','chipset','device','password','boot','power'].forEach(function (c) {
+                document.getElementById('set-' + c).classList.add('hidden');
+            });
+            document.getElementById('set-' + b.dataset.cat).classList.remove('hidden');
         });
     });
-}
 
-/* ---------- 对话框 ---------- */
-var dlgOpen = false, dlgFocus = 0, dlgYes = null;
-function openDlg(msg, onYes) {
-    $('#dlgMsg').textContent = msg;
-    dlgYes = onYes || null; dlgFocus = 0; dlgOpen = true;
-    paintDlg();
-    $('#dlgWrap').classList.add('show');
-}
-function closeDlg() {
-    dlgOpen = false; dlgYes = null;
-    $('#dlgWrap').classList.remove('show');
-}
-function paintDlg() {
-    $('#btnYes').classList.toggle('focus', dlgFocus === 0);
-    $('#btnNo').classList.toggle('focus', dlgFocus === 1);
-}
-$('#btnYes').addEventListener('click', function () { var f = dlgYes; closeDlg(); if (f) f(); });
-$('#btnNo').addEventListener('click', closeDlg);
-
-function leave() { window.location.href = './boot.html'; }
-
-function doAction(a) {
-    if (a === 'save') openDlg('Save configuration and exit?', leave);
-    else if (a === 'discard') openDlg('Discard changes and exit?', leave);
-    else if (a === 'defaults') openDlg('Load Optimized Defaults?', function () { resetVals(); render(); });
-}
-
-function activate() {
-    var r = TABS[state.tab].rows[state.row];
-    if (r.action) { doAction(r.action); return; }
-    if (!r.options) return;
-    var n = r.options.length;
-    vals[r.key] = (vals[r.key] + 1) % n;
-    render();
-}
-
-document.addEventListener('keydown', function (e) {
-    if (dlgOpen) {
-        switch (e.key) {
-            case 'ArrowLeft': case 'ArrowRight': case 'Tab':
-                dlgFocus = 1 - dlgFocus; paintDlg(); break;
-            case 'Enter':
-                var f = dlgYes; if (dlgFocus === 1) f = null; closeDlg(); if (f) f(); break;
-            case 'Escape': closeDlg(); break;
-            case 'y': case 'Y': var fy = dlgYes; closeDlg(); if (fy) fy(); break;
-            case 'n': case 'N': closeDlg(); break;
-            default: return;
+    document.addEventListener('click', function (e) {
+        var dd = e.target.closest('.dd');
+        document.querySelectorAll('.dd.open').forEach(function (x) { if (x !== dd) x.classList.remove('open'); });
+        if (dd) {
+            var opt = e.target.closest('.opts div');
+            if (opt) {
+                dd.querySelector('.cur').textContent = opt.textContent;
+                dd.classList.remove('open');
+            } else {
+                dd.classList.toggle('open');
+            }
         }
-        e.preventDefault(); return;
-    }
-    var rows = TABS[state.tab].rows.length, n = TABS.length;
-    switch (e.key) {
-        case 'ArrowLeft':
-            state.tab = (state.tab + n - 1) % n; state.row = 0; break;
-        case 'ArrowRight':
-            state.tab = (state.tab + 1) % n; state.row = 0; break;
-        case 'ArrowUp':
-            state.row = (state.row + rows - 1) % rows; break;
-        case 'ArrowDown':
-            state.row = (state.row + 1) % rows; break;
-        case 'Enter': activate(); return;
-        case 'F9':
-            openDlg('Load Optimized Defaults?', function () { resetVals(); render(); }); return;
-        case 'F10':
-            openDlg('Save configuration and exit?', leave); return;
-        case 'Escape': leave(); return;
-        default: return;
-    }
-    render(); e.preventDefault();
-});
+        var row = e.target.closest('.srow');
+        document.querySelectorAll('.srow.sel').forEach(function (x) { x.classList.remove('sel'); });
+        if (row) {
+            row.classList.add('sel');
+            var h = row.getAttribute('data-help');
+            if (h) document.getElementById('helpTx').textContent = h;
+        }
+    });
 
-render();
+    document.querySelectorAll('.langbtns button').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.querySelectorAll('.langbtns button').forEach(function (x) { x.classList.remove('on'); });
+            b.classList.add('on');
+        });
+    });
+
+    function leave() { window.location.href = './boot.html'; }
+    document.getElementById('saveExit').addEventListener('click', leave);
+    document.getElementById('discardExit').addEventListener('click', leave);
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F10' || e.key === 'Escape') leave();
+    });
 })();
 </script>
 </body>
