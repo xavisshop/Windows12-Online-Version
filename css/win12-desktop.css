@@ -55,14 +55,15 @@ input { font-family: inherit; }
 /* ---------- 壁纸 ---------- */
 #wallpaper {
     position: fixed; inset: 0; z-index: 0;
-    background: #160616 url("../img/wallpaper-concept-purple.jpg") center / cover no-repeat;
-    transition: background-image 0.5s ease;
+    background-color: #170411;
+    background-size: cover; background-position: center;
 }
 
 /* ---------- 锁屏 ---------- */
 #lockscreen {
     position: fixed; inset: 0; z-index: 2000;
-    background: #160616 url("../img/wallpaper-concept-purple.jpg") center / cover no-repeat;
+    background-color: #170411;
+    background-size: cover; background-position: center;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     cursor: pointer; transition: opacity 0.6s ease, visibility 0.6s;
 }
@@ -174,7 +175,8 @@ input { font-family: inherit; }
 .sm-foot { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--card-border); }
 .sm-user { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 20px; font-size: 13px; }
 .sm-user:hover { background: var(--hover); }
-.avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #e0449e, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; overflow: hidden; display: block; flex-shrink: 0; }
+.avatar svg { width: 100%; height: 100%; display: block; }
 .sm-allapps, .sm-power { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; }
 .sm-allapps { margin-left: auto; } .sm-power { margin-left: 0; }
 .sm-allapps:hover, .sm-power:hover { background: var(--hover); }
@@ -370,32 +372,174 @@ input { font-family: inherit; }
 .exp-pane + .exp-pane { border-left: 1px solid var(--card-border); }
 .exp-pane .exp-grid { padding-top: 8px; }
 
-/* ---------- 设置 ---------- */
-.set { display: flex; height: 100%; }
-.set-side { width: 230px; flex-shrink: 0; padding: 14px 10px; border-right: 1px solid var(--card-border); overflow-y: auto; }
-.set-user { display: flex; align-items: center; gap: 10px; padding: 8px 10px 14px; }
-.set-user .avatar { width: 44px; height: 44px; font-size: 22px; }
-.set-user b { display: block; font-size: 13px; } .set-user i { font-style: normal; font-size: 11px; color: var(--text-dim); }
-.set-nav { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 9px 12px; border-radius: 8px; font-size: 13px; position: relative; }
-.set-nav:hover { background: var(--hover); }
-.set-nav.active { background: var(--active); }
-.set-nav.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 2px; background: var(--accent); }
-.set-nav svg { width: 18px; height: 18px; }
-.set-main { flex: 1; padding: 22px 28px; overflow-y: auto; }
-.set-main h2 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
-.set-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
-.set-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
-.set-row + .set-row { border-top: 1px solid var(--card-border); }
-.set-row .grow { flex: 1; } .set-row b { display: block; font-size: 13px; font-weight: 500; } .set-row i { font-style: normal; font-size: 12px; color: var(--text-dim); }
-.toggle { width: 42px; height: 22px; border-radius: 11px; background: var(--active); position: relative; transition: background 0.2s; flex-shrink: 0; }
-.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
-.toggle.on { background: var(--accent); } .toggle.on::after { left: 23px; }
-.wp-pick { display: flex; gap: 12px; }
-.wp-opt { width: 150px; border-radius: 10px; overflow: hidden; border: 2px solid transparent; padding: 0; }
-.wp-opt img { width: 100%; height: 84px; object-fit: cover; display: block; }
-.wp-opt span { display: block; font-size: 12px; padding: 6px; background: var(--card); }
-.wp-opt.on { border-color: var(--accent); }
+/* ---------- 壁纸：纯 CSS 手绘场景 ---------- */
+.wp-ribbon {
+    background:
+        radial-gradient(120% 60% at 85% 10%, rgba(255,45,149,.55), rgba(255,45,149,0) 60%),
+        radial-gradient(100% 50% at 95% 55%, rgba(168,60,255,.40), rgba(168,60,255,0) 60%),
+        radial-gradient(110% 55% at 60% 95%, rgba(224,68,158,.45), rgba(224,68,158,0) 62%),
+        radial-gradient(80% 40% at 25% 75%, rgba(124,58,237,.35), rgba(124,58,237,0) 62%),
+        radial-gradient(60% 35% at 10% 20%, rgba(255,110,196,.25), rgba(255,110,196,0) 60%),
+        linear-gradient(160deg, #1c0512 0%, #170411 55%, #120309 100%);
+}
+.wp-tide {
+    background:
+        radial-gradient(110% 55% at 85% 12%, rgba(45,212,191,.55), rgba(45,212,191,0) 60%),
+        radial-gradient(95% 50% at 12% 82%, rgba(56,189,248,.55), rgba(56,189,248,0) 60%),
+        radial-gradient(80% 45% at 55% 55%, rgba(167,139,250,.35), rgba(167,139,250,0) 62%),
+        linear-gradient(165deg, #e6f2fa 0%, #d7e9f5 60%, #cfe3f2 100%);
+}
+.wp-pastel {
+    background:
+        radial-gradient(110% 55% at 82% 15%, rgba(251,146,60,.50), rgba(251,146,60,0) 60%),
+        radial-gradient(95% 50% at 15% 80%, rgba(249,168,212,.55), rgba(249,168,212,0) 60%),
+        radial-gradient(75% 40% at 55% 60%, rgba(253,224,71,.30), rgba(253,224,71,0) 62%),
+        linear-gradient(165deg, #faf0ec 0%, #f6e4ec 60%, #f3dee9 100%);
+}
+.wp-night {
+    background:
+        radial-gradient(100% 55% at 80% 15%, rgba(124,58,237,.40), rgba(124,58,237,0) 60%),
+        radial-gradient(90% 50% at 20% 85%, rgba(56,89,199,.40), rgba(56,89,199,0) 60%),
+        radial-gradient(70% 40% at 50% 50%, rgba(30,27,75,.60), rgba(30,27,75,0) 70%),
+        linear-gradient(160deg, #0b0b1a 0%, #0d0d20 60%, #090914 100%);
+}
+.wp-neon {
+    background:
+        radial-gradient(100% 50% at 85% 20%, rgba(168,85,247,.55), rgba(168,85,247,0) 60%),
+        radial-gradient(90% 50% at 15% 80%, rgba(236,72,153,.45), rgba(236,72,153,0) 60%),
+        radial-gradient(60% 35% at 50% 50%, rgba(88,28,135,.50), rgba(88,28,135,0) 65%),
+        linear-gradient(160deg, #150826 0%, #12071f 60%, #0d0518 100%);
+}
+.wp-lake {
+    background:
+        radial-gradient(110% 50% at 50% 0%, rgba(153,246,228,.60), rgba(153,246,228,0) 55%),
+        radial-gradient(100% 55% at 90% 90%, rgba(45,212,191,.50), rgba(45,212,191,0) 60%),
+        radial-gradient(80% 45% at 10% 85%, rgba(56,189,248,.40), rgba(56,189,248,0) 60%),
+        linear-gradient(180deg, #d9efe9 0%, #c4e6dd 55%, #b3dcd2 100%);
+}
 
+/* ---------- 设置（Win11 截图 1:1，深色） ---------- */
+.set { display: flex; flex-direction: column; height: 100%; background: #202024; color: #f3f3f3; }
+.set-top { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; flex-shrink: 0; }
+.set-back { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #e8e8e8; }
+.set-back:hover { background: rgba(255,255,255,.08); }
+.set-back svg { width: 18px; height: 18px; }
+.set-title { font-size: 13px; color: #e8e8e8; }
+.set-search { margin: 0 auto; width: min(340px, 42%); display: flex; align-items: center; gap: 8px; background: #2b2b30; border: 1px solid rgba(255,255,255,.08); border-bottom: 2px solid #4cc2ff; border-radius: 4px; padding: 6px 12px; }
+.set-search .ss-ico { width: 15px; height: 15px; color: #a3a3a3; flex-shrink: 0; }
+.set-search .ss-ico svg { width: 15px; height: 15px; }
+.set-search input { flex: 1; background: none; border: none; outline: none; color: #f3f3f3; font-size: 13px; min-width: 0; }
+.set-search input::placeholder { color: #8a8a8a; }
+.set-body { display: flex; flex: 1; min-height: 0; }
+.set-side { width: 242px; flex-shrink: 0; padding: 4px 12px 16px; overflow-y: auto; }
+.set-user { display: flex; align-items: center; gap: 12px; padding: 10px 12px 16px; }
+.set-avatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; display: block; }
+.set-avatar svg { width: 100%; height: 100%; display: block; }
+.set-avatar.big { width: 60px; height: 60px; }
+.su-tx b { display: block; font-size: 13px; font-weight: 600; }
+.su-tx i { font-style: normal; font-size: 11.5px; color: #a3a3a3; }
+.set-nav { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #e8e8e8; position: relative; }
+.set-nav:hover { background: rgba(255,255,255,.06); }
+.set-nav.active { background: #2d2d33; }
+.set-nav.active::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 2px; background: #4cc2ff; }
+.snav-ico { width: 20px; height: 20px; flex-shrink: 0; }
+.snav-ico svg { width: 20px; height: 20px; display: block; }
+.set-main { flex: 1; min-width: 0; overflow-y: auto; padding: 4px 28px 48px; }
+.wpage { max-width: 780px; }
+.wtitle { font-size: 27px; font-weight: 600; margin: 16px 0 18px; letter-spacing: .5px; }
+.wsec { font-size: 13px; font-weight: 600; color: #e8e8e8; margin: 22px 0 8px; }
+.wcard { background: #2b2b30; border: 1px solid rgba(255,255,255,.06); border-radius: 8px; margin-bottom: 4px; overflow: hidden; }
+.wcard-h { padding: 14px 16px 12px; }
+.wcard-h b { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.wcard-h i { font-style: normal; font-size: 12.5px; color: #a3a3a3; display: block; line-height: 1.55; }
+.wcard-h .wbtn { margin-top: 12px; }
+.wrow { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 13px 16px; cursor: pointer; }
+.wrow:hover { background: rgba(255,255,255,.03); }
+.wrow-ico { width: 22px; height: 22px; color: #e8e8e8; flex-shrink: 0; }
+.wrow-ico svg { width: 22px; height: 22px; display: block; }
+.wrow-ico.sm { width: 16px; height: 16px; }
+.wrow-ico.sm svg { width: 16px; height: 16px; }
+.wrow-ico.ok { color: #6ccb5f; }
+.wrow-tx { flex: 1; min-width: 0; }
+.wrow-tx b { display: block; font-size: 13.5px; font-weight: 500; }
+.wrow-tx i { font-style: normal; font-size: 12px; color: #a3a3a3; display: block; margin-top: 2px; line-height: 1.5; }
+.wrow-r { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.wchev { color: #9a9a9a; font-size: 19px; line-height: 1; transition: transform .15s; }
+.wchev.up { transform: rotate(-90deg); }
+.wbtn { background: #4cc2ff; color: #000; border-radius: 4px; padding: 7px 22px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+.wbtn:hover { filter: brightness(1.08); }
+.wbtn2 { background: #2d2d33; border: 1px solid rgba(255,255,255,.12); color: #f3f3f3; border-radius: 4px; padding: 6px 16px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.wbtn2:hover { background: #35353c; }
+.wlink { color: #4cc2ff; font-size: 12.5px; padding: 0; }
+.wlink:hover { text-decoration: underline; }
+.wrow-tx .wlink { margin-left: 6px; }
+.wtoggle { width: 40px; height: 20px; border-radius: 10px; border: 1px solid #9a9a9a; background: transparent; position: relative; flex-shrink: 0; }
+.wtoggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: #9a9a9a; transition: all .18s; }
+.wtoggle.on { background: #4cc2ff; border-color: #4cc2ff; }
+.wtoggle.on::after { left: 23px; background: #000; }
+.wtg-lab { font-size: 13px; color: #e8e8e8; }
+.wdd { background: #2d2d33; border: 1px solid rgba(255,255,255,.1); border-bottom: 2px solid #4cc2ff; border-radius: 4px; padding: 6px 12px; font-size: 13px; color: #f3f3f3; display: inline-flex; align-items: center; gap: 10px; }
+.wdd .dd-a { color: #9a9a9a; font-size: 11px; }
+/* 主页 hero */
+.whero { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.wdev { width: 66px; height: 46px; border-radius: 6px; border: 1px solid rgba(255,255,255,.12); flex-shrink: 0; }
+.whero-tx b { display: block; font-size: 15px; font-weight: 600; }
+.whero-tx i { font-style: normal; font-size: 12px; color: #a3a3a3; display: block; margin-top: 1px; }
+.whero-tx .wlink { font-size: 12px; margin-top: 2px; display: inline-block; }
+.wstats { margin-left: auto; display: flex; gap: 30px; }
+.wstat { display: flex; align-items: center; gap: 10px; }
+.wstat b { display: block; font-size: 13px; font-weight: 500; }
+.wstat i { font-style: normal; font-size: 11.5px; color: #a3a3a3; display: block; }
+.wcols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.whelp, .whehelp { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; }
+/* 主页 M365 */
+.mslogo { display: grid; grid-template-columns: repeat(2, 11px); grid-auto-rows: 11px; gap: 2px; margin-bottom: 10px; }
+.mslogo i:nth-child(1) { background: #f25022; } .mslogo i:nth-child(2) { background: #7fba00; }
+.mslogo i:nth-child(3) { background: #00a4ef; } .mslogo i:nth-child(4) { background: #ffb900; }
+.m365apps { display: flex; gap: 8px; margin: 12px 0 4px; flex-wrap: wrap; }
+.m365a { width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; }
+.od-ico { width: 30px; height: 30px; display: block; margin-bottom: 8px; color: #4cc2ff; }
+.od-ico svg { width: 30px; height: 30px; }
+/* 主题缩略图 */
+.wthemes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.wtheme { position: relative; height: 86px; border-radius: 6px; border: 2px solid transparent; overflow: hidden; padding: 0; }
+.wtheme:hover { filter: brightness(1.08); }
+.wtheme.on { border-color: #4cc2ff; }
+.wtheme .abar { position: absolute; right: 8px; bottom: 8px; width: 26px; height: 7px; border-radius: 4px; }
+/* 个性化页预览 */
+.wprevrow { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 6px; }
+.wpreview { width: 210px; height: 128px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); position: relative; flex-shrink: 0; overflow: hidden; }
+.wpreview-card { position: absolute; right: 14px; top: 16px; width: 84px; height: 96px; background: rgba(32,32,36,.88); border-radius: 6px; padding: 10px 8px; }
+.wpreview-card i { display: block; height: 4px; border-radius: 2px; background: rgba(255,255,255,.25); margin-bottom: 6px; }
+.wpreview-card i:nth-child(2) { width: 80%; } .wpreview-card i:nth-child(3) { width: 60%; }
+.wpreview-card b { display: block; width: 26px; height: 7px; border-radius: 4px; background: #4cc2ff; margin-top: 10px; }
+.wprevside { flex: 1; min-width: 0; }
+.wprevside .wsec { margin-top: 2px; }
+/* 帐户页 */
+.wprof { display: flex; align-items: center; gap: 14px; padding: 16px; }
+/* 更新页 */
+.wupd { display: flex; align-items: center; gap: 16px; margin: 4px 0 6px; }
+.wupd-ico { width: 54px; height: 54px; position: relative; flex-shrink: 0; }
+.wupd-ico svg { width: 54px; height: 54px; }
+.wupd-ok { position: absolute; right: -4px; bottom: -4px; width: 24px; height: 24px; border-radius: 50%; background: #6ccb5f; display: flex; align-items: center; justify-content: center; color: #0a3d0a; }
+.wupd-ok svg { width: 14px; height: 14px; }
+.wupd-t { font-size: 16px !important; }
+.wnote { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: #c8c8c8; margin: 14px 2px; }
+.wacc { display: none; padding: 2px 16px 12px 52px; }
+.wacc.open { display: block; }
+.wacc .wlink { display: block; margin: 8px 0; text-align: left; }
+/* AI 助手页 */
+.wform { padding: 0 16px 14px; }
+.winput { width: 100%; background: #2d2d33; border: 1px solid rgba(255,255,255,.1); border-bottom: 2px solid #4cc2ff; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #f3f3f3; outline: none; }
+.wform-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.waistat { font-size: 12.5px; color: #a3a3a3; }
+.wairesult { margin-top: 10px; font-size: 12.5px; color: #c8c8c8; background: #202024; border: 1px solid rgba(255,255,255,.07); border-radius: 6px; padding: 10px 12px; line-height: 1.6; word-break: break-all; white-space: pre-wrap; }
+@media (max-width: 900px) {
+    .wcols { grid-template-columns: 1fr; }
+    .wprevrow { flex-direction: column; }
+    .wstats { display: none; }
+    .set-side { width: 200px; }
+}
 /* ---------- Edge / 记事本 / 终端 / 商店 ---------- */
 .edge { display: flex; flex-direction: column; height: 100%; }
 .edge-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--card-border); }
