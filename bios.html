@@ -1,139 +1,136 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setup Utility</title>
+<title>Aptio Setup Utility</title>
 <style>
-    html, body { background: #0e1116; height: 100%; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
         font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
-        color: #e8eaf0; overflow: hidden; user-select: none; -webkit-user-select: none;
+        font-size: clamp(12px, 1.05vw, 17px);
+        color: #000; background: #fff;
         display: flex; flex-direction: column; height: 100vh;
-        font-size: clamp(12px, 1.02vw, 16px);
+        overflow: hidden; user-select: none; -webkit-user-select: none;
     }
 
-    /* 顶栏 */
-    .su-head {
+    /* ===== 顶部蓝色标题条 ===== */
+    #topbar {
+        flex-shrink: 0; background: #0000aa; color: #fff;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 clamp(16px, 2.4vw, 40px);
-        height: clamp(44px, 7vh, 62px); flex-shrink: 0;
-        background: #161a21; border-bottom: 1px solid #2a303b;
+        padding: 0 20px; height: clamp(36px, 5.6vh, 54px);
+        font-weight: bold;
     }
-    .su-title { font-weight: 700; font-size: clamp(15px, 1.4vw, 21px); letter-spacing: .02em; }
-    .su-title .ver { font-weight: 400; color: #8b93a5; font-size: .72em; margin-left: 12px; }
-    .su-clock { color: #9aa3b5; font-size: .86em; text-align: right; line-height: 1.5; }
+    #topbar .brand { font-size: 1.05em; letter-spacing: .01em; white-space: nowrap; }
+    #topbar .brand .copy { font-weight: normal; font-size: .78em; margin-left: 14px; }
+    #topbar .clock { font-size: .92em; white-space: nowrap; font-weight: normal; }
+    #topbar .clock span + span { margin-left: 18px; }
 
-    /* 标签页 */
-    .su-tabs {
-        display: flex; gap: 2px; padding: 0 clamp(16px, 2.4vw, 40px);
-        background: #161a21; border-bottom: 1px solid #2a303b; flex-shrink: 0;
+    /* ===== 标签页菜单栏 ===== */
+    #tabs {
+        flex-shrink: 0; display: flex; align-items: stretch;
+        background: #c0c0c0; border-bottom: 1px solid #808080;
+        padding: 0 12px; height: clamp(30px, 5vh, 46px);
     }
-    .su-tab {
-        padding: clamp(8px, 1.4vh, 13px) clamp(18px, 2.2vw, 34px);
-        color: #9aa3b5; cursor: pointer; font-size: .95em; border: none; background: none;
-        font-family: inherit;
+    #tabs button {
+        font-family: inherit; font-size: .95em; color: #0000aa;
+        background: none; border: none; cursor: pointer;
+        padding: 0 26px; white-space: nowrap;
     }
-    .su-tab.active { background: #e8eaf0; color: #0e1116; font-weight: 700; }
+    #tabs button.active { background: #fff; color: #0000aa; font-weight: bold; }
 
-    /* 主体三栏 */
-    .su-body { flex: 1; display: flex; min-height: 0; }
-    .su-nav {
-        width: clamp(150px, 15vw, 230px); flex-shrink: 0;
-        border-right: 1px solid #2a303b; padding: clamp(10px, 1.6vh, 18px) 0;
+    /* ===== 主体：选项区 + 帮助区 ===== */
+    #content {
+        flex: 1; display: flex; min-height: 0;
+        padding: clamp(10px, 2vh, 22px) clamp(14px, 2.4vw, 36px);
+        gap: clamp(14px, 2.4vw, 36px);
     }
-    .su-nav button {
-        display: block; width: 100%; text-align: left; background: none; border: none;
-        color: #9aa3b5; font-family: inherit; font-size: .95em;
-        padding: clamp(8px, 1.5vh, 14px) clamp(16px, 2.4vw, 40px); cursor: pointer;
+    #pane { flex: 1; min-width: 0; overflow: auto; padding: 4px 2px; }
+    .row {
+        display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        align-items: center; padding: 3px 10px; cursor: default; line-height: 1.7;
+        white-space: nowrap;
     }
-    .su-nav button.sel { background: #232936; color: #fff; border-left: 3px solid #ff2d95; }
+    .row .k { overflow: hidden; text-overflow: ellipsis; }
+    .row .v { color: #000; }
+    .row.opt .v { color: #0000aa; }
+    .row.sel { background: #0000aa; color: #fff; }
+    .row.sel .v { color: #fff; }
 
-    .su-main { flex: 1; padding: clamp(12px, 2.4vh, 26px) clamp(18px, 3vw, 48px); overflow: auto; }
-    .su-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: clamp(7px, 1.3vh, 12px) 12px; border-radius: 4px; cursor: default;
+    #help {
+        flex-shrink: 0; width: clamp(240px, 27vw, 400px);
+        border: 1px solid #808080; background: #fff;
+        padding: 10px 14px; align-self: flex-start;
+        max-height: 100%; overflow: auto;
     }
-    .su-row .k { color: #c6ccda; }
-    .su-row .v { color: #fff; font-weight: 700; }
-    .su-row.sel { background: #232936; }
-    .su-row .v.edit { color: #ff7ab8; }
+    #help h2 {
+        font-size: .95em; font-weight: bold; color: #0000aa;
+        border-bottom: 1px solid #808080; padding-bottom: 6px; margin-bottom: 8px;
+    }
+    #help p { font-size: .88em; line-height: 1.9; color: #000; }
 
-    .su-help {
-        width: clamp(220px, 24vw, 360px); flex-shrink: 0;
-        border-left: 1px solid #2a303b; padding: clamp(12px, 2.4vh, 26px) clamp(16px, 2vw, 30px);
-        color: #9aa3b5; font-size: .88em; line-height: 2;
+    /* ===== 底部按键说明栏 ===== */
+    #keys {
+        flex-shrink: 0; background: #c0c0c0; border-top: 1px solid #808080;
+        display: flex; align-items: center; flex-wrap: wrap;
+        gap: 6px clamp(16px, 2.6vw, 40px);
+        padding: 0 20px; height: clamp(30px, 5vh, 46px);
+        font-size: .85em; color: #000; white-space: nowrap; overflow: hidden;
     }
-    .su-help h3 { color: #e8eaf0; font-size: 1em; margin-bottom: 8px; font-weight: 700; }
-    .su-help b { color: #e8eaf0; display: inline-block; min-width: 52px; }
+    #keys b { color: #0000aa; margin-right: 6px; }
 
-    /* 底栏 */
-    .su-foot {
-        flex-shrink: 0; display: flex; align-items: center; gap: clamp(14px, 2.4vw, 36px);
-        padding: 0 clamp(16px, 2.4vw, 40px); height: clamp(38px, 6vh, 54px);
-        background: #161a21; border-top: 1px solid #2a303b;
-        color: #9aa3b5; font-size: .85em; white-space: nowrap; overflow: hidden;
+    /* ===== 朴素直角对话框 ===== */
+    #dlgWrap {
+        position: fixed; inset: 0; display: none;
+        align-items: center; justify-content: center; z-index: 10;
     }
-    .su-foot b { color: #e8eaf0; margin-right: 6px; }
-
-    /* 对话框 */
-    .su-dlg-wrap {
-        position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-        background: rgba(0,0,0,.55); z-index: 10;
+    #dlgWrap.show { display: flex; }
+    #dlg {
+        background: #fff; border: 2px solid #000;
+        min-width: min(440px, 88vw); padding: 26px 30px 22px; text-align: center;
     }
-    .su-dlg-wrap.show { display: flex; }
-    .su-dlg {
-        background: #161a21; border: 1px solid #3a4150; border-radius: 6px;
-        padding: 26px 34px; min-width: min(420px, 86vw); text-align: center;
+    #dlg p { margin-bottom: 22px; font-size: .95em; }
+    #dlg .btns { display: flex; gap: 18px; justify-content: center; }
+    #dlg button {
+        font-family: inherit; font-size: .92em; min-width: 96px;
+        padding: 5px 0; cursor: pointer;
+        background: #fff; color: #000; border: 1px solid #000;
     }
-    .su-dlg p { margin-bottom: 20px; }
-    .su-dlg .btns { display: flex; gap: 12px; justify-content: center; }
-    .su-dlg button {
-        font-family: inherit; font-size: .95em; padding: 8px 26px; cursor: pointer;
-        background: #232936; color: #fff; border: 1px solid #3a4150; border-radius: 4px;
-    }
-    .su-dlg button.primary { background: #e8eaf0; color: #0e1116; font-weight: 700; border-color: #e8eaf0; }
+    #dlg button.focus { background: #0000aa; color: #fff; border-color: #0000aa; }
 </style>
 </head>
 <body>
-    <header class="su-head">
-        <div class="su-title">Windows 12 Setup Utility<span class="ver">v1.0.0</span></div>
-        <div class="su-clock"><div id="suTime">--:--:--</div><div id="suDate">----/--/--</div></div>
+    <header id="topbar">
+        <div class="brand">Aptio Setup Utility<span class="copy">Copyright (C) 2026 American Megatrends, Inc.</span></div>
+        <div class="clock"><span id="clkDate">--- --/--/----</span><span id="clkTime">--:--:--</span></div>
     </header>
 
-    <nav class="su-tabs" id="suTabs">
-        <button class="su-tab active" data-tab="main">Main</button>
-        <button class="su-tab" data-tab="adv">Advanced</button>
-        <button class="su-tab" data-tab="boot">Boot</button>
-        <button class="su-tab" data-tab="sec">Security</button>
-        <button class="su-tab" data-tab="exit">Save &amp; Exit</button>
-    </nav>
+    <nav id="tabs"></nav>
 
-    <div class="su-body">
-        <div class="su-nav" id="suNav"></div>
-        <div class="su-main" id="suMain"></div>
-        <aside class="su-help">
-            <h3>帮助</h3>
-            <div><b>&larr;&rarr;</b>切换标签页</div>
-            <div><b>&uarr;&darr;</b>选择项目</div>
-            <div><b>Enter</b>修改数值</div>
-            <div><b>F10</b>保存并退出</div>
-            <div><b>ESC</b>退出</div>
+    <div id="content">
+        <section id="pane"></section>
+        <aside id="help">
+            <h2>Item Specific Help</h2>
+            <p id="helpText"></p>
         </aside>
     </div>
 
-    <footer class="su-foot">
-        <span><b>F1</b>帮助</span><span><b>F9</b>恢复默认</span>
-        <span><b>F10</b>保存并退出</span><span><b>ESC</b>退出</span>
+    <footer id="keys">
+        <span><b>&#8592;&#8594;</b>Select Screen</span>
+        <span><b>&#8593;&#8595;</b>Select Item</span>
+        <span><b>Enter</b>Select</span>
+        <span><b>F9</b>Optimized Defaults</span>
+        <span><b>F10</b>Save &amp; Exit</span>
+        <span><b>ESC</b>Exit</span>
     </footer>
 
-    <div class="su-dlg-wrap" id="suDlg">
-        <div class="su-dlg">
-            <p id="suDlgText">保存更改并退出？</p>
+    <div id="dlgWrap">
+        <div id="dlg">
+            <p id="dlgMsg"></p>
             <div class="btns">
-                <button class="primary" id="suDlgYes">是</button>
-                <button id="suDlgNo">否</button>
+                <button id="btnYes">Yes</button>
+                <button id="btnNo">No</button>
             </div>
         </div>
     </div>
@@ -142,138 +139,190 @@
 (function () {
 'use strict';
 
-var TABS = {
-    main: {
-        nav: ['系统信息', '日期时间', '语言'],
-        rows: [
-            ['系统时间', 'time', null], ['系统日期', 'date', null],
-            ['语言', 'lang', ['简体中文', 'English']],
-            ['BIOS 版本', 'biosv', null], ['处理器', 'cpu', null], ['内存', 'mem', null]
-        ]
-    },
-    adv: {
-        nav: ['处理器', '存储', '显示'],
-        rows: [
-            ['超线程技术', 'ht', ['Enabled', 'Disabled']],
-            ['虚拟化技术', 'vt', ['Enabled', 'Disabled']],
-            ['SATA 模式', 'sata', ['AHCI', 'RAID', 'IDE']],
-            ['USB 传统支持', 'usb', ['Enabled', 'Disabled']]
-        ]
-    },
-    boot: {
-        nav: ['启动顺序', '安全启动'],
-        rows: [
-            ['启动选项 #1', 'b1', ['Windows Boot Manager', 'UEFI: USB', 'Disabled']],
-            ['启动选项 #2', 'b2', ['UEFI: USB', 'Windows Boot Manager', 'Disabled']],
-            ['安全启动', 'sb', ['Enabled', 'Disabled']],
-            ['快速启动', 'fb', ['Enabled', 'Disabled']]
-        ]
-    },
-    sec: {
-        nav: ['密码'],
-        rows: [
-            ['管理员密码', 'apw', ['未设置', '已设置']],
-            ['用户密码', 'upw', ['未设置', '已设置']]
-        ]
-    },
-    exit: {
-        nav: ['退出选项'],
-        rows: [
-            ['保存更改并退出', 'act_save', null],
-            ['放弃更改并退出', 'act_discard', null]
-        ]
-    }
-};
+var TABS = [
+    { id: 'main', name: 'Main', rows: [
+        { label: 'System Time', kind: 'clock',
+          help: 'Set the system time. Use Tab to switch between Time elements.' },
+        { label: 'System Date', kind: 'date',
+          help: 'Set the system date. Use Tab to switch between Date elements.' },
+        { label: 'Language', key: 'lang', def: 0,
+          options: ['English', 'Francais', 'Deutsch', 'Espanol', 'Japanese'],
+          help: 'Choose the default language.' },
+        { label: 'BIOS Version', info: 'W12.1.0',
+          help: 'Displays the BIOS version information.' },
+        { label: 'Processor', info: 'Virtual CPU @ 3.20GHz',
+          help: 'Displays the processor type and speed.' },
+        { label: 'Total Memory', info: '4096 MB',
+          help: 'Displays the total system memory size.' }
+    ]},
+    { id: 'adv', name: 'Advanced', rows: [
+        { label: 'Hyper-Threading Technology', key: 'ht', def: 0,
+          options: ['Enabled', 'Disabled'],
+          help: 'Enabled for Windows XP and Linux (OS optimized for Hyper-Threading Technology) and Disabled for other OS (OS not optimized for Hyper-Threading Technology).' },
+        { label: 'Intel(R) Virtualization Technology', key: 'vt', def: 0,
+          options: ['Enabled', 'Disabled'],
+          help: 'When enabled, a VMM can utilize the additional hardware capabilities provided by Vanderpool Technology.' },
+        { label: 'SATA Mode Selection', key: 'sata', def: 0,
+          options: ['AHCI', 'RAID', 'IDE'],
+          help: 'Determines how SATA controller(s) operate.' },
+        { label: 'USB Legacy Support', key: 'usb', def: 0,
+          options: ['Enabled', 'Disabled'],
+          help: 'Enables or disables Legacy USB support. Disable option will keep USB devices available only for EFI applications.' }
+    ]},
+    { id: 'boot', name: 'Boot', rows: [
+        { label: 'Boot Option #1', key: 'b1', def: 0,
+          options: ['Windows Boot Manager', 'UEFI: USB', 'Disabled'],
+          help: 'Sets the system boot order.' },
+        { label: 'Boot Option #2', key: 'b2', def: 1,
+          options: ['UEFI: USB', 'Windows Boot Manager', 'Disabled'],
+          help: 'Sets the system boot order.' },
+        { label: 'Fast Boot', key: 'fb', def: 1,
+          options: ['Enabled', 'Disabled'],
+          help: 'Enables or disables boot with initialization of a minimal set of devices required to launch active boot option.' }
+    ]},
+    { id: 'sec', name: 'Security', rows: [
+        { label: 'Administrator Password', key: 'apw', def: 0,
+          options: ['Not Installed', 'Installed'],
+          help: 'Set Administrator Password.' },
+        { label: 'User Password', key: 'upw', def: 0,
+          options: ['Not Installed', 'Installed'],
+          help: 'Set User Password.' },
+        { label: 'Secure Boot', key: 'sb', def: 0,
+          options: ['Enabled', 'Disabled'],
+          help: 'Secure Boot can be enabled if the system is running in User mode with an enrolled Platform Key (PK).' }
+    ]},
+    { id: 'exit', name: 'Save & Exit', rows: [
+        { label: 'Save Changes and Exit', action: 'save',
+          help: 'Exit system setup after saving the changes.' },
+        { label: 'Discard Changes and Exit', action: 'discard',
+          help: 'Exit system setup without saving any changes.' },
+        { label: 'Restore Defaults', action: 'defaults',
+          help: 'Load Optimized Defaults.' }
+    ]}
+];
 
-var state = { tab: 'main', nav: 0, row: 0 };
+var state = { tab: 0, row: 0 };
 var vals = {};
+TABS.forEach(function (t) {
+    t.rows.forEach(function (r) { if (r.key) vals[r.key] = r.def || 0; });
+});
+function resetVals() {
+    TABS.forEach(function (t) {
+        t.rows.forEach(function (r) { if (r.key) vals[r.key] = r.def || 0; });
+    });
+}
 
 function $(s) { return document.querySelector(s); }
-function $all(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
-
 function fmt(n) { return (n < 10 ? '0' : '') + n; }
+var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 function tick() {
     var d = new Date();
-    $('#suTime').textContent = fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
-    $('#suDate').textContent = d.getFullYear() + '/' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate());
+    $('#clkTime').textContent = fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
+    $('#clkDate').textContent = DOW[d.getDay()] + ' ' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate()) + '/' + d.getFullYear();
 }
 setInterval(tick, 1000); tick();
 
 function rowVal(r) {
-    var key = r[1], d = new Date();
-    if (key === 'time') return fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
-    if (key === 'date') return d.getFullYear() + '/' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate());
-    if (key === 'biosv') return 'W12.1.0';
-    if (key === 'cpu') return 'Virtual CPU';
-    if (key === 'mem') return '4096 MB';
-    if (r[2]) { if (!(key in vals)) vals[key] = 0; return r[2][vals[key]]; }
+    var d = new Date();
+    if (r.kind === 'clock') return fmt(d.getHours()) + ':' + fmt(d.getMinutes()) + ':' + fmt(d.getSeconds());
+    if (r.kind === 'date') return DOW[d.getDay()] + ' ' + fmt(d.getMonth() + 1) + '/' + fmt(d.getDate()) + '/' + d.getFullYear();
+    if (r.info !== undefined) return r.info;
+    if (r.options) return r.options[vals[r.key]];
     return '';
 }
 
 function render() {
     var t = TABS[state.tab];
-    $('#suNav').innerHTML = t.nav.map(function (n, i) {
-        return '<button class="' + (i === state.nav ? 'sel' : '') + '" data-i="' + i + '">' + n + '</button>';
+    $('#tabs').innerHTML = TABS.map(function (x, i) {
+        return '<button class="' + (i === state.tab ? 'active' : '') + '" data-i="' + i + '">' + x.name + '</button>';
     }).join('');
-    $('#suMain').innerHTML = t.rows.map(function (r, i) {
-        var v = rowVal(r), editable = !!r[2];
-        return '<div class="su-row' + (i === state.row ? ' sel' : '') + '" data-i="' + i + '">' +
-            '<span class="k">' + r[0] + '</span>' +
-            (v !== '' ? '<span class="v' + (editable ? ' edit' : '') + '">[' + v + ']</span>' : '') +
+    $('#pane').innerHTML = t.rows.map(function (r, i) {
+        var v = rowVal(r), editable = !!r.options;
+        return '<div class="row' + (i === state.row ? ' sel' : '') + (editable ? ' opt' : '') + '" data-i="' + i + '">' +
+            '<span class="k">' + r.label + '</span>' +
+            '<span class="v">' + (v !== '' ? (editable ? '[' + v + ']' : v) : '') + '</span>' +
             '</div>';
     }).join('');
-    $all('#suTabs .su-tab').forEach(function (b) {
-        b.classList.toggle('active', b.dataset.tab === state.tab);
+    $('#helpText').textContent = t.rows[state.row].help || '';
+
+    Array.prototype.forEach.call($('#tabs').children, function (b) {
+        b.addEventListener('click', function () {
+            state.tab = +b.dataset.i; state.row = 0; render();
+        });
+    });
+    Array.prototype.forEach.call($('#pane').children, function (el) {
+        el.addEventListener('click', function () {
+            state.row = +el.dataset.i; activate();
+        });
     });
 }
 
-function dlg(show, text, onYes) {
-    $('#suDlgText').textContent = text;
-    $('#suDlg').classList.toggle('show', show);
-    $('#suDlgYes').onclick = function () { dlg(false); if (onYes) onYes(); };
-    $('#suDlgNo').onclick = function () { dlg(false); };
+/* ---------- 对话框 ---------- */
+var dlgOpen = false, dlgFocus = 0, dlgYes = null;
+function openDlg(msg, onYes) {
+    $('#dlgMsg').textContent = msg;
+    dlgYes = onYes || null; dlgFocus = 0; dlgOpen = true;
+    paintDlg();
+    $('#dlgWrap').classList.add('show');
 }
+function closeDlg() {
+    dlgOpen = false; dlgYes = null;
+    $('#dlgWrap').classList.remove('show');
+}
+function paintDlg() {
+    $('#btnYes').classList.toggle('focus', dlgFocus === 0);
+    $('#btnNo').classList.toggle('focus', dlgFocus === 1);
+}
+$('#btnYes').addEventListener('click', function () { var f = dlgYes; closeDlg(); if (f) f(); });
+$('#btnNo').addEventListener('click', closeDlg);
 
 function leave() { window.location.href = './boot.html'; }
 
-function cycle(dir) {
+function doAction(a) {
+    if (a === 'save') openDlg('Save configuration and exit?', leave);
+    else if (a === 'discard') openDlg('Discard changes and exit?', leave);
+    else if (a === 'defaults') openDlg('Load Optimized Defaults?', function () { resetVals(); render(); });
+}
+
+function activate() {
     var r = TABS[state.tab].rows[state.row];
-    if (!r[2]) {
-        if (r[1] === 'act_save') dlg(true, '保存更改并退出？', leave);
-        else if (r[1] === 'act_discard') dlg(true, '放弃更改并退出？', leave);
-        return;
-    }
-    var k = r[1], n = r[2].length;
-    vals[k] = ((vals[k] || 0) + dir + n) % n;
+    if (r.action) { doAction(r.action); return; }
+    if (!r.options) return;
+    var n = r.options.length;
+    vals[r.key] = (vals[r.key] + 1) % n;
     render();
 }
 
-$all('#suTabs .su-tab').forEach(function (b) {
-    b.addEventListener('click', function () { state.tab = b.dataset.tab; state.nav = 0; state.row = 0; render(); });
-});
-$('#suNav').addEventListener('click', function (e) {
-    var b = e.target.closest('button'); if (!b) return;
-    state.nav = +b.dataset.i; state.row = 0; render();
-});
-$('#suMain').addEventListener('click', function (e) {
-    var r = e.target.closest('.su-row'); if (!r) return;
-    state.row = +r.dataset.i; cycle(1);
-});
-
 document.addEventListener('keydown', function (e) {
-    if ($('#suDlg').classList.contains('show')) {
-        if (e.key === 'Escape') dlg(false);
-        return;
+    if (dlgOpen) {
+        switch (e.key) {
+            case 'ArrowLeft': case 'ArrowRight': case 'Tab':
+                dlgFocus = 1 - dlgFocus; paintDlg(); break;
+            case 'Enter':
+                var f = dlgYes; if (dlgFocus === 1) f = null; closeDlg(); if (f) f(); break;
+            case 'Escape': closeDlg(); break;
+            case 'y': case 'Y': var fy = dlgYes; closeDlg(); if (fy) fy(); break;
+            case 'n': case 'N': closeDlg(); break;
+            default: return;
+        }
+        e.preventDefault(); return;
     }
-    var tabs = Object.keys(TABS), ti = tabs.indexOf(state.tab);
-    var rows = TABS[state.tab].rows.length;
+    var rows = TABS[state.tab].rows.length, n = TABS.length;
     switch (e.key) {
-        case 'ArrowLeft': state.tab = tabs[(ti + tabs.length - 1) % tabs.length]; state.nav = 0; state.row = 0; break;
-        case 'ArrowRight': state.tab = tabs[(ti + 1) % tabs.length]; state.nav = 0; state.row = 0; break;
-        case 'ArrowUp': state.row = (state.row + rows - 1) % rows; break;
-        case 'ArrowDown': state.row = (state.row + 1) % rows; break;
-        case 'Enter': cycle(1); return;
-        case 'F10': dlg(true, '保存更改并退出？', leave); return;
+        case 'ArrowLeft':
+            state.tab = (state.tab + n - 1) % n; state.row = 0; break;
+        case 'ArrowRight':
+            state.tab = (state.tab + 1) % n; state.row = 0; break;
+        case 'ArrowUp':
+            state.row = (state.row + rows - 1) % rows; break;
+        case 'ArrowDown':
+            state.row = (state.row + 1) % rows; break;
+        case 'Enter': activate(); return;
+        case 'F9':
+            openDlg('Load Optimized Defaults?', function () { resetVals(); render(); }); return;
+        case 'F10':
+            openDlg('Save configuration and exit?', leave); return;
         case 'Escape': leave(); return;
         default: return;
     }

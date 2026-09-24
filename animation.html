@@ -17,25 +17,28 @@
     body.fadeout { opacity: 0; }
 
     .boot-stage {
-        display: flex; flex-direction: column; align-items: center; gap: 44px;
+        display: flex; flex-direction: column; align-items: center; gap: 30px;
     }
 
-    /* 视频开场：霓虹品红 Windows 轮廓线 → 实色徽标 */
-    .winmark { width: 104px; height: 104px; transform: perspective(420px) rotateY(-14deg); }
-    .winmark path {
-        fill: rgba(255,45,149,0);
-        stroke: #ff2d95; stroke-width: 3; stroke-linejoin: round;
-        /* 描边绘制动画：单条时间线，无打架 */
-        stroke-dasharray: 320; stroke-dashoffset: 320;
-        animation: draw 1.6s ease-in-out .15s forwards, fillin .8s ease-in 1.5s forwards;
+    /* 趴着的猫：黑线剪影用 invert(1) 转为白色线条 */
+    .boot-cat {
+        width: 130px; height: 130px; object-fit: contain;
+        filter: invert(1);
+        display: block;
     }
-    @keyframes draw { to { stroke-dashoffset: 0; } }
-    @keyframes fillin { to { fill: rgba(255,45,149,1); } }
+
+    /* 标语：衬线体，克制，不转大写 */
+    .caption {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 16px;
+        letter-spacing: 0.18em;
+        color: rgba(255,255,255,.85);
+    }
 
     /* 单圆环 spinner：匀速 linear，无 SMIL 双环打架 */
     .spinner {
         width: 40px; height: 40px; border-radius: 50%;
-        border: 3.5px solid rgba(255,255,255,.14);
+        border: 7px solid rgba(255,255,255,.14);
         border-top-color: #ff2d95;
         animation: spin .85s linear infinite;
         opacity: 0;
@@ -44,18 +47,14 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
-        .winmark path, .spinner { animation-duration: .01s; }
+        .spinner { animation-duration: .01s; }
     }
 </style>
 </head>
 <body>
     <div class="boot-stage">
-        <svg class="winmark" viewBox="0 0 100 100" aria-label="Windows 12">
-            <path d="M18 26 L46 23 L46 48 L18 48 Z"/>
-            <path d="M52 22 L82 19 L82 48 L52 48 Z"/>
-            <path d="M18 54 L46 54 L46 77 L18 74 Z"/>
-            <path d="M52 54 L82 54 L82 71 L52 74 Z"/>
-        </svg>
+        <img class="boot-cat" src="img/boot-cat.png" alt="Cat">
+        <div class="caption">Art is Eternal</div>
         <div class="spinner" id="spinner"></div>
     </div>
     <script src="scripts/animation.js"></script>
