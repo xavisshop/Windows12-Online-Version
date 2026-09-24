@@ -2,9 +2,16 @@
   0% { 
     opacity: 1;
   }
-  100% { 
+  55% { 
     opacity: 0.3;
     background-color: rgba(255, 255, 255, 0.5);
+  }
+  85% {
+    opacity: 0.3;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  100% { 
+    opacity: 1;
   }
 }
 
@@ -13,12 +20,20 @@
     opacity: 0;
     transform: translate(-50%, -50%) rotate(0deg);
   }
-  30% {
+  15% {
     opacity: 1;
     transform: translate(-50%, -50%) rotate(0deg);
   }
-  100% { 
+  55% { 
     opacity: 1;
     transform: translate(-50%, -50%) rotate(-90deg);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg);
   }
 }
