@@ -1049,7 +1049,7 @@ function pgSystem() {
         <span class="wstats"><span class="wstat"><span class="wrow-ico">${ICONS.navUpdate}</span><span><b>Windows 更新</b><i>检查更新</i></span></span></span>
     </div>
     ${wcard(wrow('rScreen', '屏幕', '显示器、亮度、夜间模式、显示器配置文件'))}
-    ${wcard(wrow('rSound', '声音', '音量、输出、输入、声音设备'))}
+    ${wcard(wrowPage('rSound', '声音', '音量、输出、输入、声音设备', 'sound'))}
     ${wcard(wrow('bell', '通知', '来自应用和系统的通知、请勿打扰'))}
     ${wcard(wrow('rFocus', '专注', '减少干扰'))}
     ${wcard(wrow('rPower', '电源', '屏幕和睡眠、电源模式、节能模式'))}
@@ -1066,6 +1066,22 @@ function pgSystem() {
     ${wcard(wrow('rSysComp', '系统组件', '管理 Windows 附带的系统组件'))}`;
 }
 
+function pgSound() {
+    return `<div class="wtitle">系统 > 声音</div>
+    ${wcard(`
+        <div class="wrow-t">输出</div>
+        ${wrow('rSound', '选择播放设备', '扬声器 (High Definition Audio Device)')}
+        <div class="wvol"><span class="wrow-ico">${ICONS.rSound}</span><input type="range" min="0" max="100" value="67" data-vol><b data-volv>67</b></div>
+    `)}
+    ${wcard(`
+        <div class="wrow-t">输入</div>
+        ${wrow('rMic', '选择输入设备', '麦克风 (High Definition Audio Device)')}
+        <div class="wvol"><span class="wrow-ico">${ICONS.rMic}</span><input type="range" min="0" max="100" value="80" data-vol><b data-volv>80</b></div>
+    `)}
+    ${wcard(`
+        ${wrow('rSound', '音量混合器', '应用音量和设备首选项', `<span class="wchev">›</span>`)}
+    `)}`;
+}
 function pgBt() {
     return `<div class="wtitle">蓝牙和其他设备</div>
     ${wcard(wrow('rDevice', '设备', '鼠标、键盘、触笔、音频、显示器和“展开”、其他设备',
@@ -1222,6 +1238,7 @@ const SET_PAGES = {
     home: pgHome, system: pgSystem, bt: pgBt, net: pgNet, personal: pgPersonal,
     apps: pgApps, account: pgAccount, time: pgTime, gaming: pgGaming,
     access: pgAccess, privacy: pgPrivacy, update: pgUpdate, lockscreen: pgLockScreen,
+    sound: pgSound,
 };
 
 function initSettings(root) {
@@ -1630,21 +1647,48 @@ function buildTerminal() {
 
 /* ================= 商店 ================= */
 function buildStore() {
-    const html = `<div class="store" data-store>
-        <div class="store-hero"><h3>精选应用</h3><p>为 Windows 12 网页版挑选的好应用</p></div>
-        <div class="store-grid">${APPS.map(a => `
-            <div class="store-card">${ico(a.icon)}<b>${esc(a.name)}</b><i>免费 · 演示版</i><button data-get="${a.id}">获取</button></div>`).join('')}
+    const navItems = [
+        { id: 'home', icon: 'home', label: '主页' },
+        { id: 'apps', icon: 'grid', label: '应用' },
+        { id: 'gaming', icon: 'rGamebar', label: '游戏' },
+        { id: 'ent', icon: 'rFilm', label: '娱乐' },
+        { id: 'ai', icon: 'img:img/icons/copilot.svg', label: 'AI Hub' },
+    ];
+    const html = `<div class="mstore" data-store>
+        <aside class="mstore-side">
+            <div class="mstore-avatar">${ICONS.rAvatar}</div>
+            ${navItems.map(n => `<button class="mstore-nav${n.id === 'home' ? ' active' : ''}" data-snav="${n.id}" title="${n.label}">${ico(n.icon)}</button>`).join('')}
+            <div class="mstore-side-btm"><button class="mstore-nav" title="库">${ico('rLib')}</button></div>
+        </aside>
+        <div class="mstore-main">
+            <div class="mstore-top"><div class="mstore-search">${ICONS.search}<input placeholder="搜索应用、游戏、电影等" data-ssearch></div></div>
+            <div class="mstore-hero">
+                <div class="mstore-hero-card"><div class="mstore-hero-tx"><b>精选</b><h3>为 Windows 12 精选的应用</h3><p>探索专为新系统优化的体验</p></div></div>
+            </div>
+            <div class="mstore-sec"><div class="mstore-sec-h"><b>热门应用</b><span>查看全部 ›</span></div>
+                <div class="mstore-grid">${APPS.slice(0, 8).map(a => `
+                    <div class="mstore-card">${ico(a.icon)}<div class="mstore-card-tx"><b>${esc(a.name)}</b><i>免费</i></div><button data-get="${a.id}">获取</button></div>`).join('')}
+                </div></div>
+            <div class="mstore-sec"><div class="mstore-sec-h"><b>热门游戏</b><span>查看全部 ›</span></div>
+                <div class="mstore-grid">${APPS.slice(0, 4).map(a => `
+                    <div class="mstore-card">${ico(a.icon)}<div class="mstore-card-tx"><b>${esc(a.name)}</b><i>免费</i></div><button data-get="${a.id}">获取</button></div>`).join('')}
+                </div></div>
         </div></div>`;
     setTimeout(() => {
-        $('[data-store]').addEventListener('click', e => {
+        const root = $('[data-store]'); if (!root) return;
+        root.addEventListener('click', e => {
             const b = e.target.closest('[data-get]'); if (!b) return;
             const a = appById(b.dataset.get);
             b.textContent = '打开'; b.onclick = () => openApp(a.id);
-            toast(`「${a.name}」已安装（演示）`, '✅');
+            toast(`「${a.name}」已安装`, 'check');
             b.addEventListener('click', () => openApp(a.id), { once: true });
         });
+        root.querySelectorAll('[data-snav]').forEach(n => n.addEventListener('click', () => {
+            root.querySelectorAll('[data-snav]').forEach(x => x.classList.remove('active'));
+            n.classList.add('active');
+        }));
     }, 0);
-    return { html, w: 900, h: 600, title: 'Microsoft Store' };
+    return { html, w: 1020, h: 640, title: 'Microsoft Store' };
 }
 
 /* ================= 托盘图标填充 ================= */
@@ -1803,7 +1847,6 @@ function wireGlobal() {
     // 键盘
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closePanels();
-        if (e.metaKey || e.key === 'Meta') { e.preventDefault(); togglePanel('startMenu'); }
     });
     // 锁屏
     $('#lockscreen').addEventListener('click', () => $('#lockscreen').classList.add('hide'));
