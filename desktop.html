@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows 12</title>
     <link rel="icon" type="image/png" href="icon/logo-sm.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
@@ -20,11 +23,39 @@
             <div class="lock-time" id="lockTime">--:--</div>
             <div class="lock-date" id="lockDate"></div>
         </div>
-        <div class="lock-hint">点击任意处进入</div>
+        <div class="lock-widgets" id="lockWidgets"></div>
     </div>
 
     <!-- 桌面图标 -->
     <div id="desktopIcons"></div>
+
+    <!-- AI 助手侧边栏（仿 win12-online Copilot：右侧滑出） -->
+    <aside id="aiPanel" aria-label="AI 助手">
+        <div class="aip-head">
+            <span class="aip-ico" id="aiPanelIco"></span>
+            <div class="aip-title"><b>AI 助手</b><i>OrcaRouter 驱动 · 多模型接入</i></div>
+            <button class="aip-btn" id="aiPanelGear" title="设置">⚙</button>
+            <button class="aip-btn" id="aiPanelClose" title="关闭">✕</button>
+        </div>
+        <div class="aip-set" id="aiPanelSet" hidden>
+            <div class="aip-set-t">接入设置</div>
+            <label>API Key</label>
+            <input type="password" id="aiPanelKey" class="winput" placeholder="输入你的 OrcaRouter API Key" spellcheck="false">
+            <label>模型 <span>默认自动路由，也可填写任意模型 ID</span></label>
+            <input id="aiPanelModel" class="winput" spellcheck="false">
+            <div class="aip-set-row">
+                <button class="wbtn" id="aiPanelSave">保存</button>
+                <button class="wbtn2" id="aiPanelClear">清除</button>
+                <span id="aiPanelStat"></span>
+            </div>
+            <p class="aip-note">Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。<br><a href="https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14" target="_blank" rel="noopener">获取 Key →</a></p>
+        </div>
+        <div class="aip-msgs" id="aiPanelMsgs"></div>
+        <div class="aip-input">
+            <input id="aiPanelIn" class="winput" placeholder="输入消息，Enter 发送…" spellcheck="false">
+            <button class="wbtn" id="aiPanelSend">发送</button>
+        </div>
+    </aside>
 
     <!-- 小组件面板（视频：大时钟 + 卡片网格） -->
     <div id="widgetsPanel">
@@ -59,10 +90,10 @@
     <nav id="taskbar">
         <div class="tb-left" id="tbWidgets">
             <button class="tb-widget" id="tbWeather" title="天气"><span class="wx-ico">⛅</span><span>24°C</span></button>
-            <button class="tb-widget" id="tbStock" title="股市"><span class="st-up">▲</span><span>MSFT<br><b>+0.46</b></span></button>
-            <button class="tb-widget tb-media" id="tbMedia" title="媒体">
+            <button class="tb-widget" id="tbStock" title="股市" hidden><span class="st-up">▲</span><span>MSFT<br><b>+0.46</b></span></button>
+            <button class="tb-widget tb-media" id="tbMedia" title="媒体" hidden>
                 <span class="md-art"></span>
-                <span class="md-meta"><b>Wheezing</b><i>Dylan Sitts</i></span>
+                <span class="md-meta"><b></b><i></i></span>
                 <span class="md-btns"><i data-m="prev">⏮</i><i data-m="play">▶</i><i data-m="next">⏭</i></span>
             </button>
         </div>
