@@ -77,6 +77,86 @@ const ICONS = {
     game: S('<rect x="2" y="7" width="20" height="11" rx="5.5" fill="#22c55e"/><path d="M8 10.5v4M6 12.5h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.5" cy="11.5" r="1.3" fill="#fff"/><circle cx="18" cy="14" r="1.3" fill="#fff"/>'),
     music: S('<circle cx="8" cy="17.5" r="3" fill="#f59e0b"/><circle cx="17" cy="15.5" r="3" fill="#f59e0b"/><path d="M11 17.5V6l9-2v11.5" fill="none" stroke="#f59e0b" stroke-width="2.4"/>'),
 };
+/* ---------- 设置页图标：Win11 截图 1:1 手绘线稿 ---------- */
+const L = inner => S(`<g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${inner}</g>`);
+Object.assign(ICONS, {
+    /* 左侧导航（彩色） */
+    bell: S('<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2.5h-15z" fill="none" stroke="#e8e8e8" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20a4 4 0 0 0 8 0" fill="none" stroke="#e8e8e8" stroke-width="1.8" stroke-linecap="round"/>'),
+    navHome: S('<path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#ff9f43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.8 10.8V20h12.4v-9.2" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+    navSystem: S('<rect x="4" y="5" width="16" height="11" rx="2" fill="#4cc2ff"/><path d="M9 20h6" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round"/>'),
+    navBt: S('<path d="M12 3.5v17" stroke="#4cc2ff" stroke-width="1.8" stroke-linecap="round"/><path d="M6.8 7.2l10.4 9.6-4.4 3.7V3.5l4.4 3.7-10.4 9.6" fill="none" stroke="#4cc2ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'),
+    navNet: S('<path d="M3.5 10a13 13 0 0 1 17 0M6.5 13.8a8.5 8.5 0 0 1 11 0M9.7 17.3a4 4 0 0 1 4.6 0" fill="none" stroke="#4cc2ff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19.6" r="1.5" fill="#4cc2ff"/>'),
+    navPersonal: S('<path d="M15.6 3.6l4.8 4.8L10 18.8l-5.6-5.6L15.6 3.6z" fill="#ffb020"/><path d="M4.4 13.2l-1.8 7.2 7.2-1.8-4.2-4.2-1.2-1.2z" fill="#e07b00"/>'),
+    navApps: S('<rect x="4" y="4" width="7" height="7" rx="1.6" fill="#4cc2ff"/><rect x="13" y="4" width="7" height="7" rx="1.6" fill="#2f9fe0"/><rect x="4" y="13" width="7" height="7" rx="1.6" fill="#2f9fe0"/><rect x="13" y="13" width="7" height="7" rx="1.6" fill="#4cc2ff"/>'),
+    navAccount: S('<circle cx="12" cy="8" r="4" fill="#2dd4bf"/><path d="M4.6 20a7.6 7.6 0 0 1 14.8 0" fill="#2dd4bf"/>'),
+    navTime: S('<circle cx="12" cy="12" r="8.6" fill="none" stroke="#4cc2ff" stroke-width="2"/><path d="M12 7.4V12l3.2 2" fill="none" stroke="#4cc2ff" stroke-width="2" stroke-linecap="round"/>'),
+    navGame: S('<path d="M7.5 8.5h9a5 5 0 0 1 5 5c0 2.7-1.9 4.5-4 4.5-1.5 0-2.4-.9-3.2-2.3H9.7c-.8 1.4-1.7 2.3-3.2 2.3-2.1 0-4-1.8-4-4.5a5 5 0 0 1 5-5z" fill="#6b7cff"/><circle cx="9" cy="12.8" r="1.2" fill="#fff"/><circle cx="15" cy="11.8" r="1.2" fill="#fff"/><circle cx="17" cy="14" r="1.2" fill="#fff"/>'),
+    navAccess: S('<circle cx="12" cy="5.4" r="2.6" fill="#4cc2ff"/><path d="M12 9.5V15M4.8 11.5l7.2-1.2 7.2 1.2M12 15l-3.2 5.6M12 15l3.2 5.6" fill="none" stroke="#4cc2ff" stroke-width="2" stroke-linecap="round"/>'),
+    navPrivacy: S('<path d="M12 2.8l7.2 2.6v5.3c0 5.2-3.1 8.8-7.2 10.3-4.1-1.5-7.2-5.1-7.2-10.3V5.4L12 2.8z" fill="#9aa0a6"/>'),
+    navUpdate: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+    navAi: S('<path d="M4 4.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9.5L4 20V5.5a1 1 0 0 1 1-1z" fill="#a855f7"/><circle cx="9" cy="10" r="1.3" fill="#fff"/><circle cx="13" cy="10" r="1.3" fill="#fff"/><circle cx="17" cy="10" r="1.3" fill="#fff"/>'),
+    /* 通用占位头像（默认系统头像，不用真人信息） */
+    rAvatar: S('<circle cx="12" cy="12" r="11.5" fill="#3a3a40"/><circle cx="12" cy="9.3" r="4" fill="#9a9a9a"/><path d="M4.9 19.6a7.3 7.3 0 0 1 14.2 0" fill="#9a9a9a"/>'),
+    /* 行图标（白色线稿） */
+    rScreen: L('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M9 21h6M12 17v4"/>'),
+    rSound: L('<path d="M4 10v4h3.2L12 18V6L7.2 10H4z"/><path d="M15.5 9.3a4.2 4.2 0 0 1 0 5.4M18 6.8a7.6 7.6 0 0 1 0 10.4"/>'),
+    rFocus: L('<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="2.6"/>'),
+    rPower: L('<path d="M12 3v8"/><path d="M6.2 6.4a8 8 0 1 0 11.6 0"/>'),
+    rStorage: L('<rect x="3.5" y="6.5" width="17" height="11" rx="2"/><circle cx="8" cy="12" r="1.1"/><path d="M12.5 12H18"/>'),
+    rMulti: L('<rect x="8.5" y="3.5" width="12" height="9.5" rx="1.6"/><path d="M3.5 8.5v8.4a1.6 1.6 0 0 0 1.6 1.6h11.4"/>'),
+    rAdv: L('<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9.5" cy="7" r="2.1"/><circle cx="14.5" cy="12" r="2.1"/><circle cx="8.5" cy="17" r="2.1"/>'),
+    rActive: L('<circle cx="12" cy="12" r="8.4"/><path d="M8.3 12.4l2.6 2.6 5-5.8"/>'),
+    rTrouble: L('<path d="M14.8 5.2a4.2 4.2 0 0 0-5.9 5.3L4 15.4V20h4.6l4.9-4.9a4.2 4.2 0 0 0 5.3-5.9l-3 3-2.4-.7-.7-2.4 3.1-3.9z"/>'),
+    rRecovery: L('<path d="M5 12a7 7 0 1 1-2 4.9"/><path d="M5 21v-5h5"/>'),
+    rProject: L('<rect x="2.5" y="4.5" width="14" height="10" rx="1.6"/><path d="M6 19.5h8"/><path d="M16.5 16.5l5 5m0-5v5h-5"/>'),
+    rRemote: L('<path d="M9.5 5.5L4 12l5.5 6.5M14.5 5.5L20 12l-5.5 6.5"/>'),
+    rClip: L('<rect x="6" y="4.5" width="12" height="16.5" rx="2"/><rect x="9" y="2.5" width="6" height="4" rx="1.2"/>'),
+    rSysComp: L('<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 9.5h16M4 14.5h16M9.5 4v16M14.5 4v16"/>'),
+    rDevice: L('<rect x="2.5" y="8.5" width="12.5" height="8.5" rx="2"/><path d="M6 12h.01M9.3 12h.01M12.6 12h.01M6 14.8h6.5"/><rect x="16.8" y="5.5" width="4.7" height="9.5" rx="2.3"/><path d="M19.1 5.5v4"/>'),
+    rPrinter: L('<path d="M7 8V3.5h10V8"/><rect x="3.5" y="8" width="17" height="8.5" rx="2"/><rect x="7" y="13" width="10" height="7.5" rx="1"/>'),
+    rPhone: L('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.8 18.8h2.4"/>'),
+    rMouse: L('<rect x="8" y="2.5" width="8" height="19" rx="4"/><path d="M12 2.5V9"/>'),
+    rKeyboard: L('<rect x="2.5" y="7" width="19" height="10.5" rx="2"/><path d="M6.5 10.5h.01M10.5 10.5h.01M14.5 10.5h.01M18 10.5h.01M7 14.5h10"/>'),
+    rPen: L('<path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 0 1 2.9 0l.1.1a2 2 0 0 1 0 2.9L8.2 18.8 4 20z"/><path d="M14.7 6.3l3 3"/>'),
+    rAutoplay: L('<circle cx="12" cy="12" r="8.4"/><path d="M10 8.3l6.2 3.7-6.2 3.7V8.3z"/>'),
+    rUsb: L('<path d="M10 5.5h4M12 3.5V14"/><path d="M10 5.5l2-2 2 2"/><path d="M12 14l-5.5 6.5M12 14l5.5 3.5"/><circle cx="5.8" cy="20" r="1.4"/><rect x="16.6" y="16.4" width="2.8" height="2.8"/>'),
+    rBg: L('<rect x="3.5" y="5" width="17" height="14.5" rx="2"/><circle cx="9" cy="10" r="1.7"/><path d="M3.5 17.5l5-4.5 3.8 3 3.2-2.2 5 3.7"/>'),
+    rColor: L('<path d="M12 3.8a8.2 8.2 0 1 0 .1 16.4c1.4 0 2.1-.9 1.5-2-.7-1.2.1-2.6 1.6-2.6h1.6a4.2 4.2 0 0 0 4.2-4.2C21 7 17 3.8 12 3.8z"/><circle cx="8.3" cy="10.2" r="1.1"/><circle cx="12" cy="7.8" r="1.1"/><circle cx="15.7" cy="10.2" r="1.1"/>'),
+    rTheme: L('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>'),
+    rLight: L('<path d="M11 4l1.7 4.4L17 10l-4.3 1.7L11 16l-1.7-4.3L5 10l4.3-1.6L11 4z"/><path d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>'),
+    rLockScr: L('<rect x="2.5" y="4" width="19" height="12.5" rx="2"/><rect x="10" y="9.8" width="4" height="3.6" rx=".9"/><path d="M10.9 9.8V8.6a1.1 1.1 0 0 1 2.2 0v1.2"/><path d="M9 20.5h6"/>'),
+    rTaskbar: L('<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M2.5 14.5h19"/><circle cx="7" cy="16.8" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="16.8" r=".9" fill="currentColor" stroke="none"/><circle cx="17" cy="16.8" r=".9" fill="currentColor" stroke="none"/>'),
+    rFont: L('<path d="M5.5 20L12 4l6.5 16M7.8 14h8.4"/>'),
+    rUsage: L('<rect x="2.5" y="5" width="12.5" height="9" rx="1.6"/><rect x="16.5" y="9.5" width="5" height="10" rx="1.6"/><path d="M6.5 19.5h5"/>'),
+    rInfo: L('<rect x="2.5" y="5.5" width="19" height="13.5" rx="2"/><circle cx="8.3" cy="10.8" r="2"/><path d="M5.3 16a3.4 3.4 0 0 1 6 0M14 9.8h5M14 13h5"/>'),
+    rLogin: L('<circle cx="8.5" cy="12" r="4"/><path d="M12.5 12H21M17.5 12v3.5M21 12v2.5"/>'),
+    rSync: L('<path d="M4.5 12a7.5 7.5 0 0 1 13-5.1M19.5 12a7.5 7.5 0 0 1-13 5.1"/><path d="M17.5 3.5v3.8h-3.8M6.5 20.5v-3.8h3.8"/>'),
+    rBackup: L('<path d="M7 18.5a4.2 4.2 0 1 1 .6-8.35A5.6 5.6 0 0 1 18.4 12H18a3.2 3.2 0 0 1-1 6.23"/><path d="M12 12.5V19M9.7 14.8L12 12.5l2.3 2.3"/>'),
+    rUsers: L('<circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5a6.4 6.4 0 0 1 12.4 0"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.6a5.6 5.6 0 0 1 5 4.4"/>'),
+    rGamebar: L('<rect x="2.5" y="7" width="19" height="10.5" rx="5.2"/><path d="M8 11v3.4M6.3 12.7h3.4"/><circle cx="15.3" cy="12" r="1.1"/><circle cx="17.6" cy="14" r="1.1"/>'),
+    rCapture: L('<rect x="2.5" y="6.5" width="19" height="12.5" rx="2"/><circle cx="12" cy="12.7" r="3.4"/><circle cx="12" cy="12.7" r="1" fill="currentColor" stroke="none"/>'),
+    rShield: L('<path d="M12 2.8l7.2 2.6v5.3c0 5.2-3.1 8.8-7.2 10.3-4.1-1.5-7.2-5.1-7.2-10.3V5.4L12 2.8z"/><path d="M9.3 12l2.1 2.1 3.6-4.2"/>'),
+    rFindDev: L('<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M12 12l4.5-4.5"/>'),
+    rAds: L('<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V7.8a3.5 3.5 0 0 1 7 0v2.7"/>'),
+    rSpeech: L('<circle cx="10" cy="8" r="3.2"/><path d="M3.8 19.5a6.2 6.2 0 0 1 12.4 0"/><path d="M17.5 8.5a4.2 4.2 0 0 1 0 5.5M20 6.5a7.6 7.6 0 0 1 0 9.5"/>'),
+    rInk: L('<path d="M12 2.8l3.8 8.2L12 21.2 8.2 11 12 2.8z"/><circle cx="12" cy="11" r="1.2"/>'),
+    rDiag: L('<path d="M3.5 3.5V20.5H20.5"/><path d="M8 15.5l3-4.5 3 2.5 4-6.5"/>'),
+    rLoc: L('<path d="M12 21.5s7-6.6 7-11.3a7 7 0 1 0-14 0c0 4.7 7 11.3 7 11.3z"/><circle cx="12" cy="10" r="2.5"/>'),
+    rMic: L('<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>'),
+    rVoice: L('<circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M8.7 8.7a4.7 4.7 0 0 0 0 6.6M15.3 8.7a4.7 4.7 0 0 1 0 6.6M6 6a8.6 8.6 0 0 0 0 12M18 6a8.6 8.6 0 0 1 0 12"/>'),
+    rContacts: L('<rect x="5.5" y="3.5" width="14" height="17" rx="2"/><path d="M5.5 7.5H3.8M5.5 11.5H3.8M5.5 15.5H3.8"/><circle cx="12.5" cy="9.8" r="2"/><path d="M9.5 16a3.2 3.2 0 0 1 6 0"/>'),
+    rCalls: L('<path d="M5.5 3.5h3.8l1.8 4.8-2.3 1.7a12.5 12.5 0 0 0 5.2 5.2l1.7-2.3 4.8 1.8v3.8a2 2 0 0 1-2.1 2A16.5 16.5 0 0 1 3.5 5.6a2 2 0 0 1 2-2.1z"/>'),
+    rPause: L('<rect x="7" y="5" width="3.4" height="14" rx="1.2"/><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"/>'),
+    rHistory: L('<path d="M4.8 12a7.2 7.2 0 1 1 2.1 5.1"/><path d="M4.8 17.5v-5h5"/><path d="M12 8v4.2l3 1.8"/>'),
+    rHelp: L('<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3.6v5M12 15.4v5M3.6 12h5M15.4 12h5"/>'),
+    rGlobe: L('<circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.6 2.4 3.9 5.3 3.9 8.4s-1.3 6-3.9 8.4c-2.6-2.4-3.9-5.3-3.9-8.4s1.3-6 3.9-8.4z"/>'),
+    rMega: L('<path d="M3.5 10.5v4h3l8.5 4v-12l-8.5 4h-3z"/><path d="M18 9.5a4 4 0 0 1 0 6"/><path d="M7 14.5V20"/>'),
+    rEth: L('<path d="M9 2.5V8M15 2.5V8M7 8h10v3.5a5 5 0 0 1-10 0V8zM12 16.5V21"/>'),
+    rBack: L('<path d="M14.5 5.5L8 12l6.5 6.5"/>'),
+    rSearchSm: L('<circle cx="11" cy="11" r="6.2"/><path d="M15.6 15.6L20.5 20.5"/>'),
+    rCheck: L('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
+    rUpdateBig: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
+});
 const ico = (n, cls) => `<span class="${cls || 'a-ico'}">${ICONS[n] || ICONS.exe}</span>`;
 
 /* 图片缩略图：CSS 渐变（视频里的彩色 png 墙） */
@@ -457,7 +537,7 @@ const FS = {
     'OneDrive': { label: 'OneDrive', icon: 'cloud', files: [F('Project Vision UX.pptx', ['work', 'project'], '1 小时前'), F('Plans 2023.docx', ['work'], '2 小时前')] },
     'Desktop': { label: '桌面', icon: 'desktopIco', files: [F('Edge.lnk'), F('文件资源管理器.lnk'), F('年度总结.docx', ['work', 'important']), F('壁纸.png', ['design'])] },
     'Documents': { label: '文档', icon: 'documents', files: [F('Project Vision UX.pptx', ['work', 'project']), F('The History of Eskisehir.docx', ['project']), F('Plans 2023.docx', ['work']), F('Motion Design.aep', ['design', 'project']), F('The Future.pptx', ['important'])] },
-    'Downloads': { label: '下载', icon: 'downloads', files: [F('wallpaper-concept-purple.jpg', ['design']), F('Windows12-Setup.exe'), F('使用说明.txt')] },
+    'Downloads': { label: '下载', icon: 'downloads', files: [F('更新日志.txt'), F('Windows12-Setup.exe'), F('使用说明.txt')] },
     'Pictures': { label: '图片', icon: 'pictures', files: [F('Infinity.png', ['design', 'important']), F('Orange.png', ['design']), F('The Rise.png', ['design']), F('Pastel.png', ['design']), F('Cards.png', ['work']), F('Neon.png', ['design']), F('Lake.png', ['trips']), F('The Rings.png', ['design']), F('Rings 2.png', ['design']), F('Night.png', []), F('Gradient.png', ['design']), F('The Road.png', ['trips']), F('Green.png', []), F('Pentagons.png', ['design']), F('Gradient V2.png', ['design'])] },
     'Projects': { label: '项目', icon: 'folderUp', files: [F('Introduction.pptx', ['work', 'project']), F('Design Guidelines.docx', ['design', 'project']), F('Vision UX.pptx', ['design', 'project']), F('Avdan.aep', ['design', 'important']), F('Wallpapers', ['design']), F('Essentials', [])] },
     'This PC': { label: '此电脑', icon: 'thispc', files: [F('Windows (C:)'), F('数据 (D:)')] },
@@ -783,95 +863,397 @@ function buildSimpleApp(app) {
     };
 }
 
-/* ================= 设置 ================= */
+/* ================= 设置（Win11 截图 1:1） ================= */
+/* 壁纸：纯 CSS 手绘场景，不再引用 AI 生成图片 */
 const WALLPAPERS = [
-    { id: 'concept', name: '紫韵流体', src: 'img/wallpaper-concept-purple.jpg' },
-    { id: 'bloom', name: '绽放', src: 'img/wallpaper-bloom.jpg' },
-    { id: 'classic', name: '经典', src: 'img/img0.jpg' },
+    { id: 'ribbon', name: '紫韵丝带', cls: 'wp-ribbon', accent: '#e0449e' },
+    { id: 'tide', name: '青蓝潮汐', cls: 'wp-tide', accent: '#38bdf8' },
+    { id: 'pastel', name: '暖阳粉彩', cls: 'wp-pastel', accent: '#f59e0b' },
+    { id: 'night', name: '深邃暗夜', cls: 'wp-night', accent: '#7c3aed' },
+    { id: 'neon', name: '霓虹紫', cls: 'wp-neon', accent: '#a855f7' },
+    { id: 'lake', name: '湖畔晨光', cls: 'wp-lake', accent: '#2dd4bf' },
 ];
+function setWallpaper(id) {
+    const w = WALLPAPERS.find(x => x.id === id) || WALLPAPERS[0];
+    ['#wallpaper', '#lockscreen'].forEach(sel => {
+        const el = $(sel);
+        WALLPAPERS.forEach(x => el.classList.remove(x.cls));
+        el.classList.add(w.cls);
+    });
+    store.set('wallpaper', w.id);
+}
+
+const SET_NAV = [
+    { id: 'home', name: '主页', icon: 'navHome' },
+    { id: 'system', name: '系统', icon: 'navSystem' },
+    { id: 'bt', name: '蓝牙和其他设备', icon: 'navBt' },
+    { id: 'net', name: '网络和 Internet', icon: 'navNet' },
+    { id: 'personal', name: '个性化', icon: 'navPersonal' },
+    { id: 'apps', name: '应用', icon: 'navApps' },
+    { id: 'account', name: '帐户', icon: 'navAccount' },
+    { id: 'time', name: '时间和语言', icon: 'navTime' },
+    { id: 'gaming', name: '游戏', icon: 'navGame' },
+    { id: 'access', name: '辅助功能', icon: 'navAccess' },
+    { id: 'privacy', name: '隐私和安全性', icon: 'navPrivacy' },
+    { id: 'update', name: 'Windows 更新', icon: 'navUpdate' },
+    { id: 'ai', name: 'AI 助手', icon: 'navAi' },
+];
+
+/* 行 / 卡片 / 控件 */
+const wchev = '<span class="wchev">›</span>';
+/* 用 div 而非 button，避免右侧控件出现嵌套按钮 */
+const wrow = (icon, title, sub, right) =>
+    `<div class="wrow" data-demo role="button" tabindex="0"><span class="wrow-ico">${icon ? ICONS[icon] : ''}</span><span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${right === undefined ? wchev : right}</span></div>`;
+const wcard = inner => `<div class="wcard">${inner}</div>`;
+const wsec = t => `<div class="wsec">${t}</div>`;
+const wlink = label => `<button class="wlink" data-demo>${label}</button>`;
+const wtoggle = on => `<button class="wtoggle${on ? ' on' : ''}" data-tg aria-label="开关"></button>`;
+const wpCur = () => WALLPAPERS.find(w => w.id === store.get('wallpaper', 'ribbon')) || WALLPAPERS[0];
+const wheoInner = () => {
+    const w = wpCur();
+    return `<span class="wdev ${w.cls}"></span>
+        <span class="whero-tx"><b>${esc(store.get('pcname', 'PC-202501201810'))}</b><i>System Product Name</i><button class="wlink" data-rename>重命名</button></span>`;
+};
+const wthemes = () => {
+    const cur = wpCur().id;
+    return `<div class="wthemes">${WALLPAPERS.map(w =>
+        `<button class="wtheme ${w.cls}${cur === w.id ? ' on' : ''}" data-theme="${w.id}" title="${w.name}"><span class="abar" style="background:${w.accent}"></span></button>`).join('')}</div>`;
+};
+
 function buildSettings() {
     const html = `
     <div class="set" data-set>
-        <div class="set-side">
-            <div class="set-user"><span class="avatar">🐭</span><span><b>xavisshop</b><i>本地账户</i></span></div>
-            <div data-nav>
-                <button class="set-nav active" data-p="system">${ico('thispc')}<span>系统</span></button>
-                <button class="set-nav" data-p="personal">${ico('photos')}<span>个性化</span></button>
-                <button class="set-nav" data-p="apps">${ico('grid')}<span>应用</span></button>
-                <button class="set-nav" data-p="accounts">${ico('user')}<span>账户</span></button>
-                <button class="set-nav" data-p="about">${ico('settings')}<span>关于</span></button>
-            </div>
+        <div class="set-top">
+            <button class="set-back" data-back title="返回">${ICONS.rBack}</button>
+            <span class="set-title">设置</span>
+            <div class="set-search"><span class="ss-ico">${ICONS.rSearchSm}</span><input data-sq placeholder="查找设置" spellcheck="false"></div>
         </div>
-        <div class="set-main" data-page></div>
+        <div class="set-body">
+            <div class="set-side">
+                <div class="set-user"><span class="set-avatar">${ICONS.rAvatar}</span><span class="su-tx"><b>User</b><i>user@example.com</i></span></div>
+                <div data-nav>${SET_NAV.map(n =>
+                    `<button class="set-nav" data-p="${n.id}"><span class="snav-ico">${ICONS[n.icon]}</span><span>${n.name}</span></button>`).join('')}</div>
+            </div>
+            <div class="set-main"><div class="wpage" data-page></div></div>
+        </div>
     </div>`;
     setTimeout(() => initSettings($('[data-set]')), 0);
-    return { html, w: 940, h: 600, title: '设置' };
-}
-function initSettings(root) {
-    const page = $('[data-page]', root);
-    function paint(p) {
-        $$('.set-nav', root).forEach(b => b.classList.toggle('active', b.dataset.p === p));
-        if (p === 'personal') {
-            const cur = store.get('wallpaper', 'concept');
-            page.innerHTML = `<h2>个性化</h2>
-                <div class="set-card"><div class="set-row"><span class="grow"><b>场景</b><i>壁纸会随你的使用而变化（视频：Scenes）</i></span></div>
-                    <div class="wp-pick">${WALLPAPERS.map(w =>
-                        `<button class="wp-opt${cur === w.id ? ' on' : ''}" data-wp="${w.id}"><img src="${w.src}" alt="${w.name}"><span>${w.name}</span></button>`).join('')}</div>
-                </div>
-                <div class="set-card"><div class="set-row"><span class="grow"><b>主题</b><i>深色 / 浅色（视频展示了两种变体）</i></span>
-                    <button class="toggle${document.documentElement.dataset.theme === 'dark' ? ' on' : ''}" data-t="theme"></button></div></div>`;
-        } else if (p === 'system') {
-            page.innerHTML = `<h2>系统</h2>
-                <div class="set-card">
-                    <div class="set-row"><span class="grow"><b>显示</b><i>亮度、缩放、分辨率</i></span><span style="color:var(--text-faint)">›</span></div>
-                    <div class="set-row"><span class="grow"><b>声音</b><i>音量、输出设备</i></span><span style="color:var(--text-faint)">›</span></div>
-                    <div class="set-row"><span class="grow"><b>通知</b><i>来自应用和系统的通知</i></span><button class="toggle on" data-t="notif"></button></div>
-                    <div class="set-row"><span class="grow"><b>电源</b><i>节能模式</i></span><button class="toggle" data-t="saver"></button></div>
-                </div>`;
-        } else if (p === 'apps') {
-            page.innerHTML = `<h2>应用</h2><div class="set-card">${APPS.map(a =>
-                `<div class="set-row">${ico(a.icon)}<span class="grow"><b>${esc(a.name)}</b><i>已安装</i></span><button class="mode-btn" style="padding:5px 14px;font-size:12px" data-open="${a.id}">打开</button></div>`).join('')}</div>`;
-        } else if (p === 'accounts') {
-            page.innerHTML = `<h2>账户</h2><div class="set-card">
-                <div class="set-row"><span class="avatar">🐭</span><span class="grow"><b>xavisshop</b><i>本地账户 · 管理员</i></span></div>
-                <div class="set-row"><span class="grow"><b>同步设置</b><i>跨设备同步主题与壁纸</i></span><button class="toggle" data-t="sync"></button></div></div>`;
-        } else {
-            page.innerHTML = `<h2>关于</h2><div class="set-card" style="text-align:center;padding:30px">
-                <img src="icon/logo-sm.png" style="width:72px;height:72px;margin-bottom:12px">
-                <div style="font-size:18px;font-weight:600;margin-bottom:4px">Windows 12 网页版</div>
-                <div style="font-size:13px;color:var(--text-dim)">概念还原 · 灵感来自 Kamer Kaan Avdan《Introducing Windows 12 (Concept)》</div>
-                <div style="font-size:12px;color:var(--text-faint);margin-top:8px">版本 24H2（网页演示）</div></div>
-            <div class="set-card">
-                <div class="set-row"><span class="grow"><b>Built with OrcaRouter</b><i>OrcaRouter 是一个大模型 API 路由网关：一次接入，即可通过统一接口调用多种主流大模型，按实际调用量计费。</i></span></div>
-                <div class="set-row"><span class="grow"><i>🔀 模型路由 · 💰 按量计费 · 🧩 多模型接入</i></span>
-                    <button class="mode-btn" style="padding:6px 16px;font-size:12px" data-orca>了解更多</button></div>
-            </div>`;
-        }
-    }
-    root.addEventListener('click', e => {
-        const n = e.target.closest('.set-nav'); if (n) { paint(n.dataset.p); return; }
-        const w = e.target.closest('[data-wp]');
-        if (w) { setWallpaper(w.dataset.wp); paint('personal'); return; }
-        const t = e.target.closest('.toggle');
-        if (t) {
-            t.classList.toggle('on');
-            if (t.dataset.t === 'theme') { QS.find(q => q.id === 'theme').on = t.classList.contains('on'); renderQS(); applyQS(); }
-            else toast('设置已保存（演示）');
-            return;
-        }
-        const o = e.target.closest('[data-open]'); if (o) openApp(o.dataset.open);
-        if (e.target.closest('[data-orca]')) { window.open('https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14', '_blank'); }
-    });
-    paint('system');
-}
-function setWallpaper(id) {
-    const w = WALLPAPERS.find(x => x.id === id);
-    if (!w) return;
-    $('#wallpaper').style.backgroundImage = `url("${w.src}")`;
-    $('#lockscreen').style.backgroundImage = `url("${w.src}")`;
-    store.set('wallpaper', id);
+    return { html, w: 980, h: 620, title: '设置' };
 }
 
+/* ---------------- 各页面 ---------------- */
+function pgHome() {
+    const m365 = [['W', '#2b88d8'], ['X', '#217346'], ['P', '#d24726'], ['O', '#0f6cbd'], ['N', '#7719aa'], ['D', '#0078d4']]
+        .map(([t, c]) => `<span class="m365a" style="background:${c}">${t}</span>`).join('');
+    return `<div class="wtitle">主页</div>
+    <div class="whero">${wheoInner()}
+        <span class="wstats">
+            <span class="wstat"><span class="wrow-ico">${ICONS.rEth}</span><span><b>以太网</b><i>已连接</i></span></span>
+            <span class="wstat"><span class="wrow-ico">${ICONS.navUpdate}</span><span><b>Windows 更新</b><i>上次检查时间: 83 天前</i></span></span>
+        </span>
+    </div>
+    <div class="wcols">
+        <div>
+            ${wcard(`<div class="wcard-h"><b>推荐设置</b><i>最近使用的和常用的设置</i></div>
+                ${wrow('clock', '日期和时间')}${wrow('grid', '默认应用')}${wrow('rGlobe', '语言和区域')}`)}
+            ${wcard(`<div class="wcard-h"><b>个性化设备</b></div>
+                <div style="padding:0 16px 12px">${wthemes()}</div>
+                ${wrow('rColor', '色彩模式', '', `<button class="wdd" data-ddmode><span>${document.documentElement.dataset.theme === 'dark' ? '深色' : '浅色'}</span><span class="dd-a">▾</span></button>`)}
+                ${wrow('', '浏览更多背景、颜色和主题')}`)}
+        </div>
+        <div>
+            ${wcard(`<div class="wcard-h"><div class="mslogo"><i></i><i></i><i></i><i></i></div>
+                <b>充分利用 Microsoft 365</b>
+                <i>你可以访问 5 GB 的云存储空间和 Word 等 Web 应用。若要获得更多存储空间、高级安全性和高效工作应用，请订阅 Microsoft 365 个人版或家庭版。</i>
+                <div class="m365apps">${m365}</div>
+                <button class="wbtn" data-demo>获取 Microsoft 365</button></div>`)}
+            ${wcard(`<div class="wcard-h"><span class="od-ico">${ICONS.cloud}</span><b>云存储空间</b>
+                <i>出现问题，无法加载你的存储详细信息。请稍等片刻，然后重试。</i></div>`)}
+        </div>
+    </div>
+    <button class="wlink whehelp" data-demo><span class="wrow-ico sm">${ICONS.rHelp}</span>获取帮助</button>`;
+}
+
+function pgSystem() {
+    return `<div class="wtitle">系统</div>
+    <div class="whero">${wheoInner()}
+        <span class="wstats"><span class="wstat"><span class="wrow-ico">${ICONS.navUpdate}</span><span><b>Windows 更新</b><i>检查更新</i></span></span></span>
+    </div>
+    ${wcard(wrow('rScreen', '屏幕', '显示器、亮度、夜间模式、显示器配置文件'))}
+    ${wcard(wrow('rSound', '声音', '音量、输出、输入、声音设备'))}
+    ${wcard(wrow('bell', '通知', '来自应用和系统的通知、请勿打扰'))}
+    ${wcard(wrow('rFocus', '专注', '减少干扰'))}
+    ${wcard(wrow('rPower', '电源', '屏幕和睡眠、电源模式、节能模式'))}
+    ${wcard(wrow('rStorage', '存储', '存储空间、驱动器、配置规则'))}
+    ${wcard(wrow('share', '附近共享', '可发现性、收到文件的位置'))}
+    ${wcard(wrow('rMulti', '多任务处理', '贴靠窗口、桌面、任务切换'))}
+    ${wcard(wrow('rAdv', '高级', '性能、优化和开发人员功能'))}
+    ${wcard(wrow('rActive', '激活', '激活状态、订阅、产品密钥'))}
+    ${wcard(wrow('rTrouble', '疑难解答', '建议的疑难解答、首选项和历史记录'))}
+    ${wcard(wrow('rRecovery', '恢复', '重置、高级启动、返回'))}
+    ${wcard(wrow('rProject', '投影到此电脑', '权限、配对 PIN、可发现性'))}
+    ${wcard(wrow('rRemote', '远程桌面', '远程桌面用户、连接权限'))}
+    ${wcard(wrow('rClip', '剪贴板', '剪切和复制历史记录、同步、清除'))}
+    ${wcard(wrow('rSysComp', '系统组件', '管理 Windows 附带的系统组件'))}`;
+}
+
+function pgBt() {
+    return `<div class="wtitle">蓝牙和其他设备</div>
+    ${wcard(wrow('rDevice', '设备', '鼠标、键盘、触笔、音频、显示器和“展开”、其他设备',
+        `<button class="wbtn" data-demo>添加设备</button>${wchev}`))}
+    ${wcard(wrow('rPrinter', '打印机和扫描仪', '首选项'))}
+    ${wcard(wrow('rPhone', '移动设备', '立即从电脑访问移动设备'))}
+    ${wcard(wrow('camera', '摄像头', '连接的摄像头、默认图像设置'))}
+    ${wcard(wrow('rMouse', '鼠标', '按钮、鼠标指针速度、滚动'))}
+    ${wcard(wrow('rKeyboard', '键盘', '字符重复、热键'))}
+    ${wcard(wrow('rPen', '笔和 Windows Ink', '右手或左手、笔按钮快捷方式、手写'))}
+    ${wcard(wrow('rAutoplay', '自动播放', '可移动驱动器和内存的默认设置'))}
+    ${wcard(wrow('rUsb', 'USB', '通知、USB 节电模式'))}`;
+}
+
+function pgNet() {
+    return `<div class="wtitle">网络和 Internet</div>
+    ${wcard(wrow('rEth', '以太网', '已连接'))}
+    ${wcard(wrow('wifi', 'WLAN', '可用网络'))}
+    ${wcard(wrow('rLockScr', 'VPN', ''))}
+    ${wcard(wrow('rGlobe', '代理', ''))}
+    ${wcard(wrow('rAdv', '高级网络设置', '查看所有网络适配器、网络重置'))}`;
+}
+
+function pgPersonal() {
+    return `<div class="wtitle">个性化</div>
+    <div class="wprevrow">
+        <div class="wpreview ${wpCur().cls}">
+            <div class="wpreview-card"><i></i><i></i><i></i><b></b></div>
+        </div>
+        <div class="wprevside">${wsec('选择要应用的主题')}${wthemes()}</div>
+    </div>
+    ${wcard(wrow('rBg', '背景', '背景图像、颜色、幻灯片'))}
+    ${wcard(wrow('rColor', '颜色', '主题色、透明效果、颜色主题'))}
+    ${wcard(wrow('rTheme', '主题', '安装、创建、管理'))}
+    ${wcard(wrow('rLight', '动态光效', '连接的设备、效果、应用设置'))}
+    ${wcard(wrow('rLockScr', '锁屏界面', '锁定屏幕图像、应用和动画'))}
+    ${wcard(wrow('rKeyboard', '文本输入', '触摸键盘、语音输入、表情符号等、输入法编辑器'))}
+    ${wcard(wrow('grid', '开始', '最近使用的应用和项目、文件夹'))}
+    ${wcard(wrow('rTaskbar', '任务栏', '任务栏行为、系统固定项'))}
+    ${wcard(wrow('rFont', '字体', '安装、管理'))}
+    ${wcard(wrow('rUsage', '设备使用情况', '选择你计划使用设备的所有方法。以在 Microsoft 体验中获取个性化的提示、广告和建议。'))}`;
+}
+
+function pgApps() {
+    return `<div class="wtitle">应用</div>
+    ${wcard(wrow('grid', '已安装的应用', '管理此设备上安装的应用'))}
+    ${wcard(wrow('rActive', '默认应用', '为文件类型和链接选择默认应用'))}
+    ${wcard(wrow('plus', '可选功能', '添加或删除 Windows 可选功能'))}
+    ${wcard(wrow('rPower', '启动', '管理开机自动启动的应用'))}`;
+}
+
+function pgAccount() {
+    return `<div class="wtitle">帐户</div>
+    ${wcard(`<div class="wprof"><span class="set-avatar big">${ICONS.rAvatar}</span>
+        <span class="whero-tx"><b>User</b><i>user@example.com</i></span></div>`)}
+    ${wcard(wrow('rInfo', '你的信息', '管理你的帐户信息'))}
+    ${wcard(wrow('rLogin', '登录选项', 'Windows Hello、安全密钥、密码、PIN'))}
+    ${wcard(wrow('mail', '电子邮件和帐户', '用于电子邮件、日历和联系人的帐户'))}
+    ${wcard(wrow('rSync', '同步你的设置', '跨设备同步主题与壁纸', wtoggle(false)))}
+    ${wcard(wrow('rBackup', 'Windows 备份', '备份你的文件和设置'))}
+    ${wcard(wrow('rUsers', '其他用户', '添加或管理此设备上的其他用户'))}
+    <button class="wlink whehelp" data-demo><span class="wrow-ico sm">${ICONS.rHelp}</span>获取帮助</button>`;
+}
+
+function pgTime() {
+    return `<div class="wtitle">时间和语言</div>
+    ${wcard(wrow('clock', '日期和时间', '时区、自动设置时间'))}
+    ${wcard(wrow('rGlobe', '语言和区域', '首选语言、区域格式'))}
+    ${wcard(wrow('rKeyboard', '键入', '触摸键盘、输入法'))}
+    ${wcard(wrow('rSpeech', '语音', '语音识别、语音包'))}`;
+}
+
+function pgGaming() {
+    return `<div class="wtitle">游戏</div>
+    ${wcard(wrow('navGame', 'Xbox 模式', '启用，辅助功能控制器提示'))}
+    ${wcard(wrow('rGamebar', 'Game Bar', '控制器和键盘快捷方式'))}
+    ${wcard(wrow('rCapture', '摄像', '保存位置、录制首选项'))}
+    ${wcard(wrow('game', '游戏模式', '优化电脑以便畅玩'))}`;
+}
+
+function pgAccess() {
+    return `<div class="wtitle">辅助功能</div>
+    ${wsec('视觉')}
+    ${wcard(wrow('rFont', '文本大小', ''))}
+    ${wcard(wrow('rLight', '视觉效果', '滚动效果、透明度、动画'))}
+    ${wcard(wrow('rMouse', '鼠标指针和触控', ''))}
+    ${wcard(wrow('rInk', '文本光标', ''))}
+    ${wcard(wrow('search', '放大镜', ''))}
+    ${wcard(wrow('rColor', '颜色滤镜', ''))}
+    ${wcard(wrow('rTheme', '对比度主题', ''))}
+    ${wcard(wrow('rSpeech', '讲述人', ''))}
+    ${wsec('听觉')}
+    ${wcard(wrow('rSound', '音频', '单声道音频、声音通知'))}
+    ${wcard(wrow('rInk', '字幕', '字幕样式'))}
+    ${wsec('交互')}
+    ${wcard(wrow('rSpeech', '语音', '语音访问、语音输入'))}
+    ${wcard(wrow('rKeyboard', '键盘', '粘滞键、筛选键'))}
+    ${wcard(wrow('rMouse', '鼠标', '鼠标键、指针速度'))}
+    ${wcard(wrow('rFocus', '眼睛控制', ''))}`;
+}
+
+function pgPrivacy() {
+    return `<div class="wtitle">隐私和安全性</div>
+    ${wsec('安全性')}
+    ${wcard(wrow('rShield', 'Windows 安全中心', '适用于你的设备的防病毒、浏览器、防火墙和网络保护'))}
+    ${wcard(wrow('rFindDev', '查找我的设备', '如果你认为设备已丢失，请跟踪设备'))}
+    ${wsec('Windows 权限')}
+    ${wcard(wrow('rAds', '建议和优惠', '广告 ID、个性化优惠、本地内容、应用启动、设置建议、生产力工具'))}
+    ${wcard(wrow('rSpeech', '语音', '用于听写和调控基于语音的交互的在线语音识别'))}
+    ${wcard(wrow('rInk', '墨迹书写和键入个性化', '自定义词典、词典中的字词'))}
+    ${wcard(wrow('rDiag', '诊断和反馈', '诊断数据、墨迹书写和键入数据、反馈频率'))}
+    ${wcard(wrow('search', '搜索', '搜索历史记录、搜索应用、云内容搜索、搜索索引'))}
+    ${wsec('应用权限')}
+    ${wcard(wrow('rLoc', '位置', ''))}
+    ${wcard(wrow('camera', '摄像头', ''))}
+    ${wcard(wrow('rMic', '麦克风', ''))}
+    ${wcard(wrow('rVoice', '语音激活', ''))}
+    ${wcard(wrow('bell', '通知', ''))}
+    ${wcard(wrow('rInfo', '帐户信息', ''))}
+    ${wcard(wrow('rContacts', '联系人', ''))}
+    ${wcard(wrow('calendar', '日历', ''))}
+    ${wcard(wrow('rCalls', '电话呼叫', ''))}`;
+}
+
+function pgUpdate() {
+    return `<div class="wtitle">Windows 更新</div>
+    <div class="wupd">
+        <span class="wupd-ico">${ICONS.rUpdateBig}<span class="wupd-ok">${ICONS.rCheck}</span></span>
+        <span class="whero-tx"><b class="wupd-t">你使用的是最新版本</b><i>上次检查时间: 2026/7/3，10:50</i></span>
+        <button class="wbtn" data-demo style="margin-left:auto">检查更新</button>
+    </div>
+    ${wsec('更多选项')}
+    ${wcard(wrow('rMega', '在最新更新可用后立即获取',
+        `在推出最新的非安全更新、修复和改进时，成为第一批获知这些更新的人员。${'<button class="wlink" data-demo>了解详细信息</button>'}`,
+        `<span class="wtg-lab">关</span>${wtoggle(false)}`))}
+    ${wcard(wrow('rPause', '暂停更新', `选择暂停更新的截止日期。${'<button class="wlink" data-demo>了解详细信息</button>'}`,
+        `<button class="wbtn2" data-demo><span class="wrow-ico sm">${ICONS.calendar}</span>选取日期</button>`))}
+    ${wcard(wrow('rHistory', '更新历史记录', ''))}
+    ${wcard(wrow('rAdv', '高级选项', '传递优化、可选更新、活动时间以及其他更新设置'))}
+    ${wcard(wrow('rUsers', 'Windows 预览体验计划', '获取 Windows 的预览版本，以分享有关新功能和更新的反馈'))}
+    <div class="wnote"><span class="wrow-ico sm ok">${ICONS.rGlobe}</span><span>Windows 更新致力于帮助减少碳排放。</span><button class="wlink" data-demo>了解详细信息</button></div>
+    ${wsec('相关支持')}
+    ${wcard(`<button class="wrow" data-acc><span class="wrow-ico">${ICONS.rGlobe}</span><span class="wrow-tx"><b>Windows 更新帮助</b></span><span class="wchev up">›</span></button>
+        <div class="wacc open" data-accbody>
+            ${wlink('轻松卸载有问题的 Windows 更新')}
+            ${wlink('轻松安装暂停处理的 Windows 更新')}
+            ${wlink('快速修复 Windows 更新错误')}
+            ${wlink('暂停更新以在方便的时间操作')}
+        </div>`)}
+    <button class="wlink whehelp" data-demo><span class="wrow-ico sm">${ICONS.rHelp}</span>获取帮助</button>`;
+}
+
+function pgAi() {
+    const key = store.get('orcarouter_key', '');
+    return `<div class="wtitle">AI 助手</div>
+    ${wcard(`<div class="wrow" style="cursor:default"><span class="wrow-ico">${ICONS.navAi}</span>
+        <span class="wrow-tx"><b>AI 助手（由 OrcaRouter 驱动）</b>
+        <i>通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。Built with OrcaRouter。</i></span>
+        <button class="wbtn" data-orca>了解更多</button></div>`)}
+    ${wcard(`<div class="wcard-h"><b>API Key</b><i>Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。</i></div>
+        <div class="wform">
+            <input type="password" class="winput" data-aikey placeholder="输入你的 OrcaRouter API Key" value="${esc(key)}" spellcheck="false">
+            <div class="wform-row"><button class="wbtn" data-aisave>保存</button><button class="wbtn2" data-aiclear>清除</button>
+            <span class="waistat" data-aistat>${key ? '已保存' : '未设置'}</span></div>
+        </div>`)}
+    ${wcard(`<div class="wcard-h"><b>模型</b><i>默认使用自动路由，也可填写任意模型 ID。</i></div>
+        <div class="wform"><input class="winput" data-aimodel value="${esc(store.get('orcarouter_model', 'orcarouter/auto'))}" spellcheck="false"></div>`)}
+    ${wcard(`<div class="wcard-h"><b>连接测试</b><i>发送一条测试消息，验证 Key 与接口是否可用。</i></div>
+        <div class="wform"><div class="wform-row"><button class="wbtn" data-aitest>发送测试</button></div>
+        <div class="wairesult" data-airesult>尚未测试。</div></div>`)}`;
+}
+
+const SET_PAGES = {
+    home: pgHome, system: pgSystem, bt: pgBt, net: pgNet, personal: pgPersonal,
+    apps: pgApps, account: pgAccount, time: pgTime, gaming: pgGaming,
+    access: pgAccess, privacy: pgPrivacy, update: pgUpdate, ai: pgAi,
+};
+
+function initSettings(root) {
+    const page = $('[data-page]', root);
+    let cur = 'home';
+    function paint(p) {
+        cur = p;
+        $$('.set-nav', root).forEach(b => b.classList.toggle('active', b.dataset.p === p));
+        page.innerHTML = (SET_PAGES[p] || pgHome)();
+        page.scrollTop = 0;
+    }
+    const aiStat = t => { const s = $('[data-aistat]', root); if (s) s.textContent = t; };
+    const aiResult = t => { const s = $('[data-airesult]', root); if (s) s.textContent = t; };
+    root.addEventListener('click', e => {
+        const n = e.target.closest('.set-nav'); if (n) { paint(n.dataset.p); return; }
+        if (e.target.closest('[data-back]')) { paint('home'); return; }
+        const th = e.target.closest('[data-theme]');
+        if (th) { setWallpaper(th.dataset.theme); paint(cur); toast('已应用主题「' + (WALLPAPERS.find(w => w.id === th.dataset.theme) || {}).name + '」'); return; }
+        if (e.target.closest('[data-ddmode]')) {
+            const q = QS.find(x => x.id === 'theme'); q.on = !q.on;
+            renderQS(); applyQS(); paint(cur);
+            toast(q.on ? '已切换深色模式' : '已切换浅色模式'); return;
+        }
+        const tg = e.target.closest('[data-tg]');
+        if (tg) {
+            tg.classList.toggle('on');
+            const lab = tg.previousElementSibling;
+            if (lab && lab.classList.contains('wtg-lab')) lab.textContent = tg.classList.contains('on') ? '开' : '关';
+            toast('设置已保存（演示）'); return;
+        }
+        const acc = e.target.closest('[data-acc]');
+        if (acc) {
+            const b = $('[data-accbody]', root);
+            b.classList.toggle('open');
+            const c = acc.querySelector('.wchev'); if (c) c.classList.toggle('up');
+            return;
+        }
+        if (e.target.closest('[data-rename]')) {
+            const nm = prompt('重命名此电脑：', store.get('pcname', 'PC-202501201810'));
+            if (nm && nm.trim()) { store.set('pcname', nm.trim().slice(0, 32)); paint(cur); }
+            return;
+        }
+        if (e.target.closest('[data-orca]')) { window.open('https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14', '_blank'); return; }
+        if (e.target.closest('[data-aisave]')) {
+            const k = $('[data-aikey]', root).value.trim();
+            if (!k) { aiStat('请先输入 API Key'); return; }
+            store.set('orcarouter_key', k); aiStat('已保存到本机'); toast('API Key 已保存到本机'); return;
+        }
+        if (e.target.closest('[data-aiclear]')) {
+            store.set('orcarouter_key', ''); const i = $('[data-aikey]', root); if (i) i.value = '';
+            aiStat('已清除'); toast('已清除 API Key'); return;
+        }
+        if (e.target.closest('[data-aitest]')) { aiTest(); return; }
+        if (e.target.closest('[data-demo]')) { toast('演示版本暂未实现此功能'); return; }
+    });
+    const sq = $('[data-sq]', root);
+    sq.addEventListener('input', () => {
+        const q = sq.value.trim().toLowerCase();
+        $$('.wrow', page).forEach(r => {
+            r.style.display = (!q || r.textContent.toLowerCase().includes(q)) ? '' : 'none';
+        });
+    });
+    async function aiTest() {
+        const key = store.get('orcarouter_key', '');
+        if (!key) { aiResult('请先保存 API Key。'); return; }
+        const model = ($('[data-aimodel]', root).value || '').trim() || 'orcarouter/auto';
+        store.set('orcarouter_model', model);
+        aiResult('请求中…');
+        try {
+            const r = await fetch('https://api.orcarouter.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+                body: JSON.stringify({ model, messages: [{ role: 'user', content: '你好，请用一句话介绍你自己。' }] }),
+            });
+            const j = await r.json().catch(() => ({}));
+            if (!r.ok) aiResult('失败 ' + r.status + '：' + String((j.error && j.error.message) || JSON.stringify(j)).slice(0, 200));
+            else aiResult('成功：' + String((j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || JSON.stringify(j)).slice(0, 300));
+        } catch (err) { aiResult('网络错误：' + err.message); }
+    }
+    paint('home');
+}
 /* ================= Edge ================= */
 function buildEdge() {
     const html = `
@@ -1165,11 +1547,8 @@ function init() {
     wireGlobal();
     tickClock();
     applyQS();
-    const wp = WALLPAPERS.find(w => w.id === store.get('wallpaper', 'concept'));
-    if (wp) {
-        $('#wallpaper').style.backgroundImage = `url("${wp.src}")`;
-        $('#lockscreen').style.backgroundImage = `url("${wp.src}")`;
-    }
+    setWallpaper(store.get('wallpaper', 'ribbon'));
+    const sav = $('#smAvatar'); if (sav) sav.innerHTML = ICONS.rAvatar;
     setTimeout(() => toast('欢迎来到 Windows 12 网页版 🎉', '🐭'), 900);
 }
 document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
