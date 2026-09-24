@@ -8,369 +8,460 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-        background: #060607;
-        color: #d7d7db;
-        font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+        background: #141414;
+        color: #e6e6e6;
+        font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
         height: 100vh; overflow: hidden;
         user-select: none; -webkit-user-select: none;
         display: flex; flex-direction: column;
         font-size: clamp(11px, 0.95vw, 15px);
     }
-    :root { --red: #d81f26; --red-dim: #7a1216; --panel: #0e0e11; --line: #26262c; }
+    :root {
+        --red: #d43a2f; --red-hi: #f04438; --red-dim: #7e231c;
+        --line: #2b2b2b; --gray: #9a9a9a; --yellow: #d9a821;
+    }
 
-    /* ===== 外框棱角装饰 ===== */
-    #frame { position: fixed; inset: 10px; pointer-events: none; z-index: 50; }
-    #frame i { position: absolute; width: 46px; height: 46px; border: 2px solid var(--red); }
-    #frame i:nth-child(1) { top: 0; left: 0; border-right: none; border-bottom: none; }
-    #frame i:nth-child(2) { top: 0; right: 0; border-left: none; border-bottom: none; }
-    #frame i:nth-child(3) { bottom: 0; left: 0; border-right: none; border-top: none; }
-    #frame i:nth-child(4) { bottom: 0; right: 0; border-left: none; border-top: none; }
+    /* ===== 四角红色棱角 ===== */
+    .corner { position: fixed; width: 56px; height: 56px; z-index: 60; pointer-events: none; }
+    .corner::before, .corner::after { content: ""; position: absolute; background: var(--red); }
+    .corner::before { width: 100%; height: 3px; }
+    .corner::after { width: 3px; height: 100%; }
+    .corner.tl { top: 8px; left: 8px; }
+    .corner.tr { top: 8px; right: 8px; transform: scaleX(-1); }
+    .corner.bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
+    .corner.br { bottom: 8px; right: 8px; transform: scale(-1); }
+    .corner.cut::before { width: 70%; }
+    .corner.cut::after { height: 70%; }
 
     /* ===== 顶栏 ===== */
     header {
         display: flex; align-items: center; justify-content: space-between;
-        padding: 14px 42px 10px; flex-shrink: 0;
+        padding: 12px 48px 8px; flex-shrink: 0;
+        border-bottom: 1px solid #1e1e1e;
     }
-    .clockbox { display: flex; align-items: center; gap: 10px; }
-    .clockbox .t { font-size: 2em; font-weight: 700; color: #fff; letter-spacing: .04em; line-height: 1; }
-    .clockbox .d { font-size: .82em; color: #bdbdc2; line-height: 1.5; }
-    .clockbox .d b { color: #fff; font-weight: 600; }
+    .clockbox { display: flex; align-items: center; gap: 12px; }
+    .clockbox .gear { width: 30px; height: 30px; flex-shrink: 0; }
+    .clockbox .t { font-size: 1.9em; font-weight: 700; color: #fff; line-height: 1; letter-spacing: .03em; }
+    .clockbox .t span { font-size: .42em; font-weight: 400; color: var(--gray); margin-left: 8px; letter-spacing: .05em; }
+    .clockbox .d { font-size: .85em; color: #fff; margin-top: 3px; }
+    .clockbox .d span { color: var(--red-hi); margin-left: 6px; }
     .brand {
-        font-size: 1.5em; font-weight: 800; letter-spacing: .14em; color: var(--red);
-        font-style: italic;
+        font-size: 1.45em; font-weight: 800; font-style: italic;
+        letter-spacing: .12em; color: var(--red-hi); margin-left: 18px;
     }
-    nav.tabs { display: flex; gap: 14px; }
+    nav.tabs { display: flex; gap: 16px; }
     nav.tabs button {
-        font-family: inherit; font-size: .92em; font-weight: 700; letter-spacing: .08em;
-        color: #e8e8ea; background: #141417;
-        border: 1px solid var(--red-dim);
-        padding: 9px 26px; cursor: pointer;
-        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        font-family: inherit; font-size: .92em; font-weight: 600; letter-spacing: .1em;
+        color: #f0f0f0; background: transparent;
+        border: 1px solid var(--red);
+        padding: 9px 30px; cursor: pointer;
+        clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+        transition: background .15s;
     }
-    nav.tabs button:hover { border-color: var(--red); color: #fff; }
-    nav.tabs button.on { background: var(--red); border-color: var(--red); color: #fff; }
+    nav.tabs button:hover { background: rgba(212, 58, 47, .25); }
+    nav.tabs button:active { background: var(--red); }
 
-    /* ===== 主区三栏 ===== */
+    /* ===== 主区 ===== */
     main {
-        flex: 1; display: flex; gap: 26px;
-        padding: 6px 42px; min-height: 0;
+        flex: 1; display: flex; gap: 0; min-height: 0;
+        padding: 10px 48px 4px;
     }
-    .col-left { width: 27%; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-    .col-mid { width: 19%; min-width: 0; }
-    .col-right { flex: 1; min-width: 0; }
+    .col { min-width: 0; padding: 0 26px; }
+    .col-left { width: 34%; border-right: 1px solid var(--line); }
+    .col-mid { width: 36%; border-right: 1px solid var(--line); }
+    .col-right { width: 30%; }
+    .col:first-child { padding-left: 0; }
+    .col:last-child { padding-right: 0; }
 
-    .panel {
-        background: var(--panel); border: 1px solid var(--line);
-        padding: 12px 16px; position: relative;
+    .block { margin-bottom: 16px; }
+    .block h3 {
+        color: var(--red-hi); font-size: .92em; font-weight: 700; letter-spacing: .2em;
+        margin-bottom: 8px;
     }
-    .panel h3 {
-        color: var(--red); font-size: .86em; letter-spacing: .18em; font-weight: 700;
-        border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px;
-    }
-    .kv { display: flex; justify-content: space-between; padding: 3px 0; font-size: .86em; }
-    .kv .k { color: #9a9aa0; }
-    .kv .v { color: var(--red); font-weight: 600; }
-    .helpinfo { margin-top: auto; }
-    .helpinfo p { font-size: .82em; color: #c9a227; padding-top: 6px; }
+    .kv { display: flex; padding: 2.5px 0; font-size: .85em; }
+    .kv .k { color: var(--gray); min-width: 86px; flex-shrink: 0; }
+    .kv .v { color: #f2f2f2; }
 
-    /* 中间分类菜单 */
-    .menu { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
-    .menu button {
-        font-family: inherit; text-align: left; font-size: .95em; color: #cfcfd4;
-        background: none; border: none; border-left: 4px solid transparent;
-        padding: 11px 12px 11px 14px; cursor: pointer;
-        display: flex; align-items: center; gap: 10px;
+    /* 传感器卡片 */
+    .sensors { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin-bottom: 16px; }
+    .sensor { display: flex; align-items: center; gap: 12px; }
+    .sensor .ico {
+        width: 44px; height: 44px; flex-shrink: 0;
+        border: 1px solid #3a3a3a; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        background: #1c1c1c;
     }
-    .menu button::before {
-        content: ""; width: 9px; height: 9px; background: var(--red); flex-shrink: 0;
-    }
-    .menu button:hover { color: #fff; background: #15151a; }
-    .menu button.on {
-        color: #fff; background: #1b1b21; border-left-color: var(--red); font-weight: 600;
-    }
+    .sensor .lab { font-size: .78em; color: var(--gray); }
+    .sensor .val { font-size: 1.25em; font-weight: 700; color: var(--red-hi); margin-top: 2px; }
 
-    /* 右侧设置面板：棱角红框 */
-    .setwrap {
-        height: 100%; background: var(--panel);
-        border: 1px solid var(--red-dim);
-        clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
-        padding: 20px 30px; overflow-y: auto;
-    }
-    .srow {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 9px 4px; font-size: .9em; border-bottom: 1px solid #1b1b20;
-        cursor: default;
-    }
-    .srow .lab { color: #c6c6cb; }
-    .srow.sel .lab { color: #fff; }
-    .srow.sel { background: #1c1c22; }
-    .dd {
-        position: relative; min-width: 150px;
+    /* 下拉框 */
+    .ddrow { display: flex; align-items: center; gap: 0; margin: 8px 0; }
+    .dd { position: relative; display: inline-flex; align-items: stretch; }
+    .dd .tag {
+        background: #2b2b2e; color: #fff; font-size: .85em; font-weight: 600;
+        padding: 7px 14px; border: 1px solid #3a3a3e;
     }
     .dd .cur {
-        background: #2a2a31; color: #fff; padding: 5px 30px 5px 12px; cursor: pointer;
-        font-size: .88em; position: relative; text-align: center;
+        background: #3a3a3e; color: #fff; font-size: .85em;
+        padding: 7px 34px 7px 16px; cursor: pointer; position: relative;
+        border: 1px solid #3a3a3e; border-left: none; min-width: 96px; text-align: center;
     }
     .dd .cur::after {
-        content: ""; position: absolute; right: 10px; top: 50%;
+        content: ""; position: absolute; right: 12px; top: 50%;
         border: 5px solid transparent; border-top-color: #fff; transform: translateY(-2px);
     }
     .dd .opts {
-        display: none; position: absolute; right: 0; top: 100%; z-index: 20;
-        background: #33333b; min-width: 100%; box-shadow: 0 8px 24px rgba(0,0,0,.6);
+        display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 30;
+        background: #45454b; box-shadow: 0 10px 26px rgba(0,0,0,.65);
+        border: 1px solid #55555c;
     }
     .dd.open .opts { display: block; }
-    .dd .opts div { padding: 7px 12px; font-size: .86em; color: #d5d5da; cursor: pointer; text-align: center; }
+    .dd .opts div { padding: 8px 10px; font-size: .85em; color: #e8e8e8; cursor: pointer; text-align: center; }
     .dd .opts div:hover { background: var(--red); color: #fff; }
 
-    .bootlist { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
-    .bootlist .b {
-        display: flex; align-items: center; gap: 12px; background: #15151a;
-        border: 1px solid var(--line); padding: 10px 14px; font-size: .88em; cursor: grab;
-    }
-    .bootlist .b .n {
-        width: 24px; height: 24px; background: var(--red); color: #fff; font-weight: 700;
-        display: flex; align-items: center; justify-content: center; font-size: .82em; flex-shrink: 0;
-    }
-    .bigbtns { display: flex; gap: 16px; padding: 18px 0; }
-    .bigbtns button {
-        font-family: inherit; font-size: .95em; font-weight: 700; letter-spacing: .06em;
-        padding: 12px 34px; cursor: pointer;
-        background: #16161a; color: #fff; border: 1px solid var(--red);
-        clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-    }
-    .bigbtns button:hover { background: var(--red); }
-    .langbtns { display: flex; gap: 16px; padding: 18px 0; }
-    .langbtns button {
-        font-family: inherit; font-size: 1em; padding: 12px 44px; cursor: pointer;
-        background: #16161a; color: #cfcfd4; border: 1px solid var(--line);
-    }
-    .langbtns button.on { border-color: var(--red); color: #fff; background: #1d1d23; }
+    /* 启动项 */
+    .bootlist { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+    .bootlist .b { display: flex; align-items: center; gap: 12px; font-size: .85em; color: #f0f0f0; }
+    .bootlist .b svg { width: 30px; height: 30px; flex-shrink: 0; }
 
-    /* ===== 底部功能键栏 ===== */
+    .help { color: var(--yellow); font-size: .78em; line-height: 1.7; margin-top: 14px; }
+
+    /* 风扇 */
+    .fans { display: flex; justify-content: space-between; margin-top: 4px; }
+    .fan { text-align: center; font-size: .78em; color: var(--gray); }
+    .fan svg { width: 40px; height: 40px; display: block; margin: 0 auto 5px; }
+    .fan .rpm { color: #f0f0f0; margin-top: 2px; }
+    .fan .nm { margin-top: 2px; }
+
+    .curvebox { position: relative; margin-top: 6px; }
+    .curvebox svg { width: 100%; height: auto; display: block; }
+    .fanset {
+        font-family: inherit; font-size: .85em; color: #f0f0f0;
+        background: #2b2b2e; border: 1px solid #3a3a3e;
+        padding: 8px 22px; cursor: pointer; margin-top: 8px;
+    }
+    .fanset:hover { border-color: var(--red); }
+
+    /* EZ OC */
+    .ezoc { display: flex; align-items: center; gap: 18px; margin-top: 6px; }
+    .ezoc .biggear { width: 92px; height: 92px; flex-shrink: 0; }
+    .ezoc .modes { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .ezoc .modes button {
+        font-family: inherit; font-size: .88em; letter-spacing: .08em;
+        color: #f0f0f0; background: transparent; border: 1px solid #4a4a4e;
+        padding: 8px 10px; cursor: pointer; text-align: center;
+    }
+    .ezoc .modes button.on { border-color: var(--red-hi); color: #fff; background: rgba(212,58,47,.14); }
+    .ezoc .modes button:hover { border-color: var(--red); }
+
+    /* ===== 底部 ===== */
     footer {
-        flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-        gap: clamp(18px, 3vw, 46px); padding: 12px 20px 20px;
-        color: #8e8e95; font-size: .8em; white-space: nowrap;
+        flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 48px 22px; font-size: .76em; color: #7d7d84; white-space: nowrap;
     }
-    footer b { color: #c9c9ce; font-weight: 600; }
-    footer .tri { color: var(--red); font-size: 1.3em; letter-spacing: .1em; }
+    footer .fkeys { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 34px); }
+    footer .fkeys b { color: #c9c9ce; font-weight: 600; }
+    footer .tri { color: var(--red); font-size: 1.5em; line-height: 1; }
 
-    .hidden { display: none !important; }
+    /* 提示 toast */
+    #toast {
+        position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%) translateY(20px);
+        background: rgba(20,20,22,.95); border: 1px solid var(--red);
+        color: #fff; font-size: .9em; padding: 10px 26px; border-radius: 4px;
+        opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 100;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+        body { overflow-y: auto; height: auto; min-height: 100vh; }
+        main { flex-direction: column; }
+        .col { width: 100% !important; border-right: none; border-bottom: 1px solid var(--line); padding: 0 0 14px; margin-bottom: 14px; }
+        nav.tabs { flex-wrap: wrap; }
+    }
 </style>
 </head>
 <body>
-<div id="frame"><i></i><i></i><i></i><i></i></div>
+<div class="corner tl cut"></div><div class="corner tr cut"></div>
+<div class="corner bl cut"></div><div class="corner br cut"></div>
 
 <header>
     <div class="clockbox">
-        <div class="t" id="clk">--:--</div>
-        <div class="d"><b id="clkDow">----</b><br><span id="clkDate">----/--/--</span></div>
+        <svg class="gear" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="12" stroke="#8a8a8e" stroke-width="7" stroke-dasharray="5.2 4.4"/>
+            <circle cx="20" cy="20" r="5" fill="#8a8a8e"/>
+        </svg>
+        <div>
+            <div class="t"><span id="clk">--:--</span><span id="clkDow">----</span></div>
+            <div class="d"><span id="clkDate">----/--/--</span><span id="clkMon">----</span></div>
+        </div>
+        <div class="brand">COLORFUL</div>
     </div>
-    <div class="brand">COLORFUL</div>
     <nav class="tabs">
-        <button data-tab="oc">OC</button>
-        <button data-tab="adv" class="on">ADVANCED</button>
-        <button data-tab="bios">BIOS SETTING</button>
-        <button data-tab="lang">LANGUAGE</button>
-        <button data-tab="exit">EXIT</button>
+        <button data-act="oc">超频OC</button>
+        <button data-act="adv">高级模式</button>
+        <button data-act="bios">BIOS功能</button>
+        <button data-act="lang">语言</button>
+        <button data-act="exit">退出</button>
     </nav>
 </header>
 
 <main>
-    <!-- 左：硬件信息 -->
-    <div class="col-left">
-        <div class="panel">
-            <h3>CPU</h3>
-            <div class="kv"><span class="k">Frequency</span><span class="k">Temperature</span></div>
-            <div class="kv"><span class="v">Max Speed: 4500 MHZ</span><span class="v">+43 °C</span></div>
-            <div class="kv"><span class="k">BCLK Frequency</span><span class="k">Voltage</span></div>
-            <div class="kv"><span class="v">100 Mhz</span><span class="v">1.400 V</span></div>
+    <!-- 左列 -->
+    <div class="col col-left">
+        <div class="block">
+            <h3>系统信息</h3>
+            <div class="kv"><span class="k">主板型号:</span><span class="v">CVN Z790D5 GAMING PRO V20</span></div>
+            <div class="kv"><span class="k">CPU:</span><span class="v">13th Gen Intel(R) Core(TM) i5-13600K</span></div>
+            <div class="kv"><span class="k">总内存:</span><span class="v">32768 MB (DDR5)</span></div>
+            <div class="kv"><span class="k">BIOS版本:</span><span class="v">1004-2022/10/19</span></div>
+            <div class="kv"><span class="k">更新日期:</span><span class="v">2022/10/19</span></div>
         </div>
-        <div class="panel">
-            <h3>MEMORY</h3>
-            <div class="kv"><span class="k">Frequency</span><span class="k">Voltage</span></div>
-            <div class="kv"><span class="v">5200 MHz</span><span class="v">1.108 V</span></div>
+        <div class="block">
+            <h3>内存状态</h3>
+            <div class="kv"><span class="k">DIMM_1:</span><span class="v">Colorful I6384 MB 4000 MHz</span></div>
+            <div class="kv"><span class="k">DIMM_2:</span><span class="v">N/A</span></div>
+            <div class="kv"><span class="k">DIMM_3:</span><span class="v">Colorful I6384 MB 4000 MHz</span></div>
+            <div class="kv"><span class="k">DIMM_4:</span><span class="v">N/A</span></div>
         </div>
-        <div class="panel">
-            <h3>VOLTAGE</h3>
-            <div class="kv"><span class="k">+12V</span><span class="k">+5V</span></div>
-            <div class="kv"><span class="v">12.192 V</span><span class="v">5.072 V</span></div>
-            <div class="kv"><span class="k">+3.3V</span><span></span></div>
-            <div class="kv"><span class="v">3.344 V</span><span></span></div>
-        </div>
-        <div class="panel helpinfo">
-            <h3>Help Info</h3>
-            <p id="helpTx">Set PCIEX16 Max Link Speed</p>
-        </div>
-    </div>
-
-    <!-- 中：分类 -->
-    <div class="col-mid">
-        <div class="menu" id="catMenu">
-            <button data-cat="advanced" class="on">Advanced</button>
-            <button data-cat="chipset">ChipSet</button>
-            <button data-cat="device">Device Setting</button>
-            <button data-cat="password">Password Setting</button>
-            <button data-cat="boot">Boot Setting</button>
-            <button data-cat="power">Power Setting</button>
-        </div>
-    </div>
-
-    <!-- 右：设置 -->
-    <div class="col-right">
-        <div class="setwrap" id="tab-adv">
-            <div id="set-advanced">
-                <div class="srow" data-help="Enable or disable CPU virtualization support"><span class="lab">SVM MODE</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-                <div class="srow" data-help="Select the primary display output"><span class="lab">Primary Display</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>IGFX</div><div>PEG</div><div>PCI</div></span></span></div>
-                <div class="srow" data-help="Integrated graphics controller"><span class="lab">Integrated Graphics Controller</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Enabled</div><div>Disabled</div></span></span></div>
-            </div>
-            <div id="set-chipset" class="hidden">
-                <div class="srow" data-help="Set PCIEX16 Max Link Speed"><span class="lab">PCIEX16 Max Link Speed</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Gen1</div><div>Gen2</div><div>Gen3</div><div>Gen4</div><div>Gen5</div></span></span></div>
-                <div class="srow" data-help="Set PCIEX4 Max Link Speed"><span class="lab">PCIEX4 Max Link Speed</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Gen1</div><div>Gen2</div><div>Gen3</div><div>Gen4</div></span></span></div>
-                <div class="srow" data-help="Enable 64-bit MMIO mapping above 4GB"><span class="lab">Above 4GB MMIO BIOS assignment</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-                <div class="srow" data-help="Allow resizing of PCI Express BAR"><span class="lab">Re-Size BAR Support</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Enabled</div><div>Disabled</div></span></span></div>
-            </div>
-            <div id="set-device" class="hidden">
-                <div class="srow" data-help="Onboard HD Audio controller"><span class="lab">HD Audio Controller</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-                <div class="srow" data-help="Onboard network controller"><span class="lab">Onboard LAN Controller</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-                <div class="srow" data-help="USB port configuration"><span class="lab">USB Configuration</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-            </div>
-            <div id="set-password" class="hidden">
-                <div class="srow" data-help="Set administrator password"><span class="lab">Administrator Password</span><span class="dd"><span class="cur">Not Set</span><span class="opts"><div>Not Set</div><div>Set</div></span></span></div>
-                <div class="srow" data-help="Set user password"><span class="lab">User Password</span><span class="dd"><span class="cur">Not Set</span><span class="opts"><div>Not Set</div><div>Set</div></span></span></div>
-            </div>
-            <div id="set-boot" class="hidden">
-                <div class="srow" data-help="Toggle fast boot"><span class="lab">Fast Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-                <div class="srow" data-help="Boot mode selection"><span class="lab">Boot Mode</span><span class="dd"><span class="cur">UEFI</span><span class="opts"><div>UEFI</div><div>Legacy</div></span></span></div>
-                <div class="bootlist">
-                    <div class="b"><span class="n">1</span>Windows Boot Manager</div>
-                    <div class="b"><span class="n">2</span>SATA SSD</div>
-                    <div class="b"><span class="n">3</span>USB Device</div>
-                    <div class="b"><span class="n">4</span>Network Boot</div>
+        <div class="block">
+            <div class="ddrow">
+                <div class="dd" id="ddXmp">
+                    <span class="tag">X.M.P</span><span class="cur">关闭</span>
+                    <div class="opts"><div>关闭</div><div>启用</div></div>
                 </div>
             </div>
-            <div id="set-power" class="hidden">
-                <div class="srow" data-help="Restore power state after AC loss"><span class="lab">Restore AC Power Loss</span><span class="dd"><span class="cur">Power Off</span><span class="opts"><div>Power Off</div><div>Power On</div><div>Last State</div></span></span></div>
-                <div class="srow" data-help="Deep sleep power saving"><span class="lab">Deep Sleep</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-            </div>
         </div>
-
-        <div class="setwrap hidden" id="tab-oc">
-            <div class="srow" data-help="CPU overclocking mode"><span class="lab">CPU Overclocking Mode</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>Manual</div></span></span></div>
-            <div class="srow" data-help="CPU core ratio multiplier"><span class="lab">CPU Core Ratio</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>45</div><div>46</div><div>47</div><div>48</div></span></span></div>
-            <div class="srow" data-help="Memory XMP profile"><span class="lab">XMP Profile</span><span class="dd"><span class="cur">Disabled</span><span class="opts"><div>Disabled</div><div>Profile 1</div><div>Profile 2</div></span></span></div>
-            <div class="srow" data-help="CPU core voltage"><span class="lab">CPU Core Voltage</span><span class="dd"><span class="cur">Auto</span><span class="opts"><div>Auto</div><div>1.350 V</div><div>1.400 V</div></span></span></div>
-        </div>
-
-        <div class="setwrap hidden" id="tab-bios">
-            <div class="srow" data-help="Toggle fast boot"><span class="lab">Fast Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
-            <div class="srow" data-help="Boot mode selection"><span class="lab">Boot Mode</span><span class="dd"><span class="cur">UEFI</span><span class="opts"><div>UEFI</div><div>Legacy</div></span></span></div>
-            <div class="srow" data-help="Secure boot state"><span class="lab">Secure Boot</span><span class="dd"><span class="cur">Enabled</span><span class="opts"><div>Enabled</div><div>Disabled</div></span></span></div>
+        <div class="block">
+            <h3>启动顺序</h3>
             <div class="bootlist">
-                <div class="b"><span class="n">1</span>Windows Boot Manager</div>
-                <div class="b"><span class="n">2</span>SATA SSD</div>
-                <div class="b"><span class="n">3</span>USB Device</div>
+                <div class="b">
+                    <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="8" width="26" height="16" rx="2" stroke="#c9c9ce" stroke-width="2"/><circle cx="11" cy="16" r="4" stroke="#c9c9ce" stroke-width="2"/><rect x="20" y="14" width="6" height="4" fill="#c9c9ce"/></svg>
+                    <span>Windows Boot Manager (HS-SSD-C4000 1024G)</span>
+                </div>
+                <div class="b">
+                    <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="8" width="26" height="16" rx="2" stroke="#c9c9ce" stroke-width="2"/><circle cx="11" cy="16" r="4" stroke="#c9c9ce" stroke-width="2"/><rect x="20" y="14" width="6" height="4" fill="#c9c9ce"/></svg>
+                    <span>UEFI: Netac OnlyDisk 1100, Partition 1 (Netac OnlyDisk 1100)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中列 -->
+    <div class="col col-mid">
+        <div class="sensors">
+            <div class="sensor">
+                <span class="ico">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="7" y="7" width="12" height="12" stroke="#c9c9ce" stroke-width="2"/><rect x="10.5" y="10.5" width="5" height="5" fill="#c9c9ce"/><path d="M9 7V3M13 7V3M17 7V3M9 23v-4M13 23v-4M17 23v-4M7 9H3M7 13H3M7 17H3M23 9h-4M23 13h-4M23 17h-4" stroke="#c9c9ce" stroke-width="2"/></svg>
+                </span>
+                <div><div class="lab">CPU温度:</div><div class="val">+15 °C</div></div>
+            </div>
+            <div class="sensor">
+                <span class="ico">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2 L5 14 h6 l-2 10 9-13 h-6 z" stroke="#c9c9ce" stroke-width="2" stroke-linejoin="round"/></svg>
+                </span>
+                <div><div class="lab">CPU电压:</div><div class="val">1.201 V</div></div>
+            </div>
+            <div class="sensor">
+                <span class="ico">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="4" y="6" width="18" height="14" rx="1" stroke="#c9c9ce" stroke-width="2"/><rect x="7" y="9" width="4" height="8" fill="#c9c9ce"/><rect x="15" y="9" width="4" height="8" fill="#c9c9ce"/></svg>
+                </span>
+                <div><div class="lab">主板温度:</div><div class="val">+33 °C</div></div>
+            </div>
+            <div class="sensor">
+                <span class="ico">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="9" width="20" height="8" rx="1" stroke="#c9c9ce" stroke-width="2"/><path d="M7 9v8M11 9v8M15 9v8M19 9v8" stroke="#c9c9ce" stroke-width="1.4"/></svg>
+                </span>
+                <div><div class="lab">内存电压:</div><div class="val">1.100 V</div></div>
             </div>
         </div>
 
-        <div class="setwrap hidden" id="tab-lang">
-            <div class="langbtns">
-                <button class="on">English</button>
-                <button>简体中文</button>
+        <div class="block">
+            <h3>SATA状态</h3>
+            <div class="kv"><span class="k">M.2_SSD:</span><span class="v">HS-SSD-C4000 1024G, Dahua C970</span></div>
+            <div class="kv"><span class="k">SATA1:</span><span class="v">Empty</span></div>
+            <div class="kv"><span class="k">SATA2:</span><span class="v">Empty</span></div>
+            <div class="kv"><span class="k">SATA3:</span><span class="v">Empty</span></div>
+            <div class="kv"><span class="k">SATA4:</span><span class="v">Empty</span></div>
+            <div class="kv"><span class="k">SATA5:</span><span class="v">Empty</span></div>
+            <div class="kv"><span class="k">SATA6:</span><span class="v">Empty</span></div>
+            <div class="ddrow">
+                <div class="dd" id="ddRaid">
+                    <span class="tag">RAID</span><span class="cur">关闭</span>
+                    <div class="opts"><div>关闭</div><div>开启</div></div>
+                </div>
             </div>
-            <p style="color:#8e8e95;font-size:.86em">Select BIOS display language. / 选择 BIOS 显示语言。</p>
         </div>
 
-        <div class="setwrap hidden" id="tab-exit">
-            <div class="bigbtns">
-                <button id="saveExit">Save &amp; Exit</button>
-                <button id="discardExit">Discard &amp; Exit</button>
+        <div class="block">
+            <h3>启动优先级</h3>
+        </div>
+
+        <p class="help">XMP: XMP是内存工作在高性能的规范，开启后主板会自动加载内存默认的频率、电压、时序。电脑超频会造成硬件的损坏，请在工作在更高的频率。相比默认的设置，开启XMP后内存性能会大幅度提升。</p>
+    </div>
+
+    <!-- 右列 -->
+    <div class="col col-right">
+        <div class="block">
+            <h3>风扇概述</h3>
+            <div class="fans">
+                <div class="fan">
+                    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" stroke="#8a8a8e" stroke-width="2"/><g fill="#8a8a8e"><ellipse cx="20" cy="11.5" rx="3.4" ry="7"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(90 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(180 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(270 20 20)"/></g><circle cx="20" cy="20" r="3.6" fill="#8a8a8e"/></svg>
+                    <div class="nm">CPU风扇</div><div class="rpm">846 RPM</div>
+                </div>
+                <div class="fan">
+                    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" stroke="#8a8a8e" stroke-width="2"/><g fill="#8a8a8e"><ellipse cx="20" cy="11.5" rx="3.4" ry="7"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(90 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(180 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(270 20 20)"/></g><circle cx="20" cy="20" r="3.6" fill="#8a8a8e"/></svg>
+                    <div class="nm">系统风扇1</div><div class="rpm">0 RPM</div>
+                </div>
+                <div class="fan">
+                    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" stroke="#8a8a8e" stroke-width="2"/><g fill="#8a8a8e"><ellipse cx="20" cy="11.5" rx="3.4" ry="7"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(90 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(180 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(270 20 20)"/></g><circle cx="20" cy="20" r="3.6" fill="#8a8a8e"/></svg>
+                    <div class="nm">系统风扇2</div><div class="rpm">0 RPM</div>
+                </div>
+                <div class="fan">
+                    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" stroke="#8a8a8e" stroke-width="2"/><g fill="#8a8a8e"><ellipse cx="20" cy="11.5" rx="3.4" ry="7"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(90 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(180 20 20)"/><ellipse cx="20" cy="11.5" rx="3.4" ry="7" transform="rotate(270 20 20)"/></g><circle cx="20" cy="20" r="3.6" fill="#8a8a8e"/></svg>
+                    <div class="nm">水泵风扇</div><div class="rpm">2576 RPM</div>
+                </div>
             </div>
-            <p style="color:#8e8e95;font-size:.86em">Save changes and reset, or exit without saving.</p>
+        </div>
+
+        <div class="block">
+            <h3>CPU风扇</h3>
+            <div class="curvebox">
+                <svg viewBox="0 0 300 170">
+                    <line x1="34" y1="10" x2="34" y2="140" stroke="#55555c" stroke-width="1"/>
+                    <line x1="34" y1="140" x2="290" y2="140" stroke="#55555c" stroke-width="1"/>
+                    <text x="6" y="16" fill="#8a8a8e" font-size="10">100%</text>
+                    <text x="14" y="145" fill="#8a8a8e" font-size="10">0</text>
+                    <text x="44" y="156" fill="#8a8a8e" font-size="10">20</text>
+                    <text x="104" y="156" fill="#8a8a8e" font-size="10">40</text>
+                    <text x="164" y="156" fill="#8a8a8e" font-size="10">60</text>
+                    <text x="224" y="156" fill="#8a8a8e" font-size="10">80</text>
+                    <text x="272" y="156" fill="#8a8a8e" font-size="10">100°C</text>
+                    <polyline points="34,114 100,114 150,62 190,36 290,36"
+                        fill="none" stroke="#e8822a" stroke-width="2.5"/>
+                    <circle cx="150" cy="62" r="4" fill="#e8822a"/>
+                </svg>
+            </div>
+            <button class="fanset" id="fanSet">风扇设置</button>
+        </div>
+
+        <div class="block">
+            <h3>EZ OC</h3>
+            <div class="ezoc">
+                <svg class="biggear" viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="50" r="30" stroke="#d43a2f" stroke-width="16" stroke-dasharray="13 10.5"/>
+                    <circle cx="50" cy="50" r="16" stroke="#d43a2f" stroke-width="7"/>
+                    <circle cx="50" cy="50" r="5" fill="#d43a2f"/>
+                </svg>
+                <div class="modes" id="ezModes">
+                    <button class="on">默频模式</button>
+                    <button>性能模式</button>
+                    <button>节能模式</button>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 
 <footer>
-    <span>General Help(<b>F1</b>)</span><span>Print Screen(<b>F8</b>)</span>
-    <span>Optimized Default(<b>F9</b>)</span><span class="tri">▲</span>
-    <span>Advanced(<b>F11</b>)</span><span>Save &amp; Reset(<b>F10</b>)</span>
-    <span>Choose(<b>Enter</b>)</span><span>Exit(<b>Esc</b>)</span>
+    <span>Copyright (C) 2022 American Megatrends International LLC.</span>
+    <span class="fkeys">
+        <span>截屏 <b>F8</b></span>
+        <span>默认设置 <b>F9</b></span>
+        <svg class="tri" width="20" height="18" viewBox="0 0 20 18"><path d="M10 1 L19 17 H1 Z" fill="none" stroke="#d43a2f" stroke-width="2"/></svg>
+        <span>高级模式 <b>F11</b></span>
+        <span>保存重启 <b>F10</b></span>
+    </span>
+    <span>Version版本: 1.126</span>
 </footer>
+
+<div id="toast"></div>
 
 <script>
 (function () {
     'use strict';
+
+    /* 时钟 */
+    var DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     function tick() {
         var n = new Date(), p = function (x) { return (x < 10 ? '0' : '') + x; };
         document.getElementById('clk').textContent = p(n.getHours()) + ':' + p(n.getMinutes());
-        var dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][n.getDay()];
-        document.getElementById('clkDow').textContent = dow;
+        document.getElementById('clkDow').textContent = DOW[n.getDay()];
         document.getElementById('clkDate').textContent = n.getFullYear() + '/' + p(n.getMonth() + 1) + '/' + p(n.getDate());
+        document.getElementById('clkMon').textContent = MON[n.getMonth()];
     }
-    tick(); setInterval(tick, 10000);
+    tick(); setInterval(tick, 5000);
 
-    var tabs = document.querySelectorAll('nav.tabs button');
-    var panes = { oc: 'tab-oc', adv: 'tab-adv', bios: 'tab-bios', lang: 'tab-lang', exit: 'tab-exit' };
-    var midMenu = document.getElementById('catMenu');
-    tabs.forEach(function (b) {
-        b.addEventListener('click', function () {
-            tabs.forEach(function (x) { x.classList.remove('on'); });
-            b.classList.add('on');
-            Object.keys(panes).forEach(function (k) {
-                document.getElementById(panes[k]).classList.add('hidden');
-            });
-            document.getElementById(panes[b.dataset.tab]).classList.remove('hidden');
-            midMenu.style.visibility = b.dataset.tab === 'adv' ? 'visible' : 'hidden';
+    /* toast */
+    var toastEl = document.getElementById('toast'), toastT = null;
+    function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastT);
+        toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+    }
+
+    /* 下拉框 */
+    document.querySelectorAll('.dd').forEach(function (dd) {
+        var cur = dd.querySelector('.cur');
+        cur.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var was = dd.classList.contains('open');
+            document.querySelectorAll('.dd.open').forEach(function (x) { x.classList.remove('open'); });
+            if (!was) dd.classList.add('open');
         });
-    });
-
-    var cats = document.querySelectorAll('#catMenu button');
-    cats.forEach(function (b) {
-        b.addEventListener('click', function () {
-            cats.forEach(function (x) { x.classList.remove('on'); });
-            b.classList.add('on');
-            ['advanced','chipset','device','password','boot','power'].forEach(function (c) {
-                document.getElementById('set-' + c).classList.add('hidden');
-            });
-            document.getElementById('set-' + b.dataset.cat).classList.remove('hidden');
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        var dd = e.target.closest('.dd');
-        document.querySelectorAll('.dd.open').forEach(function (x) { if (x !== dd) x.classList.remove('open'); });
-        if (dd) {
-            var opt = e.target.closest('.opts div');
-            if (opt) {
-                dd.querySelector('.cur').textContent = opt.textContent;
+        dd.querySelectorAll('.opts div').forEach(function (opt) {
+            opt.addEventListener('click', function (e) {
+                e.stopPropagation();
+                cur.textContent = opt.textContent;
                 dd.classList.remove('open');
-            } else {
-                dd.classList.toggle('open');
-            }
-        }
-        var row = e.target.closest('.srow');
-        document.querySelectorAll('.srow.sel').forEach(function (x) { x.classList.remove('sel'); });
-        if (row) {
-            row.classList.add('sel');
-            var h = row.getAttribute('data-help');
-            if (h) document.getElementById('helpTx').textContent = h;
-        }
+            });
+        });
+    });
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.dd.open').forEach(function (x) { x.classList.remove('open'); });
     });
 
-    document.querySelectorAll('.langbtns button').forEach(function (b) {
+    /* EZ OC 模式 */
+    document.querySelectorAll('#ezModes button').forEach(function (b) {
         b.addEventListener('click', function () {
-            document.querySelectorAll('.langbtns button').forEach(function (x) { x.classList.remove('on'); });
+            document.querySelectorAll('#ezModes button').forEach(function (x) { x.classList.remove('on'); });
             b.classList.add('on');
+            toast('已切换到' + b.textContent);
         });
     });
 
+    /* 顶栏按钮 */
     function leave() { window.location.href = './boot.html'; }
-    document.getElementById('saveExit').addEventListener('click', leave);
-    document.getElementById('discardExit').addEventListener('click', leave);
+    document.querySelectorAll('nav.tabs button').forEach(function (b) {
+        b.addEventListener('click', function () {
+            var act = b.getAttribute('data-act');
+            if (act === 'exit') leave();
+            else if (act === 'adv') toast('演示版：高级模式未收录');
+            else if (act === 'oc') toast('演示版：超频界面未收录');
+            else if (act === 'bios') toast('当前已在 BIOS 功能页');
+            else if (act === 'lang') toast('演示版：仅提供简体中文');
+        });
+    });
+    document.getElementById('fanSet').addEventListener('click', function () {
+        toast('演示版：风扇曲线不可调');
+    });
+
+    /* 恢复默认 */
+    function loadDefaults() {
+        document.querySelector('#ddXmp .cur').textContent = '关闭';
+        document.querySelector('#ddRaid .cur').textContent = '关闭';
+        document.querySelectorAll('#ezModes button').forEach(function (x, i) {
+            x.classList.toggle('on', i === 0);
+        });
+        toast('已恢复默认设置');
+    }
+
+    /* 快捷键 */
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'F10' || e.key === 'Escape') leave();
+        if (e.key === 'F9') { e.preventDefault(); loadDefaults(); }
+        else if (e.key === 'F10') { e.preventDefault(); toast('保存设置并重启…'); setTimeout(leave, 700); }
+        else if (e.key === 'Escape') { leave(); }
     });
 })();
 </script>
