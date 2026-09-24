@@ -36,16 +36,19 @@
         </div>
         <div class="aip-set" id="aiPanelSet" hidden>
             <div class="aip-set-t">接入设置</div>
-            <label>API Key</label>
-            <input type="password" id="aiPanelKey" class="winput" placeholder="输入你的 OrcaRouter API Key" spellcheck="false">
-            <label>模型 <span>默认自动路由，也可填写任意模型 ID</span></label>
-            <input id="aiPanelModel" class="winput" spellcheck="false">
+            <div id="aiPanelBuiltin" style="font-size:12.5px;color:#4caf50;margin-bottom:10px">✓ 已内置体验 Key（免费模型），开箱即用</div>
+            <label>API Key <span>留空则使用内置体验 Key</span></label>
+            <input type="password" id="aiPanelKey" class="winput" placeholder="输入你的 OrcaRouter API Key（可选）" spellcheck="false">
+            <label>模型</label>
+            <select id="aiPanelModelSel" class="winput"></select>
+            <label>自定义模型 ID <span>留空则用上方选择</span></label>
+            <input id="aiPanelModel" class="winput" spellcheck="false" placeholder="如 orcarouter/auto">
             <div class="aip-set-row">
                 <button class="wbtn" id="aiPanelSave">保存</button>
                 <button class="wbtn2" id="aiPanelClear">清除</button>
                 <span id="aiPanelStat"></span>
             </div>
-            <p class="aip-note">Key 仅保存在本机 localStorage，不会上传，也不会写入仓库。通过 OrcaRouter 统一 API 接入多种主流大模型，按实际调用量计费。<br><a href="https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14" target="_blank" rel="noopener">获取 Key →</a></p>
+            <p class="aip-note">自填 Key 仅保存在本机 localStorage，不会上传。内置 Key 已加密存储，免费模型由 OrcaRouter 提供，有每日限额。<br><a href="https://www.orcarouter.ai/ref/ref_57e9d042b829968c3b14" target="_blank" rel="noopener">了解 OrcaRouter →</a></p>
         </div>
         <div class="aip-msgs" id="aiPanelMsgs"></div>
         <div class="aip-input">
