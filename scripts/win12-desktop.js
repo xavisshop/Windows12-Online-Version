@@ -1844,9 +1844,12 @@ function wireGlobal() {
     document.addEventListener('click', e => {
         if (!e.target.closest('#ctxMenu')) $('#ctxMenu').classList.remove('open');
     });
-    // 键盘
+    // 键盘：Win 打开网页端开始菜单（!e.repeat 防长按抽动），Escape 关闭面板
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closePanels();
+        if ((e.metaKey || e.key === 'Meta') && !e.repeat) {
+            e.preventDefault();
+            togglePanel('startMenu');
+        } else if (e.key === 'Escape') closePanels();
     });
     // 锁屏
     $('#lockscreen').addEventListener('click', () => $('#lockscreen').classList.add('hide'));
