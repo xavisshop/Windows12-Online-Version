@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Windows 12</title>
+<link rel="icon" href="icon/logo.png" type="image/png">
 <style>
     html, body { background: #000; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,10 +12,37 @@
         height: 100vh; background: #000; color: #fff; overflow: hidden;
         font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
         user-select: none; -webkit-user-select: none; cursor: default;
+        display: flex; justify-content: center; align-items: center;
+    }
+    .boot-wrap {
+        text-align: center; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 24px;
+        animation: fadeIn 0.5s ease-out;
+    }
+    .boot-wrap img {
+        width: clamp(120px, 25vw, 220px); height: auto;
+        filter: invert(1);
+    }
+    .boot-text {
+        font-size: clamp(18px, 3vw, 28px); font-weight: 600;
+        letter-spacing: 0.12em; color: #fff;
+    }
+    .boot-sub {
+        font-size: clamp(11px, 1.6vw, 14px); color: #888;
+        letter-spacing: 0.08em;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
     }
 </style>
 </head>
 <body>
+    <div class="boot-wrap">
+        <img src="img/boot-cat.png" alt="boot">
+        <div class="boot-text">Windows 12</div>
+        <div class="boot-sub">按 F2 进入 BIOS 设置</div>
+    </div>
     <script>
     (function () {
         'use strict';
@@ -30,8 +58,8 @@
         window.addEventListener('keydown', function (e) {
             if (e.key === 'F2' || e.keyCode === 113) bios();
         });
-        // 短暂黑屏后进入开机动画
-        setTimeout(next, 400);
+        // 猫 + 文字停留 2 秒后进入开机动画
+        setTimeout(next, 2000);
     })();
     </script>
 </body>
