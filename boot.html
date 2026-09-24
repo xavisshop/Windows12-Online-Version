@@ -12,24 +12,29 @@
         height: 100vh; background: #000; color: #fff; overflow: hidden;
         font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
         user-select: none; -webkit-user-select: none; cursor: default;
-        display: flex; justify-content: center; align-items: center;
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        position: relative;
     }
     .boot-wrap {
         text-align: center; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; gap: 24px;
+        align-items: center; justify-content: center; gap: 28px;
         animation: fadeIn 0.5s ease-out;
     }
     .boot-wrap img {
-        width: clamp(120px, 25vw, 220px); height: auto;
-        filter: invert(1);
+        width: clamp(200px, 35vw, 380px); height: auto;
+        /* 黑线白底 -> 白线黑底，线条加粗更清晰 */
+        filter: invert(1) brightness(1.15) contrast(1.3);
     }
     .boot-text {
-        font-size: clamp(18px, 3vw, 28px); font-weight: 600;
-        letter-spacing: 0.12em; color: #fff;
+        font-size: clamp(20px, 3.5vw, 32px); font-weight: 600;
+        letter-spacing: 0.28em; color: #fff; text-indent: 0.28em;
     }
-    .boot-sub {
-        font-size: clamp(11px, 1.6vw, 14px); color: #888;
-        letter-spacing: 0.08em;
+    .boot-f2 {
+        position: absolute; bottom: 28px; left: 0; right: 0;
+        text-align: center;
+        font-size: clamp(11px, 1.6vw, 14px); color: #666;
+        letter-spacing: 0.1em;
     }
     @keyframes fadeIn {
         0% { opacity: 0; }
@@ -40,9 +45,9 @@
 <body>
     <div class="boot-wrap">
         <img src="img/boot-cat.png" alt="boot">
-        <div class="boot-text">Windows 12</div>
-        <div class="boot-sub">按 F2 进入 BIOS 设置</div>
+        <div class="boot-text">ART IS ETERNAL</div>
     </div>
+    <div class="boot-f2">按 F2 进入 BIOS 设置</div>
     <script>
     (function () {
         'use strict';
