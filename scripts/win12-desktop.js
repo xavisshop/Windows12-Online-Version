@@ -2034,8 +2034,28 @@ function wireGlobal() {
             togglePanel('startMenu');
         } else if (e.key === 'Escape') closePanels();
     });
-    // 锁屏
-    $('#lockscreen').addEventListener('click', () => $('#lockscreen').classList.add('hide'));
+    // 锁屏：点击或上滑关闭
+    const ls = $('#lockscreen');
+    ls.addEventListener('click', () => ls.classList.add('hide'));
+    let lsTouchY = null, lsDy = 0;
+    ls.addEventListener('touchstart', e => {
+        if (ls.classList.contains('hide')) return;
+        lsTouchY = e.touches[0].clientY; lsDy = 0;
+        ls.style.transition = 'none';
+    }, { passive: true });
+    ls.addEventListener('touchmove', e => {
+        if (lsTouchY === null) return;
+        lsDy = lsTouchY - e.touches[0].clientY; // 上滑为正
+        if (lsDy > 0) ls.style.transform = `translateY(${-lsDy}px)`;
+        e.preventDefault();
+    }, { passive: false });
+    ls.addEventListener('touchend', () => {
+        if (lsTouchY === null) return;
+        ls.style.transition = '';
+        ls.style.transform = '';
+        if (lsDy > 80) ls.classList.add('hide'); // 上滑超过80px关闭
+        lsTouchY = null; lsDy = 0;
+    });
 }
 function lockScreen() { $('#lockscreen').classList.remove('hide'); renderLockWidgets(); }
 
