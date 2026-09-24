@@ -43,7 +43,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
-    font-family: "Segoe UI", "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-family: "Segoe UI Variable", "Segoe UI", "Microsoft YaHei", "微软雅黑", system-ui, sans-serif;
     overflow: hidden;
     color: var(--text);
     user-select: none;
@@ -68,7 +68,7 @@ input { font-family: inherit; }
     cursor: pointer; transition: opacity 0.6s ease, visibility 0.6s;
 }
 #lockscreen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-.lock-time { font-size: clamp(72px, 12vw, 128px); font-weight: 200; color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.4); }
+.lock-time { font-size: clamp(72px, 12vw, 128px); font-weight: 300; color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.4); }
 .lock-date { font-size: clamp(18px, 2.4vw, 26px); color: rgba(255,255,255,.85); text-align: center; margin-top: 6px; }
 .lock-hint { position: absolute; bottom: 8%; color: rgba(255,255,255,.75); font-size: 15px; animation: hintFloat 2.4s ease-in-out infinite; }
 @keyframes hintFloat { 0%,100% { transform: translateY(0); opacity: .75; } 50% { transform: translateY(-8px); opacity: 1; } }
@@ -112,13 +112,13 @@ input { font-family: inherit; }
 
 .tb-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 0; overflow: hidden; }
 .tb-btn {
-    position: relative; width: 46px; height: 46px; border-radius: 12px;
+    position: relative; width: 52px; height: 52px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .tb-btn:hover { background: var(--hover); }
 .tb-btn.active { background: var(--active); }
-.tb-btn img { width: 26px; height: 26px; }
-.tb-btn .tk-ico svg { width: 26px; height: 26px; display: block; }
+.tb-btn img { width: 32px; height: 32px; }
+.tb-btn .tk-ico svg { width: 32px; height: 32px; display: block; }
 .tb-btn .run-dot { position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--text-faint); }
 .tb-btn.running .run-dot { background: var(--accent); width: 14px; border-radius: 3px; }
 .tb-sep { width: 1px; height: 26px; background: var(--bar-border); margin: 0 6px; flex-shrink: 0; }
@@ -127,7 +127,7 @@ input { font-family: inherit; }
 .tb-tray { display: flex; align-items: center; gap: 9px; height: 44px; padding: 0 12px; border-radius: 12px; }
 .tb-tray:hover { background: var(--hover); }
 .ti svg { width: 17px; height: 17px; display: block; fill: currentColor; }
-.tb-clock { position: relative; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; height: 44px; padding: 0 12px; border-radius: 12px; font-size: 12px; line-height: 1.35; }
+.tb-clock { position: relative; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; height: 48px; padding: 4px 14px; border-radius: 12px; font-size: 12.5px; line-height: 1.5; }
 .tb-clock:hover { background: var(--hover); }
 .ntf-badge {
     position: absolute; top: 4px; right: 6px; min-width: 16px; height: 16px; padding: 0 4px;
@@ -218,7 +218,7 @@ input { font-family: inherit; }
     overflow-y: auto;
 }
 #widgetsPanel.open { opacity: 1; visibility: visible; }
-.wg-clock { text-align: center; font-size: clamp(40px, 6vw, 64px); font-weight: 200; color: #fff; text-shadow: 0 4px 24px rgba(0,0,0,.5); margin-bottom: 3vh; }
+.wg-clock { text-align: center; font-size: clamp(40px, 6vw, 64px); font-weight: 400; color: #fff; text-shadow: 0 4px 24px rgba(0,0,0,.5); margin-bottom: 3vh; }
 .wg-grid { display: grid; grid-template-columns: repeat(2, minmax(280px, 380px)); gap: 16px; justify-content: center; }
 .wg-card { background: var(--panel-bg); border: 1px solid var(--bar-border); border-radius: 16px; padding: 16px 18px; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: var(--shadow); }
 .wg-card-h { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--text-dim); margin-bottom: 10px; }
@@ -239,7 +239,7 @@ input { font-family: inherit; }
 .wg-todo .ck { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--text-dim); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; }
 .wg-todo.done .ck { background: var(--accent); border-color: var(--accent); }
 .wg-w-main { display: flex; align-items: center; gap: 10px; }
-.wg-w-ico { font-size: 40px; } .wg-w-t { font-size: 34px; font-weight: 200; }
+.wg-w-ico { font-size: 40px; } .wg-w-t { font-size: 34px; font-weight: 400; }
 .wg-w-sub { font-size: 12px; color: var(--text-dim); margin: 4px 0 10px; }
 .wg-w-days { display: flex; justify-content: space-between; }
 .wg-day { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text-dim); }
