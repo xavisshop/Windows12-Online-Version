@@ -12,23 +12,9 @@
         font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
         user-select: none; -webkit-user-select: none; cursor: default;
     }
-    .fw {
-        position: fixed; inset: 0; display: flex; flex-direction: column;
-        align-items: center; justify-content: flex-end; padding-bottom: 6vh;
-    }
-    .fw-hint {
-        font-size: 13px; color: rgba(255,255,255,.55); letter-spacing: .04em;
-    }
-    .fw-hint b {
-        display: inline-block; border: 1px solid rgba(255,255,255,.4); border-radius: 4px;
-        padding: 1px 7px; margin: 0 4px; font-weight: 600; color: rgba(255,255,255,.85);
-    }
 </style>
 </head>
 <body>
-    <div class="fw">
-        <div class="fw-hint">按 <b>F2</b> 进入设置</div>
-    </div>
     <script>
     (function () {
         'use strict';
@@ -44,8 +30,8 @@
         window.addEventListener('keydown', function (e) {
             if (e.key === 'F2' || e.keyCode === 113) bios();
         });
-        // 短暂停留后进入开机动画
-        setTimeout(next, 900);
+        // 纯黑屏停留2秒后进入开机动画
+        setTimeout(next, 2000);
     })();
     </script>
 </body>
