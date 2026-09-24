@@ -2034,7 +2034,7 @@ function wireGlobal() {
             togglePanel('startMenu');
         } else if (e.key === 'Escape') closePanels();
     });
-    // 锁屏：点击或上滑关闭
+    // 锁屏：点击或上滑关闭（iOS 强化：JS 完全接管触摸，不依赖 CSS touch-action）
     const ls = $('#lockscreen');
     ls.addEventListener('click', () => ls.classList.add('hide'));
     let lsTouchY = null, lsDy = 0;
@@ -2042,7 +2042,8 @@ function wireGlobal() {
         if (ls.classList.contains('hide')) return;
         lsTouchY = e.touches[0].clientY; lsDy = 0;
         ls.style.transition = 'none';
-    }, { passive: true });
+        e.preventDefault(); // 接管手势，阻止 iOS 滚动/系统手势干扰
+    }, { passive: false });
     ls.addEventListener('touchmove', e => {
         if (lsTouchY === null) return;
         lsDy = lsTouchY - e.touches[0].clientY; // 上滑为正
@@ -2053,7 +2054,13 @@ function wireGlobal() {
         if (lsTouchY === null) return;
         ls.style.transition = '';
         ls.style.transform = '';
-        if (lsDy > 80) ls.classList.add('hide'); // 上滑超过80px关闭
+        // 上滑超80px关闭；轻点（<10px）也关闭（因 touchstart 已 preventDefault，click 不会触发）
+        if (lsDy > 80 || lsDy < 10) ls.classList.add('hide');
+        lsTouchY = null; lsDy = 0;
+    });
+    // 防止 iOS 双击缩放干扰
+    ls.addEventListener('touchcancel', () => {
+        ls.style.transition = ''; ls.style.transform = '';
         lsTouchY = null; lsDy = 0;
     });
 }
