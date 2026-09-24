@@ -35,7 +35,7 @@
   border-radius: 8px;
   transform: translate(-50%, -50%);
   opacity: 1;
-  animation: fadeToGhost 2s ease-in-out forwards;
+  animation: fadeToGhost 3s ease-in-out infinite;
   z-index: 1;
 }
 
@@ -75,7 +75,7 @@
   transform-origin: 0% 100%;
   transform: translate(-50%, -50%);
   opacity: 0;
-  animation: rotateAndStay 2s ease-in-out forwards;
+  animation: rotateAndStay 3s ease-in-out infinite;
   z-index: 2;
 }
 
