@@ -13,22 +13,6 @@ const GLYPH = (bg, fg, t, fs) => RSQ(bg, `<text x="12" y="${15 + (fs ? 0 : 0)}" 
 const ICONS = {
     search: S('<circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="#93a0b4" stroke-width="2.4"/><line x1="15.2" y1="15.2" x2="20.6" y2="20.6" stroke="#93a0b4" stroke-width="2.4" stroke-linecap="round"/>'),
     widgets: S('<rect x="2" y="2" width="11" height="11" rx="3" fill="#8b5cf6"/><rect x="11" y="11" width="11" height="11" rx="3" fill="#e0449e"/>'),
-    explorer: S('<path d="M2.8 7.4c0-1.6 1.3-2.9 2.9-2.9h4c.8 0 1.5.3 2 1l1.3 1.7h5.3c1.6 0 2.9 1.3 2.9 2.9v6.9c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9V7.4z" fill="#f0ad3e"/><path d="M2.8 11h18.4v6c0 1.6-1.3 2.9-2.9 2.9H5.7c-1.6 0-2.9-1.3-2.9-2.9v-6z" fill="#ffd659"/><path d="M2.8 11h18.4v1.6H2.8z" fill="#ffe6a3" opacity=".65"/>'),
-    edge: S('<defs><linearGradient id="edgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset=".55" stop-color="#22b8cf"/><stop offset="1" stop-color="#1971c2"/></linearGradient></defs><path d="M12 2a10 10 0 1 0 9.6 13.1c-.3-1-1.4-1.6-2.4-1.3-2.9.9-6.1-.4-7.4-3.2-.4-.9.1-2 1.1-2.2 2.5-.6 5.2.5 6.3 2.8.4.9 1.6 1.1 2.4.5A10 10 0 0 0 12 2z" fill="url(#edgg)"/><path d="M12 6.5c-3 0-5.5 2.4-5.5 5.5 0 .8.6 1.4 1.3 1.3 2-.3 4 .8 4.7 2.7.3.8 1.3 1 2 .4A5.5 5.5 0 0 0 12 6.5z" fill="#a5f3fc" opacity=".9"/>'),
-    photos: S('<rect x="2" y="4" width="20" height="16" rx="3" fill="#0ea5e9"/><circle cx="8.5" cy="10" r="2" fill="#fef9c3"/><path d="M2 17l5.5-5 4 4 3.5-3.5L22 19v1a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3z" fill="#4ade80"/>'),
-    store: S('<path d="M5 8h14l-1.2 11.6a1.6 1.6 0 0 1-1.6 1.4H7.8a1.6 1.6 0 0 1-1.6-1.4L5 8z" fill="#3b9bf0"/><path d="M5 8h14l-.25 2.4H5.25L5 8z" fill="#2f7fd6" opacity=".55"/><path d="M8.5 8V6.6a3.5 3.5 0 0 1 7 0V8" fill="none" stroke="#1e6fd0" stroke-width="2"/><g fill="#fff" opacity=".95"><rect x="9.3" y="12.2" width="2.3" height="2.3"/><rect x="12.4" y="12.2" width="2.3" height="2.3"/><rect x="9.3" y="15.3" width="2.3" height="2.3"/><rect x="12.4" y="15.3" width="2.3" height="2.3"/></g>'),
-    settings: S('<g fill="#9fb0c3"><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(45 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(90 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(135 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(180 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(225 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(270 12 12)"/><rect x="10.9" y="2.4" width="2.2" height="4.2" rx="1" transform="rotate(315 12 12)"/><circle cx="12" cy="12" r="6.6"/><circle cx="12" cy="12" r="2.7" fill="#6b7686"/></g>'),
-    terminal: S('<defs><linearGradient id="tmg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262f3b"/><stop offset="1" stop-color="#0e1218"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="5.5" fill="url(#tmg)"/><rect x="1" y="1" width="22" height="22" rx="5.5" fill="none" stroke="#ffffff" stroke-opacity=".08"/><text x="12" y="16.8" text-anchor="middle" font-size="11" font-weight="700" fill="#4ade80" font-family="Consolas, monospace">&gt;_</text>'),
-    notepad: S('<rect x="5.5" y="2.5" width="13" height="19" rx="2" fill="#fff" stroke="#d7dfea"/><path d="M5.5 4.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3h-12v-3z" fill="#3f9bf0"/><rect x="5.5" y="5.5" width="13" height="2" fill="#3f9bf0"/><g stroke="#c3cedb" stroke-width="1.6" stroke-linecap="round"><line x1="8.5" y1="11.5" x2="15.5" y2="11.5"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="8.5" y1="18.5" x2="13.5" y2="18.5"/></g>'),
-    mail: S('<defs><linearGradient id="mailg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0284c7"/></linearGradient></defs><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="url(#mailg)"/><path d="M3.8 7.8L12 13.2l8.2-5.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
-    calendar: S('<rect x="3" y="4.5" width="18" height="17" rx="2.5" fill="#fff" stroke="#e2e8f0"/><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5V10H3V7.5z" fill="#f0506e"/><rect x="7" y="2.8" width="2.4" height="5" rx="1.2" fill="#64748b"/><rect x="14.6" y="2.8" width="2.4" height="5" rx="1.2" fill="#64748b"/><text x="12" y="18.8" text-anchor="middle" font-size="8.5" font-weight="700" fill="#334155" font-family="Segoe UI, Arial">12</text>'),
-    todo: S('<defs><linearGradient id="tdg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#0284c7"/></linearGradient></defs><circle cx="12" cy="12" r="10" fill="url(#tdg)"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'),
-    clock: S('<circle cx="12" cy="12" r="9.5" fill="#fff" stroke="#8b98a9" stroke-width="1.6"/><path d="M12 7v5.2l3.4 2.1" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.3" fill="#334155"/>'),
-    weather: S('<g stroke="#fbbf24" stroke-width="1.7" stroke-linecap="round"><path d="M9 2.6v1.7M3.6 9h1.7M5.1 5.1l1.2 1.2M12.9 5.1l-1.2 1.2"/></g><circle cx="9" cy="9" r="4.2" fill="#fbbf24"/><ellipse cx="15.5" cy="16.2" rx="5.8" ry="3.8" fill="#dbe7f3"/><ellipse cx="12.6" cy="14.4" rx="4.2" ry="3" fill="#f4f8fc"/>'),
-    calc: S('<defs><linearGradient id="calg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d4a5f"/><stop offset="1" stop-color="#232c3b"/></linearGradient></defs><rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="url(#calg)"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#a5f3fc" opacity=".92"/><g fill="#e2e8f0"><circle cx="9" cy="14" r="1.3"/><circle cx="12" cy="14" r="1.3"/><circle cx="15" cy="14" r="1.3"/><circle cx="9" cy="17.5" r="1.3"/><circle cx="12" cy="17.5" r="1.3"/><circle cx="15" cy="17.5" r="1.3"/></g>'),
-    word: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#2b579a"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">W</text>'),
-    excel: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#217346"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">X</text>'),
-    ppt: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#d24726"/><text x="8" y="20.4" text-anchor="middle" font-size="6.5" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">P</text>'),
     adobe: GLYPH('#1f1f2e', '#e0449e', 'A', 14),
     ae: GLYPH('#1f1f3a', '#a78bfa', 'Ae', 11),
     pdf: S('<path d="M6.5 2.5h7l4 4v13a1.6 1.6 0 0 1-1.6 1.6H6.5a1.6 1.6 0 0 1-1.6-1.6V4.1a1.6 1.6 0 0 1 1.6-1.6z" fill="#fff" stroke="#dde5ee"/><path d="M13.5 2.5l4 4h-4z" fill="#e2e9f2"/><rect x="3.2" y="13.5" width="9.6" height="9.6" rx="2.2" fill="#dc2626"/><text x="8" y="20.4" text-anchor="middle" font-size="4.6" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">PDF</text>'),
@@ -73,7 +57,6 @@ const ICONS = {
     sun: S('<circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'),
     plane: S('<path d="M10.5 13.5L3 11l1.5-1.5L11 11l3.5-5.5c.8-1.2 2.6-1.4 3.5-.5.9.9.7 2.7-.5 3.5L13 12l1.5 6.5L13 20l-2.5-6.5z" fill="currentColor"/>'),
     saver: S('<path d="M13 2L4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
-    camera: S('<defs><linearGradient id="camg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect x="8" y="4.3" width="8" height="3.6" rx="1.7" fill="#6d28d9"/><rect x="2.5" y="7" width="19" height="13" rx="3" fill="url(#camg)"/><circle cx="12" cy="13.2" r="4.3" fill="#221d33"/><circle cx="12" cy="13.2" r="2.9" fill="#3d3670"/><circle cx="10.9" cy="12.1" r="1" fill="#c4b5fd"/>'),
     game: S('<rect x="2" y="7" width="20" height="11" rx="5.5" fill="#22c55e"/><path d="M8 10.5v4M6 12.5h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.5" cy="11.5" r="1.3" fill="#fff"/><circle cx="18" cy="14" r="1.3" fill="#fff"/>'),
     music: S('<circle cx="8" cy="17.5" r="3" fill="#f59e0b"/><circle cx="17" cy="15.5" r="3" fill="#f59e0b"/><path d="M11 17.5V6l9-2v11.5" fill="none" stroke="#f59e0b" stroke-width="2.4"/>'),
 };
@@ -157,9 +140,24 @@ Object.assign(ICONS, {
     rCheck: L('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
     rUpdateBig: S('<path d="M20 12a8 8 0 1 1-2.4-5.7" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 3.5V8h-4.5" fill="none" stroke="#4cc2ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
 });
+/* 真实 Win11 应用图标(PNG 素材,来自 win11web / blueedgetechno-windows11 图标库) */
+const APP_IMGS = {
+    explorer: 'img/icons/explorer.png', edge: 'img/icons/edge.png',
+    store: 'img/icons/store.png', settings: 'img/icons/settings.png',
+    terminal: 'img/icons/terminal.png', notepad: 'img/icons/notepad.png',
+    photos: 'img/icons/photos.png', mail: 'img/icons/mail.png',
+    calendar: 'img/icons/calendar.png', word: 'img/icons/word.png',
+    excel: 'img/icons/excel.png', ppt: 'img/icons/ppt.png',
+    todo: 'img/icons/todo.png', clock: 'img/icons/clock.png',
+    weather: 'img/icons/weather.png', calc: 'img/icons/calc.png',
+    camera: 'img/icons/camera.png', defender: 'img/icons/defender.png',
+};
 const ico = (n, cls) => {
     if (typeof n === 'string' && n.startsWith('img:')) {
         return `<span class="${cls || 'a-ico'}"><img src="${n.slice(4)}" alt="" draggable="false"></span>`;
+    }
+    if (typeof n === 'string' && APP_IMGS[n]) {
+        return `<span class="${cls || 'a-ico'}"><img src="${APP_IMGS[n]}" alt="" draggable="false"></span>`;
     }
     return `<span class="${cls || 'a-ico'}">${ICONS[n] || ICONS.exe}</span>`;
 };
@@ -252,7 +250,11 @@ function renderTaskbar() {
     mk(`<span class="tk-ico">${ICONS.search}</span>`, '搜索', () => togglePanel('searchPanel'));
     const sep = document.createElement('span'); sep.className = 'tb-sep'; c.appendChild(sep);
     APPS.filter(a => a.pinned).forEach(a => {
-        const b = mk(`<span class="tk-ico">${ICONS[a.icon]}</span><span class="run-dot"></span>`, a.name, () => openApp(a.id));
+        const b = mk(`${ico(a.icon, 'tk-ico')}<span class="run-dot"></span>`, a.name, () => {
+            b.classList.remove('launching'); void b.offsetWidth; b.classList.add('launching');
+            setTimeout(() => b.classList.remove('launching'), 600);
+            openApp(a.id);
+        });
         b.dataset.app = a.id;
     });
 }
@@ -407,8 +409,8 @@ function openApp(appId, arg) {
         const exMin = wins.find(w => w.app === appId && !w.closed);
         if (exMin) { restoreWin(exMin); return; }
     }
-    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore, ai: buildAiApp, recycle: buildRecycle };
-    const simple = ['photos', 'mail', 'calendar', 'word', 'excel', 'ppt', 'todo', 'clock', 'weather', 'calc', 'camera'];
+    const builders = { explorer: buildExplorer, settings: buildSettings, edge: buildEdge, notepad: buildNotepad, terminal: buildTerminal, store: buildStore, ai: buildAiApp, recycle: buildRecycle, calc: buildCalc, clock: buildClock, weather: buildWeather };
+    const simple = ['photos', 'mail', 'calendar', 'word', 'excel', 'ppt', 'todo', 'camera'];
     let bodyHtml, w = 880, h = 560, title = app.name;
     if (builders[appId]) { const r = builders[appId](arg); bodyHtml = r.html; w = r.w || w; h = r.h || h; title = r.title || title; }
     else if (simple.includes(appId)) { const r = buildSimpleApp(app); bodyHtml = r.html; w = r.w; h = r.h; }
@@ -429,7 +431,7 @@ function createWin(app, title, bodyHtml, w, h) {
     el.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px;z-index:${++zTop}`;
     el.innerHTML = `
         <div class="titlebar" data-drag>
-            <span class="t-ico">${ICONS[app.icon]}</span>
+            ${ico(app.icon, 't-ico')}
             <span class="t-name">${esc(title)}</span>
             <div class="win-btns">
                 <button data-wb="min" title="最小化" aria-label="最小化"><svg viewBox="0 0 10 10"><path d="M1 5 H9" stroke="currentColor" stroke-width="1"/></svg></button>
@@ -898,13 +900,143 @@ function initExplorer(root, st) {
 function buildSimpleApp(app) {
     return {
         html: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;color:var(--text-dim)">
-            <span style="width:72px;height:72px">${ICONS[app.icon]}</span>
+            <span style="width:72px;height:72px;display:block">${ico(app.icon)}</span>
             <div style="font-size:16px;color:var(--text)">${esc(app.name)}</div>
             <div style="font-size:13px">此应用为网页演示占位，完整功能开发中…</div>
             <button class="mode-btn" onclick="this.textContent='👍 收到！'">点我试试</button>
         </div>`,
         w: 560, h: 420, title: app.name,
     };
+}
+
+/* ================= 计算器 ================= */
+function buildCalc() {
+    const btns = ['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', '.', '⌫', '='];
+    const html = `
+    <div class="calc">
+        <div class="calc-expr" id="calcExpr">&nbsp;</div>
+        <div class="calc-disp" id="calcDisp">0</div>
+        <div class="calc-grid">
+            ${btns.map(b => {
+                const cls = b === '=' ? 'eq' : ('÷×−+⌫'.includes(b) ? 'op' : ('C±%'.includes(b) ? 'fn' : ''));
+                return `<button class="calc-btn ${cls}" data-b="${b}">${b}</button>`;
+            }).join('')}
+        </div>
+    </div>
+    <script>(function(){
+        const disp = document.getElementById('calcDisp'), expr = document.getElementById('calcExpr');
+        let cur = '0', prev = null, op = null, fresh = true;
+        const fmt = n => { const s = String(+parseFloat(n.toFixed(10))); return s === 'NaN' ? '错误' : s; };
+        function calc(a, b, o) {
+            a = +a; b = +b;
+            switch (o) { case '+': return a + b; case '−': return a - b; case '×': return a * b; case '÷': return b === 0 ? NaN : a / b; }
+        }
+        function press(b) {
+            if (/[0-9.]/.test(b)) {
+                if (fresh) { cur = b === '.' ? '0.' : b; fresh = false; }
+                else if (!(b === '.' && cur.includes('.'))) cur = cur === '0' && b !== '.' ? b : cur + b;
+            } else if (b === 'C') { cur = '0'; prev = null; op = null; fresh = true; expr.innerHTML = '&nbsp;'; }
+            else if (b === '⌫') { cur = fresh ? '0' : (cur.length > 1 ? cur.slice(0, -1) : '0'); }
+            else if (b === '±') { cur = fmt(-(+cur)); }
+            else if (b === '%') { cur = fmt((+cur) / 100); }
+            else if (b === '=') {
+                if (op && prev !== null) { expr.textContent = prev + ' ' + op + ' ' + cur + ' ='; cur = fmt(calc(prev, cur, op)); prev = null; op = null; fresh = true; }
+            } else {
+                if (op && prev !== null && !fresh) { prev = fmt(calc(prev, cur, op)); }
+                else prev = cur;
+                op = b; fresh = true; expr.textContent = prev + ' ' + op;
+            }
+            disp.textContent = cur;
+        }
+        document.querySelectorAll('.calc-btn').forEach(x => x.addEventListener('click', () => press(x.dataset.b)));
+    })<\/script>`;
+    return { html, w: 340, h: 520, title: '计算器' };
+}
+
+/* ================= 时钟 ================= */
+function buildClock() {
+    const html = `
+    <div class="clock-app">
+        <div class="clock-tabs">
+            <button class="clock-tab on" data-t="world">世界时钟</button>
+            <button class="clock-tab" data-t="stop">秒表</button>
+        </div>
+        <div class="clock-page" id="clockWorld">
+            <div class="clock-now"><div class="clock-time" id="clockTime">--:--:--</div><div class="clock-date" id="clockDate"></div></div>
+            <div class="clock-cities" id="clockCities"></div>
+        </div>
+        <div class="clock-page" id="clockStop" style="display:none">
+            <div class="stop-disp" id="stopDisp">00:00.00</div>
+            <div class="stop-btns">
+                <button class="mode-btn" id="stopGo">开始</button>
+                <button class="mode-btn" id="stopLap">计次</button>
+                <button class="mode-btn" id="stopReset">复位</button>
+            </div>
+            <div class="stop-laps" id="stopLaps"></div>
+        </div>
+    </div>
+    <script>(function(){
+        const cities = [['北京', 'Asia/Shanghai'], ['东京', 'Asia/Tokyo'], ['伦敦', 'Europe/London'], ['纽约', 'America/New_York'], ['巴黎', 'Europe/Paris']];
+        function tick() {
+            const n = new Date();
+            document.getElementById('clockTime').textContent = n.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('clockDate').textContent = n.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            document.getElementById('clockCities').innerHTML = cities.map(c => {
+                const t = n.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: c[1] });
+                return '<div class="clock-city"><span>' + c[0] + '</span><b>' + t + '</b></div>';
+            }).join('');
+        }
+        tick(); const iv = setInterval(tick, 1000);
+        document.querySelectorAll('.clock-tab').forEach(t => t.addEventListener('click', () => {
+            document.querySelectorAll('.clock-tab').forEach(x => x.classList.remove('on')); t.classList.add('on');
+            document.getElementById('clockWorld').style.display = t.dataset.t === 'world' ? '' : 'none';
+            document.getElementById('clockStop').style.display = t.dataset.t === 'stop' ? '' : 'none';
+        }));
+        let st = 0, acc = 0, run = false, t0 = 0;
+        const dEl = document.getElementById('stopDisp'), goB = document.getElementById('stopGo');
+        function fmt(ms) { const m = Math.floor(ms / 60000), s = Math.floor(ms % 60000 / 1000), c = Math.floor(ms % 1000 / 10);
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + '.' + String(c).padStart(2, '0'); }
+        function loop() { if (run) { dEl.textContent = fmt(acc + Date.now() - t0); requestAnimationFrame(loop); } }
+        goB.addEventListener('click', () => {
+            run = !run;
+            if (run) { t0 = Date.now(); loop(); goB.textContent = '暂停'; } else { acc += Date.now() - t0; goB.textContent = '开始'; }
+        });
+        document.getElementById('stopLap').addEventListener('click', () => {
+            if (!run && acc === 0) return;
+            const laps = document.getElementById('stopLaps');
+            const div = document.createElement('div'); div.className = 'stop-lap';
+            div.innerHTML = '<span>计次 ' + (laps.children.length + 1) + '</span><b>' + dEl.textContent + '</b>';
+            laps.prepend(div);
+        });
+        document.getElementById('stopReset').addEventListener('click', () => {
+            run = false; acc = 0; dEl.textContent = '00:00.00'; goB.textContent = '开始';
+            document.getElementById('stopLaps').innerHTML = '';
+        });
+    })<\/script>`;
+    return { html, w: 480, h: 560, title: '时钟' };
+}
+
+/* ================= 天气 ================= */
+function buildWeather() {
+    const days = [
+        { d: '今天', hi: 28, lo: 19, c: '多云', ic: '⛅' }, { d: '明天', hi: 29, lo: 20, c: '晴', ic: '☀️' },
+        { d: '周日', hi: 27, lo: 18, c: '小雨', ic: '🌧️' }, { d: '周一', hi: 26, lo: 17, c: '多云', ic: '⛅' },
+        { d: '周二', hi: 28, lo: 19, c: '晴', ic: '☀️' },
+    ];
+    const html = `
+    <div class="wx-app">
+        <div class="wx-hero">
+            <div class="wx-ic">⛅</div>
+            <div class="wx-temp">24°</div>
+            <div class="wx-cond">多云 · 实时体感 26°</div>
+            <div class="wx-meta"><span>💧 湿度 62%</span><span>🍃 东南风 3 级</span><span>👁 能见度 16km</span></div>
+        </div>
+        <div class="wx-days">
+            ${days.map(x => `<div class="wx-day"><span>${x.d}</span><span class="wx-e">${x.ic}</span><span>${x.lo}° / <b>${x.hi}°</b></span><span class="wx-c">${x.c}</span></div>`).join('')}
+        </div>
+        <div class="wx-foot">演示数据 · 实际使用时可接入天气 API</div>
+    </div>`;
+    return { html, w: 520, h: 600, title: '天气' };
 }
 
 /* ================= 设置（Win11 截图 1:1） ================= */
@@ -1224,7 +1356,7 @@ function pgUpdate() {
         `在推出最新的非安全更新、修复和改进时，成为第一批获知这些更新的人员。${'<button class="wlink" data-demo>了解详细信息</button>'}`,
         `<span class="wtg-lab">关</span>${wtoggle(false)}`))}
     ${wcard(wrow('rPause', '暂停更新', `选择暂停更新的截止日期。${'<button class="wlink" data-demo>了解详细信息</button>'}`,
-        `<button class="wbtn2" data-demo><span class="wrow-ico sm">${ICONS.calendar}</span>选取日期</button>`))}
+        `<button class="wbtn2" data-demo><span class="wrow-ico sm"><img src="img/icons/calendar.png" alt="" draggable="false"></span>选取日期</button>`))}
     ${wcard(wrow('rHistory', '更新历史记录', ''))}
     ${wcard(wrow('rAdv', '高级选项', '传递优化、可选更新、活动时间以及其他更新设置'))}
     ${wcard(wrow('rUsers', 'Windows 预览体验计划', '获取 Windows 的预览版本，以分享有关新功能和更新的反馈'))}
@@ -1537,7 +1669,7 @@ function buildEdge() {
             <div class="edge-url"><span class="s-ico"></span><input data-url value="edge://newtab" spellcheck="false"></div>
         </div>
         <div class="edge-page" data-page>
-            <div class="edge-logo">${ICONS.edge}</div>
+            <div class="edge-logo"><img src="img/icons/edge.png" alt="" draggable="false"></div>
             <div class="edge-box"><span class="s-ico"></span><input data-q placeholder="搜索或输入网址"></div>
             <div class="edge-links">
                 <button class="edge-link" data-l="bilibili">${ico('mp4')}<span>Bilibili</span></button>
@@ -1556,7 +1688,7 @@ function initEdge(root) {
         const showErr = !/^edge:\/\//.test(url);
         page.innerHTML = showErr
             ? `<div class="edge-err"><div class="big">🌐</div><h3 style="color:var(--text);margin-bottom:8px">无法访问此页面</h3><p>网页演示环境无真实网络访问。<br>试试 edge://newtab</p></div>`
-            : `<div class="edge-logo">${ICONS.edge}</div>
+            : `<div class="edge-logo"><img src="img/icons/edge.png" alt="" draggable="false"></div>
                <div class="edge-box"><span class="s-ico"></span><input data-q placeholder="搜索或输入网址"></div>
                <div class="edge-links">
                    <button class="edge-link" data-l="bilibili">${ico('mp4')}<span>Bilibili</span></button>
@@ -1704,14 +1836,14 @@ function fillTray() {
 
 /* ================= 桌面图标 ================= */
 const DESK_ICONS = [
-    { name: '此电脑', icon: 'img:img/icons/explorer.svg', app: 'explorer' },
-    { name: 'Microsoft Edge', icon: 'img:img/icons/edge.svg', app: 'edge' },
-    { name: '记事本', icon: 'img:img/icons/notepad.svg', app: 'notepad' },
+    { name: '此电脑', icon: 'img:img/icons/explorer.png', app: 'explorer' },
+    { name: 'Microsoft Edge', icon: 'img:img/icons/edge.png', app: 'edge' },
+    { name: '记事本', icon: 'img:img/icons/notepad.png', app: 'notepad' },
     { name: '回收站', icon: 'trash', app: 'recycle' },
 ];
 function renderDesktopIcons() {
     $('#desktopIcons').innerHTML = DESK_ICONS.map((d, i) => {
-        const iconHtml = d.icon.startsWith('img:') ? `<img src="${d.icon.slice(4)}" alt="" draggable="false">` : ICONS[d.icon];
+        const iconHtml = d.icon.startsWith('img:') ? `<img src="${d.icon.slice(4)}" alt="" draggable="false">` : (APP_IMGS[d.icon] ? `<img src="${APP_IMGS[d.icon]}" alt="" draggable="false">` : ICONS[d.icon]);
         return `<button class="dicon" data-i="${i}"><span class="di-img">${iconHtml}</span><span>${d.name}</span></button>`;
     }).join('');
     let sel = -1;
