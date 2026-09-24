@@ -17,10 +17,10 @@ function init() {
     setTimeout(function () {
         var sp = document.getElementById('spinner');
         if (sp) sp.classList.add('show');
-    }, 1500);
+    }, 450);
 
     // 总时长：绘制 1.75s + 展示 2.6s → 淡出
-    setTimeout(goDesktop, 4400);
+    setTimeout(goDesktop, 2000);
 }
 
 if (document.readyState === 'loading') {
