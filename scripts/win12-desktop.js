@@ -1513,14 +1513,14 @@ function initSettings(root) {
             const on = !ckSec.classList.contains('on');
             ckSec.classList.toggle('on', on);
             store.set('clock_seconds', on);
-            tickClock(); toast(on ? '任务栏时钟已显示秒钟' : '任务栏时钟已隐藏秒钟'); return;
+            tickClock(); return;
         }
         const ck24 = e.target.closest('[data-clock24]');
         if (ck24) {
             const on = !ck24.classList.contains('on');
             ck24.classList.toggle('on', on);
             store.set('clock_24h', on);
-            tickClock(); toast(on ? '已切换为 24 小时制' : '已切换为 12 小时制'); return;
+            tickClock(); return;
         }
         const acc = e.target.closest('[data-acc]');
         if (acc) {
@@ -2158,8 +2158,7 @@ function wireGlobal() {
         if (e.target.closest('#qsEdit')) {
             const g = $('#qsToggles'), on = !g.classList.contains('qs-edit');
             g.classList.toggle('qs-edit', on);
-            renderQS();
-            toast(on ? '编辑模式：点击磁贴可隐藏/恢复，再点铅笔退出' : '已退出编辑模式'); return;
+            renderQS(); return;
         }
         const t = e.target.closest('.qs-t');
         if (t) {
@@ -2173,17 +2172,20 @@ function wireGlobal() {
             }
             const q = QS.find(x => x.id === t.dataset.q);
             q.on = !q.on; t.classList.toggle('on', q.on); applyQS();
-            if (q.id === 'theme') { store.set('theme', q.on ? 'dark' : 'light'); toast(q.on ? '已切换深色模式' : '已切换浅色模式', q.on ? '🌙' : '☀️'); }
+            if (q.id === 'theme') { store.set('theme', q.on ? 'dark' : 'light'); }
             return;
         }
     });
     // 快捷设置底部电池电量
+    const batEl = document.getElementById('qsBatPct');
     if (navigator.getBattery) {
         navigator.getBattery().then(b => {
-            const up = () => { const el = $('#qsBatPct'); if (el) el.textContent = Math.round(b.level * 100) + '%'; };
-            up(); b.addEventListener('levelchange', up);
-        }).catch(() => { const el = $('#qsBatPct'); if (el) el.textContent = '82%'; });
-    } else { const el = $('#qsBatPct'); if (el) el.textContent = '82%'; }
+            const up = () => { if (batEl) batEl.textContent = Math.round(b.level * 100) + '%'; };
+            up(); b.addEventListener('levelchange', up); b.addEventListener('chargingchange', up);
+        }).catch(() => {});
+    }
+    const qsFill = el => { const p = (el.value - el.min) / (el.max - el.min) * 100; el.style.setProperty('--fill', p + '%'); };
+    ['qsBrightness', 'qsVolume'].forEach(id => { const el = document.getElementById(id); if (el) { qsFill(el); el.addEventListener('input', () => qsFill(el)); } });
     $('#qsBrightness').addEventListener('input', e => {
         $('#wallpaper').style.filter = `brightness(${e.target.value / 100})`;
     });
