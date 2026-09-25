@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COLORFUL UEFI BIOS Utility</title>
+<title>UEFI BIOS Utility</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
@@ -56,6 +56,7 @@
     }
     nav.tabs button:hover, .langwrap > button:hover { background: rgba(212, 58, 47, .25); }
     nav.tabs button:active, .langwrap > button:active { background: var(--red); }
+    nav.tabs button.on { background: var(--red); color: #fff; }
     .langwrap { position: relative; display: inline-flex; }
     .langopts {
         display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 40;
@@ -70,11 +71,12 @@
     .langopts div:hover { background: var(--red); color: #fff; }
     .langopts div.on { color: var(--red-hi); font-weight: 700; }
 
-    /* ===== 主区 ===== */
+    /* ===== 主区（EZ 模式 / BIOS功能页） ===== */
     main {
         flex: 1; display: flex; gap: 0; min-height: 0;
         padding: 10px 48px 4px;
     }
+    main.hidden { display: none; }
     .col { min-width: 0; padding: 0 26px; }
     .col-left { width: 34%; border-right: 1px solid var(--line); }
     .col-mid { width: 36%; border-right: 1px solid var(--line); }
@@ -91,7 +93,6 @@
     .kv .k { color: var(--gray); min-width: 86px; flex-shrink: 0; }
     .kv .v { color: #f2f2f2; }
 
-    /* 传感器卡片 */
     .sensors { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin-bottom: 16px; }
     .sensor { display: flex; align-items: center; gap: 12px; }
     .sensor .ico {
@@ -103,7 +104,6 @@
     .sensor .lab { font-size: .78em; color: var(--gray); }
     .sensor .val { font-size: 1.25em; font-weight: 700; color: var(--red-hi); margin-top: 2px; }
 
-    /* 下拉框 */
     .ddrow { display: flex; align-items: center; gap: 0; margin: 8px 0; }
     .dd { position: relative; display: inline-flex; align-items: stretch; }
     .dd .tag {
@@ -128,14 +128,12 @@
     .dd .opts div { padding: 8px 10px; font-size: .85em; color: #e8e8e8; cursor: pointer; text-align: center; }
     .dd .opts div:hover { background: var(--red); color: #fff; }
 
-    /* 启动项 */
     .bootlist { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
     .bootlist .b { display: flex; align-items: center; gap: 12px; font-size: .85em; color: #f0f0f0; }
     .bootlist .b svg { width: 30px; height: 30px; flex-shrink: 0; }
 
     .help { color: var(--yellow); font-size: .78em; line-height: 1.7; margin-top: 14px; }
 
-    /* 风扇 */
     .fans { display: flex; justify-content: space-between; margin-top: 4px; }
     .fan { text-align: center; font-size: .78em; color: var(--gray); }
     .fan svg { width: 40px; height: 40px; display: block; margin: 0 auto 5px; }
@@ -151,7 +149,6 @@
     }
     .fanset:hover { border-color: var(--red); }
 
-    /* EZ OC */
     .ezoc { display: flex; align-items: center; gap: 18px; margin-top: 6px; }
     .ezoc .biggear { width: 92px; height: 92px; flex-shrink: 0; }
     .ezoc .modes { display: flex; flex-direction: column; gap: 10px; flex: 1; }
@@ -163,6 +160,93 @@
     .ezoc .modes button.on { border-color: var(--red-hi); color: #fff; background: rgba(212,58,47,.14); }
     .ezoc .modes button:hover { border-color: var(--red); }
 
+    /* ===== 高级模式 / 超频OC 页 ===== */
+    main.adv { padding: 12px 48px 6px; }
+    .acol-side { width: 25%; padding-right: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .acol-menu { width: 19%; padding: 22px 12px 0 16px; min-width: 0; }
+    main.adv.nosensor .acol-menu { width: 24%; padding-left: 4px; }
+    .acol-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .scard { border: 1px solid #3a3a3e; border-left: 3px solid var(--red); background: #1a1a1c; padding: 9px 13px; }
+    .scard h4 { color: var(--red-hi); font-size: .9em; font-weight: 700; margin-bottom: 7px; letter-spacing: .1em; }
+    .scard .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+    .scard .g .l { font-size: .72em; color: var(--gray); }
+    .scard .g .n { font-size: .86em; color: var(--red-hi); font-weight: 600; margin-top: 1px; }
+    .tips { margin-top: auto; border: 1px solid #3a3a3e; padding: 9px 13px; background: #1a1a1c; }
+    .tips h4 { color: var(--red-hi); font-size: .85em; letter-spacing: .1em; }
+    .tips p { color: var(--yellow); font-size: .75em; line-height: 1.65; margin-top: 5px; min-height: 3.3em; }
+
+    .menu { display: flex; flex-direction: column; gap: 15px; }
+    .menu div { display: flex; align-items: center; gap: 11px; font-size: .95em; color: #d8d8d8; cursor: pointer; letter-spacing: .05em; }
+    .menu div::before { content: ""; width: 11px; height: 11px; background: var(--red); flex-shrink: 0; }
+    .menu div:hover { color: #fff; }
+    .menu div.on { color: #fff; font-weight: 700; }
+
+    .frame {
+        flex: 1; position: relative; border: 1px solid var(--red);
+        padding: 20px 26px 16px; margin-top: 16px;
+        display: flex; flex-direction: column; min-height: 0;
+        background: linear-gradient(180deg, rgba(212,58,47,.05), rgba(0,0,0,0) 40%);
+    }
+    /* 顶部切角装饰 */
+    .frame::before {
+        content: ""; position: absolute; top: -1px; right: 12%; width: 34%; height: 12px;
+        background: #141414; border: 1px solid var(--red); border-top: none;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 14px 100%);
+    }
+    .frame::after {
+        content: ""; position: absolute; left: -1px; top: 55%; width: 4px; height: 20%;
+        background: var(--red);
+    }
+    .ph { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; min-height: 36px; }
+    .ph .back {
+        width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--red-hi);
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+        color: var(--red-hi); font-size: 14px; flex-shrink: 0;
+    }
+    .ph .back:hover { background: rgba(212,58,47,.2); }
+    .ph .back.dis { opacity: .3; cursor: default; pointer-events: none; }
+    .ph .ti { font-size: 1.05em; color: #fff; }
+    .ph .path { font-size: .74em; color: var(--gray); margin-top: 2px; }
+
+    .rows { overflow-y: auto; flex: 1; min-height: 0; padding-right: 4px; }
+    .rows::-webkit-scrollbar { width: 5px; }
+    .rows::-webkit-scrollbar-thumb { background: #444; }
+    .row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 5px 12px; font-size: .85em; color: #e6e6e6; cursor: pointer; min-height: 30px;
+    }
+    .row.sel { background: #3a3a3e; }
+    .row.hd { color: var(--gray); cursor: default; padding-top: 12px; font-size: .8em; letter-spacing: .1em; }
+    .row.hd.sel { background: transparent; }
+    .row .ctl {
+        min-width: 200px; text-align: center; background: #2a2a2e; border: 1px solid #444;
+        padding: 4px 28px 4px 12px; position: relative; color: #fff; font-size: .95em; flex-shrink: 0;
+    }
+    .row.sel .ctl { background: #55555b; border-color: #66666c; }
+    .row .ctl.select::after {
+        content: ""; position: absolute; right: 9px; top: 50%;
+        border: 5px solid transparent; border-top-color: #fff; transform: translateY(-2px);
+    }
+    .row .ctl.sub { background: transparent; border-color: transparent; color: var(--gray); }
+    .row .ctl.sub::after { content: "▸"; position: absolute; right: 10px; color: var(--red-hi); }
+    .row .ctl.info { background: transparent; border-color: #c9a227; }
+    .row .ctl.num { border-color: #4d4d52; }
+    .row .ctl.btn { background: rgba(212,58,47,.15); border-color: var(--red-dim); }
+    .row .ctl input {
+        width: 100%; background: transparent; border: none; color: #fff;
+        text-align: center; font: inherit; outline: none;
+    }
+    .row .ctl .popup {
+        display: none; position: absolute; left: -1px; right: -1px; top: 100%; z-index: 30;
+        background: #45454b; border: 1px solid #55555c; box-shadow: 0 10px 26px rgba(0,0,0,.65);
+        max-height: 220px; overflow-y: auto;
+    }
+    .row .ctl.open .popup { display: block; }
+    .row .ctl .popup div { padding: 6px 8px; color: #e8e8e8; }
+    .row .ctl .popup div:hover, .row .ctl .popup div.on { background: var(--red); color: #fff; }
+    .helpbar { border-top: 1px solid #333; margin-top: 10px; padding-top: 8px; font-size: .76em; color: var(--yellow); min-height: 2.6em; line-height: 1.6; }
+
     /* ===== 底部 ===== */
     footer {
         flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
@@ -172,7 +256,6 @@
     footer .fkeys b { color: #c9c9ce; font-weight: 600; }
     footer .tri { color: var(--red); font-size: 1.5em; line-height: 1; }
 
-    /* 提示 toast */
     #toast {
         position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%) translateY(20px);
         background: rgba(20,20,22,.95); border: 1px solid var(--red);
@@ -181,11 +264,78 @@
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    @media (max-width: 900px) {
-        body { overflow-y: auto; height: auto; min-height: 100vh; }
-        main { flex-direction: column; }
-        .col { width: 100% !important; border-right: none; border-bottom: 1px solid var(--line); padding: 0 0 14px; margin-bottom: 14px; }
-        nav.tabs { flex-wrap: wrap; }
+    /* 全屏自适应：顶部、内容和底栏一起撑满视口，不把设置挤在上半屏。 */
+    body {
+        min-height: 100dvh; height: 100dvh;
+        font-size: clamp(13px, min(1vw + 2px, 1.8vh + 1px), 22px);
+        background-image: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+        background-size: 5px 5px;
+    }
+    header { min-height: 76px; padding: 12px clamp(24px, 2.6vw, 56px); gap: 16px; }
+    nav.tabs { flex: 1; justify-content: flex-end; gap: clamp(6px, 1vw, 20px); }
+    nav.tabs button, .langwrap > button { padding: 10px clamp(12px, 1.8vw, 34px); white-space: nowrap; }
+    main, main.adv { padding: clamp(12px, 1.3vh, 20px) clamp(24px, 2.6vw, 56px); }
+    main#pageEz .col { display: flex; flex-direction: column; justify-content: space-around; overflow-y: auto; scrollbar-width: thin; }
+    main#pageEz .col-left { width: 32%; }
+    main#pageEz .col-mid { width: 36%; }
+    main#pageEz .col-right { width: 32%; }
+    .col { padding-left: clamp(14px, 1.8vw, 36px); padding-right: clamp(14px, 1.8vw, 36px); }
+    .block { margin-bottom: 8px; }
+    .block h3 { font-size: 1em; margin-bottom: 12px; }
+    .kv { padding: 4px 0; font-size: .9em; }
+    .sensor .ico { width: clamp(42px, 3.2vw, 60px); height: clamp(42px, 3.2vw, 60px); }
+    .sensors { gap: clamp(12px, 2vh, 26px) 14px; margin-bottom: 12px; }
+    .curvebox svg { max-height: min(26vh, 230px); }
+    .ezoc .biggear { width: clamp(72px, 6vw, 115px); height: clamp(72px, 6vw, 115px); }
+    .ezoc .modes button { padding: clamp(8px, 1.1vh, 14px) 10px; }
+    main.adv .acol-side { width: 24%; padding-right: clamp(12px, 1.4vw, 28px); gap: clamp(12px, 2vh, 24px); }
+    main.adv .acol-menu { width: 18%; padding: clamp(20px, 3vh, 40px) clamp(8px, 1vw, 20px) 0; }
+    main.adv .menu { gap: clamp(16px, 2.7vh, 32px); }
+    .scard { flex: 1; padding: clamp(10px, 1.4vh, 20px) clamp(12px, 1.1vw, 22px); }
+    .scard h4 { font-size: 1.05em; margin-bottom: clamp(7px, 1vh, 15px); }
+    .scard .grid { row-gap: clamp(6px, 1vh, 14px); }
+    .scard .g .l { font-size: .82em; }
+    .scard .g .n { font-size: 1em; }
+    .tips { padding: clamp(10px, 1.5vh, 20px); }
+    .frame { margin-top: 0; padding: clamp(16px, 2.3vh, 32px) clamp(18px, 2vw, 40px); }
+    .ph { margin-bottom: clamp(12px, 2vh, 26px); }
+    .ph .ti { font-size: 1.18em; font-weight: 600; }
+    .ph .path { font-size: .82em; }
+    .row { min-height: clamp(34px, 4.1vh, 52px); padding: 6px clamp(10px, 1.2vw, 22px); font-size: .94em; gap: 16px; }
+    .row .ctl { width: clamp(150px, 31%, 330px); min-width: 0; overflow-wrap: anywhere; }
+    .row-label { flex: 1; min-width: 0; }
+    .row .ctl .popup { min-width: 100%; }
+    .helpbar { font-size: .86em; }
+    footer { min-height: 56px; padding: 10px clamp(24px, 2.6vw, 56px); gap: 18px; }
+    footer .fkeys { flex-wrap: wrap; justify-content: center; }
+
+    @media (max-width: 1050px) {
+        header { flex-wrap: wrap; justify-content: center; }
+        nav.tabs { justify-content: center; flex-wrap: wrap; }
+        main.adv .acol-side { width: 26%; }
+        main.adv .acol-menu { width: 20%; }
+        .row .ctl { width: 40%; }
+        footer { flex-wrap: wrap; justify-content: center; }
+    }
+    @media (max-width: 760px) {
+        body { overflow-y: auto; height: auto; min-height: 100dvh; }
+        main, main.adv { flex-direction: column; flex: auto; }
+        main#pageEz .col { width: 100% !important; border-right: none; border-bottom: 1px solid var(--line); padding: 12px 0; overflow: visible; }
+        main.adv .acol-side, main.adv .acol-menu { width: 100%; padding: 12px 0; }
+        main.adv .acol-side { flex-direction: row; flex-wrap: wrap; }
+        .scard { min-width: calc(50% - 12px); }
+        .tips { width: 100%; }
+        main.adv .menu { flex-direction: row; flex-wrap: wrap; gap: 14px 20px; }
+        .frame { min-height: 65vh; }
+        .row .ctl { width: 44%; }
+    }
+    @media (max-height: 700px) and (min-width: 761px) {
+        header { min-height: 60px; }
+        footer { min-height: 42px; }
+        .scard { padding: 8px 12px; }
+        .scard .grid { row-gap: 3px; }
+        .row { min-height: 30px; }
     }
 </style>
 </head>
@@ -204,10 +354,10 @@
             <div class="d"><span id="clkDate">----/--/--</span><span id="clkMon">----</span></div>
         </div>
     </div>
-    <nav class="tabs">
+    <nav class="tabs" id="tabs">
         <button data-act="oc" data-i18n="nav_oc">超频OC</button>
         <button data-act="adv" data-i18n="nav_adv">高级模式</button>
-        <button data-act="bios" data-i18n="nav_bios">BIOS功能</button>
+        <button data-act="bios" data-i18n="nav_bios" class="on">BIOS功能</button>
         <div class="langwrap" id="langWrap">
             <button data-i18n="nav_lang">语言</button>
             <div class="langopts" id="langOpts">
@@ -219,8 +369,8 @@
     </nav>
 </header>
 
-<main>
-    <!-- 左列 -->
+<!-- ================= BIOS功能（EZ 模式）页 ================= -->
+<main id="pageEz">
     <div class="col col-left">
         <div class="block">
             <h3 data-i18n="sysinfo">系统信息</h3>
@@ -232,9 +382,9 @@
         </div>
         <div class="block">
             <h3 data-i18n="memstatus">内存状态</h3>
-            <div class="kv"><span class="k">DIMM_1:</span><span class="v">Colorful I6384 MB 4000 MHz</span></div>
+            <div class="kv"><span class="k">DIMM_1:</span><span class="v">16384 MB 4000 MHz</span></div>
             <div class="kv"><span class="k">DIMM_2:</span><span class="v">N/A</span></div>
-            <div class="kv"><span class="k">DIMM_3:</span><span class="v">Colorful I6384 MB 4000 MHz</span></div>
+            <div class="kv"><span class="k">DIMM_3:</span><span class="v">16384 MB 4000 MHz</span></div>
             <div class="kv"><span class="k">DIMM_4:</span><span class="v">N/A</span></div>
         </div>
         <div class="block">
@@ -260,7 +410,6 @@
         </div>
     </div>
 
-    <!-- 中列 -->
     <div class="col col-mid">
         <div class="sensors">
             <div class="sensor">
@@ -313,7 +462,6 @@
         <p class="help" data-i18n="help">XMP: XMP是内存工作在高性能的规范，开启后主板会自动加载内存默认的频率、电压、时序。电脑超频会造成硬件的损坏，请在工作在更高的频率。相比默认的设置，开启XMP后内存性能会大幅度提升。</p>
     </div>
 
-    <!-- 右列 -->
     <div class="col col-right">
         <div class="block">
             <h3 data-i18n="fanov">风扇概述</h3>
@@ -350,8 +498,7 @@
                     <text x="164" y="156" fill="#8a8a8e" font-size="10">60</text>
                     <text x="224" y="156" fill="#8a8a8e" font-size="10">80</text>
                     <text x="272" y="156" fill="#8a8a8e" font-size="10">100°C</text>
-                    <polyline points="34,114 100,114 150,62 190,36 290,36"
-                        fill="none" stroke="#e8822a" stroke-width="1.2"/>
+                    <polyline points="34,114 100,114 150,62 190,36 290,36" fill="none" stroke="#e8822a" stroke-width="1.2"/>
                 </svg>
             </div>
             <button class="fanset" id="fanSet" data-i18n="fanset">风扇设置</button>
@@ -376,13 +523,62 @@
     </div>
 </main>
 
+<!-- ================= 高级模式 / 超频OC 页（共用骨架，由 JS 填充） ================= -->
+<main id="pageAdv" class="adv hidden">
+    <div class="acol-side" id="advSide">
+        <div class="scard">
+            <h4>CPU</h4>
+            <div class="grid">
+                <div class="g"><div class="l" data-i18n="s_freq">频率</div><div class="n">4585.88 MHz</div></div>
+                <div class="g"><div class="l" data-i18n="s_temp">温度</div><div class="n">+40 °C</div></div>
+                <div class="g"><div class="l" data-i18n="s_bclk">外频</div><div class="n">99.736 MHz</div></div>
+                <div class="g"><div class="l" data-i18n="s_volt">电压</div><div class="n">1.209 V</div></div>
+            </div>
+        </div>
+        <div class="scard">
+            <h4 data-i18n="s_mem">内存</h4>
+            <div class="grid">
+                <div class="g"><div class="l" data-i18n="s_freq">频率</div><div class="n">3600 MHz</div></div>
+                <div class="g"><div class="l" data-i18n="s_volt">电压</div><div class="n">1.328 V</div></div>
+            </div>
+        </div>
+        <div class="scard">
+            <h4 data-i18n="s_voltage">电压</h4>
+            <div class="grid">
+                <div class="g"><div class="l">+12V</div><div class="n">+12.000 V</div></div>
+                <div class="g"><div class="l">VBAT</div><div class="n">+3.104 V</div></div>
+                <div class="g"><div class="l">VCC3V</div><div class="n">+3.296 V</div></div>
+                <div class="g"><div class="l">+5V</div><div class="n">+5.040 V</div></div>
+            </div>
+        </div>
+        <div class="tips">
+            <h4 data-i18n="tips">操作提示</h4>
+            <p id="sideHelp"></p>
+        </div>
+    </div>
+    <div class="acol-menu"><div class="menu" id="advMenu"></div></div>
+    <div class="acol-panel">
+        <div class="frame">
+            <div class="ph">
+                <div class="back dis" id="advBack">&#8249;</div>
+                <div>
+                    <div class="ti" id="advTitle"></div>
+                    <div class="path" id="advPath"></div>
+                </div>
+            </div>
+            <div class="rows" id="advRows"></div>
+            <div class="helpbar" id="advHelp"></div>
+        </div>
+    </div>
+</main>
+
 <footer>
     <span>Copyright (C) 2022 American Megatrends International LLC.</span>
     <span class="fkeys">
         <span><span data-i18n="fk_screenshot">截屏</span> <b>F8</b></span>
         <span><span data-i18n="fk_defaults">默认设置</span> <b>F9</b></span>
         <svg class="tri" width="20" height="18" viewBox="0 0 20 18"><path d="M10 1 L19 17 H1 Z" fill="none" stroke="#d43a2f" stroke-width="2"/></svg>
-        <span><span data-i18n="fk_adv">高级模式</span> <b>F11</b></span>
+        <span><span id="fkModeLab" data-i18n="fk_adv">高级模式</span> <b>F11</b></span>
         <span><span data-i18n="fk_save">保存重启</span> <b>F10</b></span>
     </span>
     <span data-i18n="ver">Version版本: 1.126</span>
@@ -406,12 +602,15 @@
             fanov: '风扇概述', fan_cpu: 'CPU风扇', fan_sys1: '系统风扇1', fan_sys2: '系统风扇2', fan_pump: '水泵风扇',
             fanset: '风扇设置',
             mode_default: '默频模式', mode_perf: '性能模式', mode_save: '节能模式',
-            fk_screenshot: '截屏', fk_defaults: '默认设置', fk_adv: '高级模式', fk_save: '保存重启',
+            fk_screenshot: '截屏', fk_defaults: '默认设置', fk_adv: '高级模式', fk_ez: 'EZ模式', fk_save: '保存重启',
             ver: 'Version版本: 1.126',
             disabled: '关闭', enabled: '启用', raid_on: '开启',
+            s_freq: '频率', s_temp: '温度', s_bclk: '外频', s_volt: '电压', s_mem: '内存', s_voltage: '电压', tips: '操作提示',
+            back: '返回上一级', path: 'Path: ',
             t_switched: '已切换到', t_defaults: '已恢复默认设置', t_saving: '保存设置并重启…',
-            t_demo_adv: '演示版：高级模式未收录', t_demo_oc: '演示版：超频界面未收录',
-            t_demo_bios: '当前已在 BIOS 功能页', t_demo_fan: '演示版：风扇曲线不可调'
+            t_demo_fan: '演示版：风扇曲线不可调', t_demo_bios: '当前已在 BIOS 功能页',
+            t_reset_cmos: '已清除 CMOS 设置（演示）', t_saved: '设置已保存（演示）',
+            t_pwd: '演示版：密码不可设置', t_flash: '演示版：固件刷写不可用', t_tips_default: '上下键选择项目，左右键或回车修改数值，Esc 返回上一级。'
         },
         en: {
             nav_oc: 'OC', nav_adv: 'Advanced Mode', nav_bios: 'BIOS Features', nav_lang: 'Language', nav_exit: 'Exit',
@@ -423,12 +622,15 @@
             fanov: 'Fan Overview', fan_cpu: 'CPU Fan', fan_sys1: 'System Fan 1', fan_sys2: 'System Fan 2', fan_pump: 'Pump Fan',
             fanset: 'Fan Settings',
             mode_default: 'Default Mode', mode_perf: 'Performance Mode', mode_save: 'Power Saving Mode',
-            fk_screenshot: 'Screenshot', fk_defaults: 'Load Defaults', fk_adv: 'Advanced Mode', fk_save: 'Save & Reboot',
+            fk_screenshot: 'Screenshot', fk_defaults: 'Load Defaults', fk_adv: 'Advanced Mode', fk_ez: 'EZ Mode', fk_save: 'Save & Reboot',
             ver: 'Version: 1.126',
             disabled: 'Disabled', enabled: 'Enabled', raid_on: 'Enabled',
+            s_freq: 'Frequency', s_temp: 'Temp', s_bclk: 'BCLK', s_volt: 'Voltage', s_mem: 'Memory', s_voltage: 'Voltage', tips: 'Tips',
+            back: 'Back', path: 'Path: ',
             t_switched: 'Switched to', t_defaults: 'Defaults restored', t_saving: 'Saving and rebooting…',
-            t_demo_adv: 'Demo: Advanced mode not included', t_demo_oc: 'Demo: OC page not included',
-            t_demo_bios: 'Already on the BIOS features page', t_demo_fan: 'Demo: fan curve is not adjustable'
+            t_demo_fan: 'Demo: fan curve is not adjustable', t_demo_bios: 'Already on the BIOS features page',
+            t_reset_cmos: 'CMOS settings cleared (demo)', t_saved: 'Settings saved (demo)',
+            t_pwd: 'Demo: password cannot be set', t_flash: 'Demo: firmware flashing unavailable', t_tips_default: 'Use Up/Down to select, Left/Right or Enter to change value, Esc to go back.'
         }
     };
 
@@ -436,131 +638,475 @@
     try { lang = localStorage.getItem('bios_lang') || 'zh'; } catch (e) {}
     if (!I18N[lang]) lang = 'zh';
     function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.zh[key] || key; }
+    /* 双语文本：字符串直接返回，{zh,en} 对象按当前语言取值 */
+    function L(x) { if (x == null) return ''; if (typeof x === 'string') return x; return x[lang] || x.zh || ''; }
+    function B(zh, en) { return { zh: zh, en: en }; }
 
-    /* 时钟（保持英文星期/月份，与原版一致） */
-    var DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    /* ============ 通用选项组 ============ */
+    var O_EN = [B('关闭', 'Disabled'), B('启用', 'Enabled')];
+    var O_AUTO = [B('自动', 'Auto'), B('手动', 'Manual')];
+    var O_AUTO_EN = [B('自动', 'Auto'), B('关闭', 'Disabled'), B('启用', 'Enabled')];
+    function sel(t, opts, val, help) { return { t: t, type: 'select', opts: opts, val: val || 0, def: val || 0, help: help }; }
+    function num(t, val, help) { return { t: t, type: 'num', val: val, def: val, help: help }; }
+    function info(t, val) { return { t: t, type: 'info', val: val }; }
+    function hd(t) { return { t: t, type: 'hd' }; }
+    function sub(t, items, help) { return { t: t, type: 'sub', items: items, help: help }; }
+    function btn(t, act, help) { return { t: t, type: 'btn', act: act, help: help }; }
+
+    /* ============ 高级模式菜单 ============ */
+    var ADV = [
+        { id: 'advanced', t: B('高级', 'Advanced'), items: [
+            hd(B('CPU 设置', 'CPU Configuration')),
+            info(B('CPU 型号', 'CPU Model'), '13th Gen Intel(R) Core(TM) i5-13600K'),
+            info(B('微码版本', 'Microcode Revision'), '0x10E'),
+            sel(B('Intel(VMX) 虚拟化技术', 'Intel (VMX) Virtualization Technology'), O_EN, 1, B('开启后可使用 VMware / Hyper-V / WSA 等虚拟化功能。', 'Enable to use VMware / Hyper-V / WSA and other virtualization features.')),
+            sel(B('超线程技术', 'Hyper-Threading'), O_EN, 1),
+            sel(B('Intel 睿频加速', 'Turbo Boost'), O_EN, 1),
+            sel(B('C-State 节能状态', 'C-States'), O_AUTO_EN, 0),
+            sel(B('CPU SVID 支持', 'CPU SVID Support'), O_AUTO_EN, 0),
+            hd(B('平台设置', 'Platform')),
+            sel(B('PCIe 原生电源管理', 'Native ASPM'), O_AUTO_EN, 0),
+            sel(B('Above 4G 解码', 'Above 4G Decoding'), O_EN, 1, B('开启后支持 Resizable BAR。', 'Required for Resizable BAR support.')),
+            sel(B('Re-Size BAR 支持', 'Re-Size BAR Support'), O_EN, 1),
+            sub(B('信任平台模块 (TPM)', 'Trusted Computing'), [
+                sel(B('安全设备支持', 'Security Device Support'), O_EN, 1),
+                info(B('TPM 版本', 'TPM Version'), '2.0'),
+                info(B('厂商', 'Vendor'), 'INTC'),
+                sel(B('待处理操作', 'Pending Operation'), [B('无', 'None'), B('清除 TPM', 'TPM Clear')], 0)
+            ])
+        ]},
+        { id: 'chipset', t: B('主板芯片组', 'Chipset'), items: [
+            hd(B('系统代理设置', 'System Agent (SA) Configuration')),
+            sel(B('VT-d', 'VT-d'), O_EN, 1),
+            sel(B('内置显卡', 'Internal Graphics'), O_AUTO_EN, 0),
+            sel(B('主显示输出', 'Primary Display'), [B('自动', 'Auto'), B('独立显卡', 'PEG'), B('集成显卡', 'IGFX')], 0),
+            sel(B('DVMT 预分配显存', 'DVMT Pre-Allocated'), ['64M', '128M', '256M', '512M', '1G'], 0),
+            hd(B('PCH-IO 设置', 'PCH-IO Configuration')),
+            sel(B('板载网卡', 'Onboard LAN'), O_EN, 1),
+            sel(B('板载声卡', 'HD Audio'), O_EN, 1),
+            sel(B('板载无线网卡', 'Onboard WiFi'), O_EN, 1),
+            sel(B('PCIe 插槽速率 (PCIE_1)', 'PCIE_1 Link Speed'), [B('自动', 'Auto'), 'Gen1', 'Gen2', 'Gen3', 'Gen4', 'Gen5'], 0),
+            sel(B('M.2 插槽速率 (M2_1)', 'M2_1 Link Speed'), [B('自动', 'Auto'), 'Gen3', 'Gen4'], 0),
+            sub(B('ME 设置', 'ME Configuration'), [
+                info(B('ME 固件版本', 'ME Firmware Version'), '16.1.25.1865'),
+                info(B('ME 固件模式', 'ME Firmware Mode'), 'Normal Mode'),
+                sel(B('ME 固件刷写', 'ME Firmware Update'), O_EN, 0, B('允许通过工具刷写 ME 固件。刷写前请备份。', 'Allow ME firmware re-flash. Back up before flashing.'))
+            ])
+        ]},
+        { id: 'power', t: B('高级电源设置', 'Power Management'), items: [
+            sel(B('AC 断电恢复', 'Restore AC Power Loss'), [B('关机', 'Power Off'), B('开机', 'Power On'), B('上次状态', 'Last State')], 0, B('市电断开后再恢复时，主机的行为。', 'Behaviour after AC power is restored.')),
+            sel(B('深度睡眠', 'Deep Sleep'), [B('关闭', 'Disabled'), B('S5 状态启用', 'Enabled in S5'), B('S4-S5 状态启用', 'Enabled in S4-S5')], 0),
+            sel(B('ErP 就绪', 'ErP Ready'), O_EN, 0, B('开启后关机功耗低于 1W，但 USB 唤醒/网络唤醒失效。', 'Shutdown power < 1W; USB and LAN wake are disabled.')),
+            sel(B('网络唤醒', 'Wake On LAN'), O_EN, 1),
+            sel(B('USB 唤醒', 'Wake On USB'), O_EN, 1),
+            sel(B('PS/2 键盘开机', 'PS/2 Keyboard Power On'), O_EN, 0),
+            sel(B('RTC 定时开机', 'RTC Wake'), O_EN, 0),
+            num(B('定时开机 - 小时', 'Wake Hour'), 0),
+            num(B('定时开机 - 分钟', 'Wake Minute'), 0),
+            hd(B('CPU 功耗', 'CPU Power Limits')),
+            sel(B('长时功耗限制 PL1', 'Long Duration Power Limit'), O_AUTO, 0),
+            num(B('PL1 数值 (W)', 'PL1 Value (W)'), 181),
+            sel(B('短时功耗限制 PL2', 'Short Duration Power Limit'), O_AUTO, 0),
+            num(B('PL2 数值 (W)', 'PL2 Value (W)'), 181)
+        ]},
+        { id: 'devices', t: B('设备设置', 'Devices'), items: [
+            hd(B('USB 设置', 'USB Configuration')),
+            sel(B('XHCI 交接', 'XHCI Hand-off'), O_EN, 1),
+            sel(B('USB 大容量存储支持', 'USB Mass Storage Driver Support'), O_EN, 1),
+            sel(B('传统 USB 支持', 'Legacy USB Support'), [B('启用', 'Enabled'), B('关闭', 'Disabled'), B('自动', 'Auto')], 0),
+            hd(B('存储设置', 'Storage Configuration')),
+            sel(B('SATA 控制器', 'SATA Controller(s)'), O_EN, 1),
+            sel(B('SATA 模式', 'SATA Mode Selection'), ['AHCI', 'Intel RST (RAID)'], 0),
+            sel(B('VMD 控制器', 'VMD Controller'), O_EN, 0),
+            info('M.2_1', 'HS-SSD-C4000 1024G'),
+            info('M.2_2', L(B('未连接', 'Not Present'))),
+            info('SATA1 - SATA6', L(B('未连接', 'Not Present'))),
+            hd(B('串行 / 并行端口', 'Super IO')),
+            sel(B('串行端口 COM1', 'Serial Port COM1'), O_EN, 0),
+            hd(B('网络协议栈', 'Network Stack')),
+            sel(B('网络协议栈', 'Network Stack'), O_EN, 0),
+            sel(B('IPv4 PXE 支持', 'IPv4 PXE Support'), O_EN, 0),
+            sel(B('IPv6 PXE 支持', 'IPv6 PXE Support'), O_EN, 0)
+        ]},
+        { id: 'security', t: B('密码设置', 'Security'), items: [
+            info(B('管理员密码', 'Administrator Password'), L(B('未设置', 'Not Installed'))),
+            info(B('用户密码', 'User Password'), L(B('未设置', 'Not Installed'))),
+            btn(B('设置管理员密码', 'Set Administrator Password'), 'pwd'),
+            btn(B('设置用户密码', 'Set User Password'), 'pwd'),
+            hd(B('安全启动', 'Secure Boot')),
+            info(B('系统模式', 'System Mode'), 'User'),
+            sel(B('安全启动', 'Secure Boot'), O_EN, 1, B('Windows 11 需要开启安全启动。', 'Secure Boot is required by Windows 11.')),
+            sel(B('安全启动模式', 'Secure Boot Mode'), [B('标准', 'Standard'), B('自定义', 'Custom')], 0),
+            btn(B('恢复出厂密钥', 'Restore Factory Keys'), 'keys'),
+            hd(B('硬盘安全', 'HDD Security')),
+            info('HS-SSD-C4000 1024G', L(B('未锁定', 'Not Locked')))
+        ]},
+        { id: 'boot', t: B('启动设置', 'Boot'), items: [
+            sel(B('快速启动', 'Fast Boot'), O_EN, 1),
+            sel(B('开机 LOGO 显示', 'Full Screen Logo'), O_EN, 1),
+            sel(B('开机 NumLock 状态', 'Bootup NumLock State'), [B('开', 'On'), B('关', 'Off')], 0),
+            sel(B('等待按键进入 BIOS 时间 (秒)', 'Setup Prompt Timeout'), ['1', '2', '3', '5'], 0),
+            sel(B('CSM 兼容模块', 'CSM Support'), O_EN, 0, B('关闭后仅支持 UEFI 启动。', 'When disabled, only UEFI boot is supported.')),
+            hd(B('启动顺序', 'Boot Option Priorities')),
+            sel(B('启动项 #1', 'Boot Option #1'), ['Windows Boot Manager (HS-SSD-C4000 1024G)', 'UEFI: Netac OnlyDisk 1100, Partition 1', 'UEFI: Network'], 0),
+            sel(B('启动项 #2', 'Boot Option #2'), ['UEFI: Netac OnlyDisk 1100, Partition 1', 'Windows Boot Manager (HS-SSD-C4000 1024G)', 'UEFI: Network'], 0),
+            sel(B('启动项 #3', 'Boot Option #3'), ['UEFI: Network', B('关闭', 'Disabled')], 0),
+            hd(B('保存与退出', 'Save & Exit')),
+            btn(B('保存更改并重启', 'Save Changes and Reset'), 'save'),
+            btn(B('放弃更改并退出', 'Discard Changes and Exit'), 'exit'),
+            btn(B('恢复出厂默认值', 'Restore Defaults'), 'defaults')
+        ]}
+    ];
+
+    /* ============ 超频 OC 菜单 ============ */
+    var O_RATIO = ['Auto', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55'];
+    var O_VOLT = ['Auto', '1.100', '1.150', '1.200', '1.250', '1.300', '1.350', '1.400'];
+    var O_DRAMV = ['Auto', '1.100', '1.200', '1.250', '1.300', '1.350', '1.400', '1.450', '1.500'];
+    var O_MEMF = ['Auto', 'DDR5-4800', 'DDR5-5200', 'DDR5-5600', 'DDR5-6000', 'DDR5-6400', 'DDR5-6800', 'DDR5-7200'];
+    var OC = [
+        { id: 'cpu', t: B('CPU超频设置', 'CPU OC Settings'), items: [
+            info(B('CPU 当前频率', 'Current CPU Frequency'), '4585.88 MHz'),
+            info(B('外频 / BCLK', 'BCLK'), '99.736 MHz'),
+            sel(B('超频预设', 'OC Preset'), [B('默频', 'Default'), B('性能模式', 'Performance'), B('极致模式', 'Extreme')], 0, B('一键加载预设倍频与电压，超频可能导致系统不稳定。', 'One-click ratio/voltage preset. Overclocking may cause instability.')),
+            sel(B('外频调节', 'BCLK Frequency'), ['Auto', '100.00', '101.00', '102.00', '103.00'], 0),
+            sel(B('P-Core 倍频', 'P-Core Ratio'), O_RATIO, 0, B('性能核全核倍频，i5-13600K 默认最高 51x。', 'Performance core all-core ratio. Default max 51x on i5-13600K.')),
+            sel(B('E-Core 倍频', 'E-Core Ratio'), ['Auto', '36', '37', '38', '39', '40', '41', '42'], 0),
+            sel(B('Ring 倍频', 'Ring Ratio'), ['Auto', '40', '42', '44', '45', '46', '47', '48'], 0),
+            sel(B('AVX2 频率偏移', 'AVX2 Ratio Offset'), ['Auto', '0', '1', '2', '3'], 0),
+            sel(B('Intel 睿频加速 Max 3.0', 'Turbo Boost Max 3.0'), O_EN, 1),
+            sel(B('智能超频 (TVB)', 'Thermal Velocity Boost'), O_AUTO_EN, 0),
+            hd(B('功耗与电流', 'Power & Current')),
+            sel(B('CPU 功耗限制解锁', 'Power Limit Unlock'), O_EN, 0, B('开启后 PL1/PL2 设为 4095W，需注意散热。', 'PL1/PL2 set to 4095W. Requires adequate cooling.')),
+            sel(B('CPU 电流限制 (A)', 'CPU Current Limit (A)'), ['Auto', '200', '250', '300', '400', '511'], 0),
+            sel(B('CPU 电源保护', 'CPU Power Protection'), O_EN, 1)
+        ]},
+        { id: 'mem', t: B('高级内存设置', 'Advanced Memory Settings'), items: [
+            sel(B('内存模块设置', 'Memory Profile'), [B('默认模式', 'Default'), 'XMP Profile 1', 'XMP Profile 2', B('手动', 'Manual')], 0, B('选择 XMP 后自动加载内存条内的频率与时序参数。', 'Select an XMP profile to load frequency and timings from the DIMM SPD.')),
+            sel(B('内存频率', 'Memory Frequency'), O_MEMF, 0),
+            sel(B('内存分频 (Gear)', 'Gear Mode'), ['Auto', 'Gear 1', 'Gear 2', 'Gear 4'], 0),
+            hd(B('主时序', 'Primary Timings')),
+            num('tCL', 40), num('tRCD/tRP', 40), num('tRAS', 77), num('tCWL', 38),
+            hd(B('次时序', 'Secondary Timings')),
+            num('tFAW', 32), num('tREFI', 7800), num('tRFC', 708), num('tRRD_S', 8), num('tRRD_L', 12), num('tRTP', 12), num('tWR', 48), num('tWTR_S', 4), num('tWTR_L', 16),
+            hd(B('其他', 'Misc')),
+            sel(B('命令速率 (NMode)', 'Command Rate'), ['Auto', '1T', '2T'], 0),
+            sel(B('内存训练 (Fast Boot)', 'Memory Fast Boot'), O_AUTO_EN, 0)
+        ]},
+        { id: 'volt', t: B('高级电压设置', 'Advanced Voltage Settings'), items: [
+            info(B('CPU 当前电压', 'Current CPU Voltage'), '1.209 V'),
+            info(B('内存当前电压', 'Current DRAM Voltage'), '1.328 V'),
+            sel(B('CPU 核心电压模式', 'CPU Core Voltage Mode'), ['Auto', B('覆盖模式', 'Override'), B('偏移模式', 'Offset'), B('自适应', 'Adaptive')], 0, B('覆盖模式固定电压，偏移模式在默认基础上增减。', 'Override fixes the voltage; Offset adds to the default VID curve.')),
+            sel(B('CPU 核心电压 (V)', 'CPU Core Voltage (V)'), O_VOLT, 0),
+            sel(B('CPU 电压偏移 (mV)', 'CPU Voltage Offset (mV)'), ['Auto', '-100', '-75', '-50', '-25', '+25', '+50', '+75', '+100'], 0),
+            sel(B('防掉压 (LLC)', 'Load-Line Calibration'), ['Auto', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6', 'Level 7'], 0, B('等级越高负载掉压越小，同时温度越高。', 'Higher level = less voltage droop under load, but higher temperature.')),
+            sel(B('CPU VCCSA 电压 (V)', 'CPU System Agent Voltage (V)'), ['Auto', '0.950', '1.000', '1.050', '1.100', '1.150', '1.200', '1.250'], 0),
+            sel(B('CPU 辅助电压 VCCIO (V)', 'CPU VCCIO Voltage (V)'), ['Auto', '1.050', '1.100', '1.150', '1.200', '1.250'], 0),
+            hd(B('内存电压', 'Memory Voltage')),
+            sel(B('内存电压 VDD (V)', 'DRAM VDD Voltage (V)'), O_DRAMV, 0),
+            sel(B('内存电压 VDDQ (V)', 'DRAM VDDQ Voltage (V)'), O_DRAMV, 0),
+            sel(B('内存控制器电压 (V)', 'Memory Controller Voltage (V)'), ['Auto', '1.100', '1.150', '1.200', '1.250', '1.300'], 0),
+            hd(B('芯片组', 'PCH')),
+            sel(B('PCH 核心电压 (V)', 'PCH Core Voltage (V)'), ['Auto', '0.800', '0.850', '0.900', '0.950'], 0)
+        ]}
+    ];
+    /* ============ 页面状态与设置交互 ============ */
+    var mode = 'bios', currentGroup = 0, stack = [], selected = 0;
+    var pageEz = document.getElementById('pageEz');
+    var pageAdv = document.getElementById('pageAdv');
+    var rowsEl = document.getElementById('advRows');
+    var menuEl = document.getElementById('advMenu');
+    var toastEl = document.getElementById('toast'), toastTimer;
+    var DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     function tick() {
-        var n = new Date(), p = function (x) { return (x < 10 ? '0' : '') + x; };
-        document.getElementById('clk').textContent = p(n.getHours()) + ':' + p(n.getMinutes());
-        document.getElementById('clkDow').textContent = DOW[n.getDay()];
-        document.getElementById('clkDate').textContent = n.getFullYear() + '/' + p(n.getMonth() + 1) + '/' + p(n.getDate());
-        document.getElementById('clkMon').textContent = MON[n.getMonth()];
+        var d = new Date(), pad = function (n) { return ('0' + n).slice(-2); };
+        document.getElementById('clk').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+        document.getElementById('clkDow').textContent = DOW[d.getDay()];
+        document.getElementById('clkDate').textContent = d.getFullYear() + '/' + pad(d.getMonth() + 1) + '/' + pad(d.getDate());
+        document.getElementById('clkMon').textContent = MON[d.getMonth()];
     }
     tick(); setInterval(tick, 5000);
-
-    /* toast */
-    var toastEl = document.getElementById('toast'), toastT = null;
-    function toast(msg) {
-        toastEl.textContent = msg;
+    function toast(message) {
+        toastEl.textContent = message;
         toastEl.classList.add('show');
-        clearTimeout(toastT);
-        toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1700);
     }
-
-    /* 下拉框（选项随语言重建） */
+    function closePopups() {
+        document.querySelectorAll('.dd.open, .ctl.open').forEach(function (el) { el.classList.remove('open'); });
+        document.getElementById('langWrap').classList.remove('open');
+    }
     function buildDd(dd) {
-        var keys = dd.getAttribute('data-opts').split(',');
-        var cur = dd.querySelector('.cur');
-        var opts = dd.querySelector('.opts');
-        opts.innerHTML = '';
-        keys.forEach(function (k) {
-            var d = document.createElement('div');
-            d.textContent = t(k);
-            d.setAttribute('data-key', k);
-            d.addEventListener('click', function (e) {
-                e.stopPropagation();
-                dd.setAttribute('data-value', k);
-                cur.textContent = t(k);
+        var keys = dd.dataset.opts.split(','), opts = dd.querySelector('.opts');
+        opts.replaceChildren();
+        keys.forEach(function (key) {
+            var choice = document.createElement('div');
+            choice.textContent = t(key);
+            choice.addEventListener('click', function (event) {
+                event.stopPropagation();
+                dd.dataset.value = key;
+                buildDd(dd);
                 dd.classList.remove('open');
+                if (dd.id === 'ddXmp') {
+                    OC[1].items[0].val = key === 'enabled' ? 1 : 0;
+                    if (mode === 'oc') renderRows();
+                }
             });
-            opts.appendChild(d);
+            opts.appendChild(choice);
         });
-        cur.textContent = t(dd.getAttribute('data-value') || keys[0]);
+        dd.querySelector('.cur').textContent = t(dd.dataset.value || keys[0]);
     }
     document.querySelectorAll('.dd').forEach(function (dd) {
         buildDd(dd);
-        dd.querySelector('.cur').addEventListener('click', function (e) {
-            e.stopPropagation();
-            var was = dd.classList.contains('open');
-            document.querySelectorAll('.dd.open').forEach(function (x) { x.classList.remove('open'); });
-            if (!was) dd.classList.add('open');
+        dd.querySelector('.cur').addEventListener('click', function (event) {
+            event.stopPropagation();
+            var wasOpen = dd.classList.contains('open');
+            closePopups();
+            dd.classList.toggle('open', !wasOpen);
         });
     });
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.dd.open').forEach(function (x) { x.classList.remove('open'); });
-        document.getElementById('langWrap').classList.remove('open');
+    document.addEventListener('click', closePopups);
+    var langWrap = document.getElementById('langWrap');
+    langWrap.querySelector('button').addEventListener('click', function (event) {
+        event.stopPropagation();
+        var wasOpen = langWrap.classList.contains('open');
+        closePopups();
+        langWrap.classList.toggle('open', !wasOpen);
     });
-
-    /* 应用语言 */
+    document.querySelectorAll('#langOpts [data-lang]').forEach(function (choice) {
+        choice.addEventListener('click', function (event) {
+            event.stopPropagation();
+            lang = choice.dataset.lang;
+            closePopups();
+            applyLang();
+        });
+    });
     function applyLang() {
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
         document.querySelectorAll('[data-i18n]').forEach(function (el) {
-            el.textContent = t(el.getAttribute('data-i18n'));
+            el.textContent = t(el.dataset.i18n);
         });
+        document.getElementById('fkModeLab').textContent = t(mode === 'bios' ? 'fk_adv' : 'fk_ez');
         document.querySelectorAll('.dd').forEach(buildDd);
-        document.querySelectorAll('#langOpts div').forEach(function (d) {
-            d.classList.toggle('on', d.getAttribute('data-lang') === lang);
+        document.querySelectorAll('#langOpts [data-lang]').forEach(function (el) {
+            el.classList.toggle('on', el.dataset.lang === lang);
         });
+        if (mode !== 'bios') renderMenu();
         try { localStorage.setItem('bios_lang', lang); } catch (e) {}
     }
-
-    /* 语言菜单 */
-    var langWrap = document.getElementById('langWrap');
-    langWrap.querySelector('button').addEventListener('click', function (e) {
-        e.stopPropagation();
-        langWrap.classList.toggle('open');
-    });
-    document.querySelectorAll('#langOpts div').forEach(function (d) {
-        d.addEventListener('click', function (e) {
-            e.stopPropagation();
-            lang = d.getAttribute('data-lang');
-            langWrap.classList.remove('open');
-            applyLang();
-            toast(t('t_switched') + (lang === 'zh' ? '简体中文' : 'English'));
+    function groups() { return mode === 'oc' ? OC : ADV; }
+    function currentItems() {
+        var items = groups()[currentGroup].items;
+        stack.forEach(function (entry) { items = entry.item.items; });
+        return items;
+    }
+    function currentTitle() {
+        return stack.length ? L(stack[stack.length - 1].item.t) : L(groups()[currentGroup].t);
+    }
+    function updateHelp(item) {
+        var message = item && item.help ? L(item.help) : t('t_tips_default');
+        document.getElementById('advHelp').textContent = message;
+        document.getElementById('sideHelp').textContent = message;
+    }
+    function setSelected(index) {
+        var items = currentItems();
+        if (!items.length) return;
+        selected = Math.max(0, Math.min(index, items.length - 1));
+        if (items[selected].type === 'hd') {
+            var next = items.findIndex(function (item, i) { return i > selected && item.type !== 'hd'; });
+            if (next >= 0) selected = next;
+        }
+        rowsEl.querySelectorAll('.row').forEach(function (el, i) {
+            el.classList.toggle('sel', i === selected && items[i].type !== 'hd');
         });
-    });
-
-    /* EZ OC 模式 */
-    document.querySelectorAll('#ezModes button').forEach(function (b) {
-        b.addEventListener('click', function () {
-            document.querySelectorAll('#ezModes button').forEach(function (x) { x.classList.remove('on'); });
-            b.classList.add('on');
-            toast(t('t_switched') + b.textContent);
+        var target = rowsEl.children[selected];
+        if (target) target.scrollIntoView({ block: 'nearest' });
+        updateHelp(items[selected]);
+    }
+    function renderMenu() {
+        menuEl.replaceChildren();
+        groups().forEach(function (group, index) {
+            var el = document.createElement('div');
+            el.textContent = L(group.t);
+            el.classList.toggle('on', index === currentGroup);
+            el.addEventListener('click', function () {
+                closePopups();
+                currentGroup = index;
+                stack = [];
+                selected = 0;
+                renderMenu();
+            });
+            menuEl.appendChild(el);
         });
-    });
-
-    /* 顶栏按钮 */
+        renderRows();
+    }
+    function renderRows() {
+        var items = currentItems();
+        rowsEl.replaceChildren();
+        document.getElementById('advTitle').textContent = currentTitle();
+        document.getElementById('advPath').textContent = t('path') + L(groups()[currentGroup].t) +
+            stack.map(function (entry) { return ' / ' + L(entry.item.t); }).join('');
+        document.getElementById('advBack').classList.toggle('dis', stack.length === 0);
+        items.forEach(function (item, index) {
+            var row = document.createElement('div');
+            row.className = 'row' + (item.type === 'hd' ? ' hd' : '');
+            var label = document.createElement('span');
+            label.className = 'row-label';
+            label.textContent = L(item.t);
+            row.appendChild(label);
+            if (item.type !== 'hd') {
+                var ctl = document.createElement('div');
+                ctl.className = 'ctl ' + item.type;
+                if (item.type === 'select') {
+                    var value = document.createElement('span');
+                    value.textContent = L(item.opts[item.val]);
+                    ctl.appendChild(value);
+                    var popup = document.createElement('div');
+                    popup.className = 'popup';
+                    item.opts.forEach(function (opt, optIndex) {
+                        var choice = document.createElement('div');
+                        choice.textContent = L(opt);
+                        choice.classList.toggle('on', optIndex === item.val);
+                        choice.addEventListener('click', function (event) {
+                            event.stopPropagation();
+                            item.val = optIndex;
+                            if (item === OC[1].items[0]) {
+                                document.getElementById('ddXmp').dataset.value = optIndex ? 'enabled' : 'disabled';
+                                buildDd(document.getElementById('ddXmp'));
+                            }
+                            renderRows();
+                            setSelected(index);
+                        });
+                        popup.appendChild(choice);
+                    });
+                    ctl.appendChild(popup);
+                    ctl.addEventListener('click', function (event) {
+                        event.stopPropagation();
+                        var wasOpen = ctl.classList.contains('open');
+                        closePopups();
+                        setSelected(index);
+                        ctl.classList.toggle('open', !wasOpen);
+                    });
+                } else if (item.type === 'num') {
+                    var input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = '0';
+                    input.max = '99999';
+                    input.value = item.val;
+                    input.setAttribute('aria-label', L(item.t));
+                    input.addEventListener('change', function () {
+                        var n = Number(input.value);
+                        item.val = Number.isFinite(n) ? Math.max(0, Math.min(99999, Math.trunc(n))) : item.def;
+                        input.value = item.val;
+                    });
+                    ctl.appendChild(input);
+                } else if (item.type === 'sub') {
+                    ctl.textContent = L(B('进入', 'Enter'));
+                    row.addEventListener('click', function () {
+                        stack.push({ item: item, selected: selected });
+                        selected = 0;
+                        renderRows();
+                    });
+                } else if (item.type === 'btn') {
+                    ctl.textContent = L(B('执行', 'Run'));
+                    row.addEventListener('click', function () { runAction(item.act); });
+                } else {
+                    ctl.textContent = L(item.val);
+                }
+                row.appendChild(ctl);
+                row.addEventListener('mouseenter', function () { setSelected(index); });
+                row.addEventListener('click', function () { setSelected(index); });
+            }
+            rowsEl.appendChild(row);
+        });
+        if (items[selected] && items[selected].type === 'hd') selected = items.findIndex(function (item) { return item.type !== 'hd'; });
+        setSelected(Math.max(0, selected));
+    }
+    function openMode(next) {
+        mode = next;
+        closePopups();
+        document.querySelectorAll('#tabs button[data-act]').forEach(function (el) {
+            el.classList.toggle('on', el.dataset.act === mode);
+        });
+        pageEz.classList.toggle('hidden', mode !== 'bios');
+        pageAdv.classList.toggle('hidden', mode === 'bios');
+        document.getElementById('fkModeLab').textContent = t(mode === 'bios' ? 'fk_adv' : 'fk_ez');
+        if (mode !== 'bios') {
+            currentGroup = 0; stack = []; selected = 0;
+            renderMenu();
+        }
+    }
+    function goBack() {
+        closePopups();
+        if (stack.length) {
+            selected = stack.pop().selected;
+            renderRows();
+        } else if (mode !== 'bios') openMode('bios');
+        else leave();
+    }
+    document.getElementById('advBack').addEventListener('click', function () { if (stack.length) goBack(); });
     function leave() { window.location.href = './boot.html'; }
-    document.querySelectorAll('nav.tabs button[data-act]').forEach(function (b) {
-        b.addEventListener('click', function () {
-            var act = b.getAttribute('data-act');
-            if (act === 'exit') leave();
-            else if (act === 'adv') toast(t('t_demo_adv'));
-            else if (act === 'oc') toast(t('t_demo_oc'));
-            else if (act === 'bios') toast(t('t_demo_bios'));
+    function resetItems(items) {
+        items.forEach(function (item) {
+            if (item.def != null) item.val = item.def;
+            if (item.items) resetItems(item.items);
         });
-    });
-    document.getElementById('fanSet').addEventListener('click', function () {
-        toast(t('t_demo_fan'));
-    });
-
-    /* 恢复默认 */
+    }
     function loadDefaults() {
-        document.getElementById('ddXmp').setAttribute('data-value', 'disabled');
-        document.getElementById('ddRaid').setAttribute('data-value', 'disabled');
+        ADV.concat(OC).forEach(function (group) { resetItems(group.items); });
+        document.getElementById('ddXmp').dataset.value = 'disabled';
+        document.getElementById('ddRaid').dataset.value = 'disabled';
         document.querySelectorAll('.dd').forEach(buildDd);
-        var modes = document.querySelectorAll('#ezModes button');
-        modes.forEach(function (x, i) { x.classList.toggle('on', i === 0); });
+        document.querySelectorAll('#ezModes button').forEach(function (el, i) { el.classList.toggle('on', i === 0); });
+        if (mode !== 'bios') renderRows();
         toast(t('t_defaults'));
     }
-
-    /* 快捷键 */
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F9') { e.preventDefault(); loadDefaults(); }
-        else if (e.key === 'F10') { e.preventDefault(); toast(t('t_saving')); setTimeout(leave, 700); }
-        else if (e.key === 'Escape') { leave(); }
+    function saveAndLeave() { toast(t('t_saving')); setTimeout(leave, 700); }
+    function runAction(act) {
+        if (act === 'save') saveAndLeave();
+        else if (act === 'exit') leave();
+        else if (act === 'defaults') loadDefaults();
+        else if (act === 'pwd') toast(t('t_pwd'));
+        else if (act === 'keys') toast(t('t_saved'));
+        else if (act === 'flash') toast(t('t_flash'));
+    }
+    document.querySelectorAll('#tabs button[data-act]').forEach(function (el) {
+        el.addEventListener('click', function () { if (el.dataset.act === 'exit') leave(); else openMode(el.dataset.act); });
     });
-
+    document.querySelectorAll('#ezModes button').forEach(function (el) {
+        el.addEventListener('click', function () {
+            document.querySelectorAll('#ezModes button').forEach(function (button) { button.classList.remove('on'); });
+            el.classList.add('on');
+            toast(t('t_switched') + el.textContent);
+        });
+    });
+    document.getElementById('fanSet').addEventListener('click', function () { toast(t('t_demo_fan')); });
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'F9') { event.preventDefault(); loadDefaults(); }
+        else if (event.key === 'F10') { event.preventDefault(); saveAndLeave(); }
+        else if (event.key === 'F11') { event.preventDefault(); openMode(mode === 'bios' ? 'adv' : 'bios'); }
+        else if (event.key === 'Escape') { event.preventDefault(); goBack(); }
+        else if (mode !== 'bios' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+            var items = currentItems();
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                var step = event.key === 'ArrowDown' ? 1 : -1;
+                var next = selected;
+                do { next = (next + step + items.length) % items.length; } while (items[next].type === 'hd' && next !== selected);
+                setSelected(next);
+            } else if ((event.key === 'ArrowRight' || event.key === 'ArrowLeft') && items[selected].type === 'select') {
+                event.preventDefault();
+                var item = items[selected];
+                item.val = (item.val + (event.key === 'ArrowRight' ? 1 : -1) + item.opts.length) % item.opts.length;
+                renderRows();
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                var target = rowsEl.children[selected];
+                if (items[selected].type === 'select') target.querySelector('.ctl').click();
+                else if (items[selected].type === 'sub' || items[selected].type === 'btn') target.click();
+            }
+        }
+    });
     applyLang();
 })();
 </script>
