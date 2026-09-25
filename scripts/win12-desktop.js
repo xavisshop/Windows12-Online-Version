@@ -454,6 +454,8 @@ let NTF_DND = false;
 let NTFS = [];
 function renderNtfs() {
     const box = $('#ntfList');
+    const badge = $('#ntfBadge');
+    if (badge) { badge.hidden = !NTFS.length; badge.textContent = NTFS.length || ''; }
     if (!NTFS.length) { box.innerHTML = '<div class="ntf-empty">没有新通知</div>'; return; }
     box.innerHTML = NTFS.map((g, gi) => `
         <div class="ntf-group" data-g="${gi}">
@@ -1172,7 +1174,6 @@ function buildWeather() {
 /* ================= 设置（Win11 截图 1:1） ================= */
 /* 壁纸：视频壁纸 + 彩带壁纸 */
 const WALLPAPERS = [
-    { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
     { id: 'ribbons', name: '彩带', cls: 'wp-ribbons', accent: '#4a6fe0' },
     { id: 'pastel', name: '粉彩', cls: 'wp-pastel', accent: '#f0a8cf' },
     { id: 'neon', name: '霓虹', cls: 'wp-neon', accent: '#e0449e' },
@@ -1220,7 +1221,7 @@ const wsw = on => `<span class="wtoggle${on ? ' on' : ''}"></span>`;
 const wsec = t => `<div class="wsec">${t}</div>`;
 const wlink = label => `<button class="wlink" data-demo>${label}</button>`;
 const wtoggle = on => `<button class="wtoggle${on ? ' on' : ''}" data-tg aria-label="开关"></button>`;
-const wpCur = () => WALLPAPERS.find(w => w.id === store.get('wallpaper', 'video')) || WALLPAPERS[0];
+const wpCur = () => WALLPAPERS.find(w => w.id === store.get('wallpaper', 'ribbons')) || WALLPAPERS[0];
 const wheoInner = () => {
     const w = wpCur();
     return `<span class="wdev ${w.cls}"></span>
@@ -2132,7 +2133,7 @@ function ctxAction(k) {
     if (k === 'refresh') { location.reload(); }
     else if (k === 'personal') openApp('settings');
     else if (k === 'nextwp') {
-        const cur = store.get('wallpaper', 'video');
+        const cur = store.get('wallpaper', 'ribbons');
         const ids = WALLPAPERS.map(w => w.id);
         userSetWallpaper(ids[(ids.indexOf(cur) + 1) % ids.length]);
         toast('已切换到下一个场景');
@@ -2357,7 +2358,7 @@ function init() {
     wireGlobal();
     tickClock();
     applyQS();
-    applyWallpaper(store.get('wallpaper', 'video'));
+    applyWallpaper(store.get('wallpaper', 'ribbons'));
     const sav = $('#smAvatar'); if (sav) sav.innerHTML = ICONS.rAvatar;
     renderLockWidgets();
 }
