@@ -332,7 +332,7 @@ input { font-family: inherit; }
 .qs-scroll { max-height: min(58vh, 480px); overflow-y: auto; scrollbar-width: thin; margin: 0 -20px; padding: 0 20px; }
 .qs-scroll::-webkit-scrollbar { width: 6px; }
 .qs-scroll::-webkit-scrollbar-thumb { background: rgba(43,74,203,.3); border-radius: 3px; }
-.qs-more { margin-top: 4px; margin-bottom: 8px; }
+.qs-more { margin-top: 4px; margin-bottom: 8px; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .qs-more .qs-t { flex-direction: column; gap: 6px; background: rgba(30,30,38,.72); color: #e8e8ec; border-radius: 12px; padding: 14px 6px 10px; font-size: 12px; transition: transform .15s ease, background .15s; }
 .qs-more .qs-t .qs-btn { width: 100%; background: transparent; border-radius: 0; }
 .qs-more .qs-t .qs-btn svg { width: 22px; height: 22px; }
