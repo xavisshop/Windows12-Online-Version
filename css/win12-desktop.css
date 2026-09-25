@@ -368,7 +368,7 @@ input { font-family: inherit; }
 .qs-sub-ico { display: flex; width: 20px; height: 20px; flex-shrink: 0; }
 .qs-sub-ico svg { width: 18px; height: 18px; }
 .qs-slider { display: flex; align-items: center; gap: 16px; margin: 16px 4px; color: #1e3a8a; }
-.qs-slider.qs-vol { background: rgba(20,20,25,.85); border-radius: 12px; padding: 10px 16px; margin-left: -12px; margin-right: -12px; color: #e02424; }
+.qs-slider.qs-vol { background: rgba(18,18,24,.92); border-radius: 0; padding: 14px 20px; margin: 16px -20px 0; color: #e02424; }
 @property --fill { syntax: '<percentage>'; inherits: true; initial-value: 60%; }
 .qs-slider svg { width: 20px; height: 20px; flex-shrink: 0; transition: transform .15s ease; cursor: pointer; }
 .qs-slider svg:active { transform: scale(.75); }
