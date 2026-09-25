@@ -56,6 +56,9 @@ const ICONS = {
     moon: S('<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
     sun: S('<circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'),
     plane: S('<path d="M10.5 13.5L3 11l1.5-1.5L11 11l3.5-5.5c.8-1.2 2.6-1.4 3.5-.5.9.9.7 2.7-.5 3.5L13 12l1.5 6.5L13 20l-2.5-6.5z" fill="currentColor"/>'),
+    airplane: S('<path d="M10.5 13.5L3 11l1.5-1.5L11 11l3.5-5.5c.8-1.2 2.6-1.4 3.5-.5.9.9.7 2.7-.5 3.5L13 12l1.5 6.5L13 20l-2.5-6.5z" fill="currentColor"/>'),
+    hotspot: S('<circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9.2 9.2 0 0 0 0 12.8M18.4 5.6a9.2 9.2 0 0 1 0 12.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'),
+    focus: S('<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
     saver: S('<path d="M13 2L4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
     game: S('<rect x="2" y="7" width="20" height="11" rx="5.5" fill="#22c55e"/><path d="M8 10.5v4M6 12.5h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="15.5" cy="11.5" r="1.3" fill="#fff"/><circle cx="18" cy="14" r="1.3" fill="#fff"/>'),
     music: S('<circle cx="8" cy="17.5" r="3" fill="#f59e0b"/><circle cx="17" cy="15.5" r="3" fill="#f59e0b"/><path d="M11 17.5V6l9-2v11.5" fill="none" stroke="#f59e0b" stroke-width="2.4"/>'),
@@ -362,21 +365,39 @@ const SVG_ICONS = {
     display: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
 };
 const QS = [
-    { id: 'a11y', name: '辅助功能', icon: 'a11y', on: false, chev: true },
-    { id: 'saver', name: '节能模式', icon: 'saver', on: false },
-    { id: 'captions', name: '实时字幕', icon: 'captions', on: false },
+    { id: 'airplane', name: '飞行模式', icon: 'airplane', on: false },
+    { id: 'hotspot', name: '移动热点', icon: 'hotspot', on: true },
+    { id: 'focus', name: '专注助手', icon: 'focus', on: false },
     { id: 'night', name: '夜间模式', icon: 'night', on: false },
-    { id: 'share', name: '就近共享', icon: 'share', on: false },
-    { id: 'display', name: '有线显示器', icon: 'display', on: true, chev: true },
+    { id: 'wifi', name: 'WLAN', icon: 'wifi', on: true, chev: true, exp: 'wifi' },
+    { id: 'bt', name: '蓝牙', icon: 'bluetooth', on: true, chev: true, exp: 'bt' },
+];
+const QS_WIFI = [
+    { name: 'Home', on: true },
+    { name: 'Living Room', on: false },
+    { name: 'Avdan', on: false },
+];
+const QS_BT = [
+    { name: 'Headphones', on: false },
+    { name: 'Surface Earbuds', on: true },
+    { name: 'Bluetooth Mouse', on: false },
 ];
 function renderQS() {
     const hidden = store.get('qs_hidden', []);
     const editing = $('#qsToggles') && $('#qsToggles').classList.contains('qs-edit');
-    $('#qsToggles').innerHTML = QS.map(q => {
+    const tile = q => {
         const hid = hidden.includes(q.id);
         if (hid && !editing) return '';
         return `<button class="qs-t${q.on ? ' on' : ''}${hid ? ' qs-hidden' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}${q.chev ? '<span class="chev">›</span>' : ''}</span><span>${q.name}</span></button>`;
-    }).join('');
+    };
+    const sub = (list, icon) => list.map(n =>
+        `<button class="qs-sub${n.on ? ' on' : ''}"><span class="qs-sub-ico">${SVG_ICONS[icon]}</span><span>${n.name}</span></button>`).join('');
+    const wifi = QS.find(q => q.id === 'wifi'), bt = QS.find(q => q.id === 'bt');
+    const wifiHid = hidden.includes('wifi') && !editing, btHid = hidden.includes('bt') && !editing;
+    $('#qsToggles').innerHTML =
+        QS.filter(q => !q.exp).map(tile).join('') +
+        (wifiHid ? '' : `<div class="qs-x"><button class="qs-t qs-main${wifi.on ? ' on' : ''}${hidden.includes('wifi') ? ' qs-hidden' : ''}" data-q="wifi"><span class="qs-btn">${SVG_ICONS.wifi}<span class="chev">›</span></span><span>WLAN</span></button><div class="qs-sublist">${sub(QS_WIFI, 'wifi')}</div></div>`) +
+        (btHid ? '' : `<div class="qs-x"><button class="qs-t qs-main${bt.on ? ' on' : ''}${hidden.includes('bt') ? ' qs-hidden' : ''}" data-q="bt"><span class="qs-btn">${SVG_ICONS.bluetooth}<span class="chev">›</span></span><span>蓝牙</span></button><div class="qs-sublist">${sub(QS_BT, 'bluetooth')}</div></div>`);
 }
 function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
@@ -2170,8 +2191,14 @@ function wireGlobal() {
                 renderQS(); return;
             }
             const q = QS.find(x => x.id === t.dataset.q);
-            q.on = !q.on; t.classList.toggle('on', q.on); applyQS();
-            if (q.id === 'theme') { store.set('theme', q.on ? 'dark' : 'light'); }
+            if (q) { q.on = !q.on; t.classList.toggle('on', q.on); applyQS(); }
+            return;
+        }
+        const s = e.target.closest('.qs-sub');
+        if (s) {
+            const list = s.closest('.qs-x').querySelectorAll('.qs-sub');
+            list.forEach(x => x.classList.remove('on'));
+            s.classList.add('on');
             return;
         }
     });
