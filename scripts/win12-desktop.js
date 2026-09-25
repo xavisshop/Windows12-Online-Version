@@ -1175,6 +1175,7 @@ const WALLPAPERS = [
     { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
     { id: 'ribbons', name: '彩带', cls: 'wp-ribbons', accent: '#4a6fe0' },
     { id: 'pastel', name: '粉彩', cls: 'wp-pastel', accent: '#f0a8cf' },
+    { id: 'neon', name: '霓虹', cls: 'wp-neon', accent: '#e0449e' },
 ];
 /* 仅切换壁纸 class，不写 localStorage（首次访问保持纯净） */
 function applyWallpaper(id) {
