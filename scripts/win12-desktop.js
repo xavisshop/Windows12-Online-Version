@@ -373,23 +373,111 @@ function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
 }
 
-/* ================= 日历 / 通知 ================= */
+/* ================= 日历 / 通知中心（Win11 样式） ================= */
+/* 紧凑农历：1900-2100 */
+const LUNAR_INFO = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0];
+function lunarDate(y, m, d) {
+    let offset = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(1900, 0, 31)) / 86400000);
+    let year = 1900, daysInYear;
+    for (; year < 2101; year++) {
+        daysInYear = 348;
+        for (let i = 0x8000; i > 0x8; i >>= 1) daysInYear += (LUNAR_INFO[year - 1900] & i) ? 1 : 0;
+        const leap = (LUNAR_INFO[year - 1900] & 0xf);
+        if (leap) daysInYear += ((LUNAR_INFO[year - 1900] & 0x10000) ? 30 : 29);
+        if (offset < daysInYear) break;
+        offset -= daysInYear;
+    }
+    const leapMonth = LUNAR_INFO[year - 1900] & 0xf;
+    let month = 1, isLeap = false, daysInMonth;
+    for (; month <= 12; month++) {
+        if (leapMonth && month === leapMonth + 1 && !isLeap) { month--; isLeap = true; daysInMonth = (LUNAR_INFO[year - 1900] & 0x10000) ? 30 : 29; }
+        else daysInMonth = (LUNAR_INFO[year - 1900] & (0x10000 >> month)) ? 30 : 29;
+        if (offset < daysInMonth) break;
+        offset -= daysInMonth;
+        if (isLeap && month === leapMonth + 1) isLeap = false;
+    }
+    const MN = ['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','冬月','腊月'];
+    const DN = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+    const FES = { '正月初一': '春节', '正月十五': '元宵节', '五月初五': '端午节', '七月初七': '七夕', '八月十五': '中秋节', '九月初九': '重阳节', '腊月初八': '腊八节', '腊月三十': '除夕', '腊月廿九': '除夕' };
+    const mName = (isLeap ? '闰' : '') + MN[month - 1], dName = DN[offset];
+    return { mName, dName, festival: FES[mName.replace('闰', '') + dName] || '' };
+}
+/* 通知数据 */
+let NTF_DND = false;
+let NTFS = [
+    { app: '截图工具', icon: '✂️', time: '14:01', items: [{ t: '屏幕截图已复制到剪贴板', b: '已自动保存到屏幕截图文件夹。' }] },
+    { app: 'ChatGPT', icon: '✦', time: '13:57', items: [{ t: '来自 ChatGPT 的新回复', b: '已为你生成了代码片段，点击查看详情。' }] },
+    { app: 'Outlook', icon: '📧', time: '13:32', items: [{ t: 'Accio', b: '144612 is your ACCIO verification code.' }, { t: '+1 个通知', b: '' }] },
+];
+function renderNtfs() {
+    const box = $('#ntfList');
+    if (!NTFS.length) { box.innerHTML = '<div class="ntf-empty">没有新通知</div>'; return; }
+    box.innerHTML = NTFS.map((g, gi) => `
+        <div class="ntf-group" data-g="${gi}">
+            <button class="ntf-app"><span class="n-app-ico">${g.icon}</span><span>${esc(g.app)}</span><span class="n-app-time">${g.time}</span><span class="n-app-chev">﹀</span></button>
+            <div class="ntf-cards">${g.items.map(n => `<div class="ntf"><b>${esc(n.t)}</b>${n.b ? `<i>${esc(n.b)}</i>` : ''}</div>`).join('')}</div>
+        </div>`).join('');
+}
+function renderNcDate() {
+    const t = new Date(), wd = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][t.getDay()];
+    const l = lunarDate(t.getFullYear(), t.getMonth() + 1, t.getDate());
+    $('#ncDateMain').textContent = `${t.getMonth() + 1}月${t.getDate()}日, ${wd}`;
+    $('#ncDateLunar').textContent = `${l.mName}${l.dName}${l.festival ? ' ' + l.festival : ''}`;
+}
 let calCursor = new Date();
 function renderCal() {
     const y = calCursor.getFullYear(), m = calCursor.getMonth();
-    $('#calTitle').textContent = `${y} 年 ${m + 1} 月`;
+    $('#calTitle').textContent = `${y}年${m + 1}月`;
     const first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
     const prevDays = new Date(y, m, 0).getDate(), today = new Date();
-    let html = ['日', '一', '二', '三', '四', '五', '六'].map(d => `<span class="dow">${d}</span>`).join('');
-    for (let i = first - 1; i >= 0; i--) html += `<span class="day dim">${prevDays - i}</span>`;
+    // Win11：周一起始
+    const startCol = (first + 6) % 7;
+    let html = ['一', '二', '三', '四', '五', '六', '日'].map(d => `<span class="dow">${d}</span>`).join('');
+    for (let i = startCol - 1; i >= 0; i--) {
+        const pd = new Date(y, m - 1, prevDays - i);
+        const l = lunarDate(pd.getFullYear(), pd.getMonth() + 1, pd.getDate());
+        html += `<span class="day dim"><span class="dnum">${prevDays - i}</span><span class="lunar">${l.festival || l.dName}</span></span>`;
+    }
     for (let d = 1; d <= days; d++) {
         const isT = d === today.getDate() && m === today.getMonth() && y === today.getFullYear();
-        html += `<span class="day${isT ? ' today' : ''}">${d}</span>`;
+        const l = lunarDate(y, m + 1, d);
+        html += `<span class="day${isT ? ' today' : ''}"><span class="dnum">${d}</span><span class="lunar">${l.festival || l.dName}</span></span>`;
+    }
+    const total = startCol + days, tail = (7 - total % 7) % 7;
+    for (let d = 1; d <= tail; d++) {
+        const nd = new Date(y, m + 1, d);
+        const l = lunarDate(nd.getFullYear(), nd.getMonth() + 1, d);
+        html += `<span class="day dim"><span class="dnum">${d}</span><span class="lunar">${l.festival || l.dName}</span></span>`;
     }
     $('#calGrid').innerHTML = html;
-    $('#ntfList').innerHTML = [
-        ['Microsoft Store', 'Edge 已更新到最新版本', '🔵'], ['天气', '明天多云，24°C，适合出行', '⛅'], ['日历', '14:00 有一场会议：午餐', '📅'],
-    ].map(n => `<div class="ntf"><b>${n[2]} ${n[0]}</b><i>${n[1]}</i></div>`).join('');
+    renderNcDate();
+    renderNtfs();
+}
+function setDnd(on) {
+    NTF_DND = on;
+    $('#ncDnd').classList.toggle('on', on);
+    $('#ncDndBanner').hidden = !on;
+    $('#ncDndLink').hidden = !on;
+    if (on) toast('已开启"请勿打扰"', '🔕');
+}
+function wireNc() {
+    $('#ncDnd').addEventListener('click', () => setDnd(!NTF_DND));
+    $('#ncClearAll').addEventListener('click', () => { NTFS = []; renderNtfs(); });
+    $('#ntfList').addEventListener('click', e => {
+        const app = e.target.closest('.ntf-app');
+        if (app) app.closest('.ntf-group').classList.toggle('closed');
+    });
+    let calVisible = true;
+    $('#ncDateChev').addEventListener('click', () => {
+        calVisible = !calVisible;
+        $('#ncCalWrap').style.display = calVisible ? '' : 'none';
+        $('#ncDateChev').textContent = calVisible ? '﹀' : '︿';
+    });
+    const fmin = $('#ncFocusMin');
+    $('#ncFocusMinus').addEventListener('click', () => { fmin.textContent = Math.max(5, +fmin.textContent - 5); });
+    $('#ncFocusPlus').addEventListener('click', () => { fmin.textContent = Math.min(120, +fmin.textContent + 5); });
+    $('#ncFocusStart').addEventListener('click', () => toast(`专注 ${fmin.textContent} 分钟已开始`, '⏱'));
+    $('#ncDndLink').addEventListener('click', () => { closePanels(); openApp('settings'); });
 }
 
 /* ================= 窗口管理器 ================= */
@@ -1040,17 +1128,9 @@ function buildWeather() {
 }
 
 /* ================= 设置（Win11 截图 1:1） ================= */
-/* 壁纸：视频壁纸图片 + 纯 CSS 手绘场景 */
+/* 壁纸：仅保留视频壁纸（用户要求去掉其余） */
 const WALLPAPERS = [
     { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
-    { id: 'v1', name: '绛紫流光', cls: 'wp-v1', accent: '#a855f7' },
-    { id: 'v4', name: '粉彩晨曦', cls: 'wp-v4', accent: '#f59e0b' },
-    { id: 'ribbon', name: '紫韵丝带', cls: 'wp-ribbon', accent: '#e0449e' },
-    { id: 'tide', name: '青蓝潮汐', cls: 'wp-tide', accent: '#38bdf8' },
-    { id: 'pastel', name: '暖阳粉彩', cls: 'wp-pastel', accent: '#f59e0b' },
-    { id: 'night', name: '深邃暗夜', cls: 'wp-night', accent: '#7c3aed' },
-    { id: 'neon', name: '霓虹紫', cls: 'wp-neon', accent: '#a855f7' },
-    { id: 'lake', name: '湖畔晨光', cls: 'wp-lake', accent: '#2dd4bf' },
 ];
 /* 仅切换壁纸 class，不写 localStorage（首次访问保持纯净） */
 function applyWallpaper(id) {
@@ -1403,9 +1483,10 @@ function initSettings(root) {
         const th = e.target.closest('[data-theme]');
         if (th) { userSetWallpaper(th.dataset.theme); paint(cur); toast('已应用主题「' + (WALLPAPERS.find(w => w.id === th.dataset.theme) || {}).name + '」'); return; }
         if (e.target.closest('[data-ddmode]')) {
-            const q = QS.find(x => x.id === 'theme'); q.on = !q.on;
-            renderQS(); applyQS(); store.set('theme', q.on ? 'dark' : 'light'); paint(cur);
-            toast(q.on ? '已切换深色模式' : '已切换浅色模式'); return;
+            const dark = document.documentElement.dataset.theme !== 'dark';
+            document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+            renderQS(); applyQS(); store.set('theme', dark ? 'dark' : 'light'); paint(cur);
+            toast(dark ? '已切换深色模式' : '已切换浅色模式'); return;
         }
         const tg = e.target.closest('[data-tg]');
         if (tg) {
@@ -2000,7 +2081,8 @@ function wireGlobal() {
     // 日历
     $('#calPrev').addEventListener('click', () => { calCursor.setMonth(calCursor.getMonth() - 1); renderCal(); });
     $('#calNext').addEventListener('click', () => { calCursor.setMonth(calCursor.getMonth() + 1); renderCal(); });
-    $('#calToday').addEventListener('click', () => { calCursor = new Date(); renderCal(); });
+    $('#calTitle').addEventListener('click', () => { calCursor = new Date(); renderCal(); });
+    wireNc();
     // 任务栏
     $('#tbQuick').addEventListener('click', () => togglePanel('quickSettings'));
     $('#tbClock').addEventListener('click', () => togglePanel('calPanel'));
@@ -2106,7 +2188,7 @@ function init() {
     renderSearch();
     renderWidgets();
     // 主题只读存储应用、不写入（首次访问保持纯净）
-    QS.find(q => q.id === 'theme').on = store.get('theme', 'dark') === 'dark';
+    document.documentElement.dataset.theme = store.get('theme', 'dark');
     renderQS();
     renderCal();
     renderDesktopIcons();
