@@ -374,11 +374,11 @@ input { font-family: inherit; }
 .qs-slider svg:active { transform: scale(.75); }
 .qs-slider input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 22px; background: transparent; cursor: pointer; --fill: 60%; }
 .qs-slider input[type="range"]::-webkit-slider-runnable-track { height: 5px; border-radius: 3px; background: linear-gradient(to right, #e02424 0%, #f04444 var(--fill), rgba(0,0,0,.55) var(--fill)); transition: --fill .25s ease; }
-.qs-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #e02424; margin-top: -6.5px; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); transition: transform .15s ease; }
+.qs-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at center, #e02424 0%, #e02424 32%, rgba(25,25,32,.55) 34%, rgba(25,25,32,.55) 100%); margin-top: -10.5px; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); transition: transform .15s ease; }
 .qs-slider input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.25); }
 .qs-slider input[type="range"]::-moz-range-track { height: 5px; border-radius: 3px; background: rgba(0,0,0,.55); }
 .qs-slider input[type="range"]::-moz-range-progress { height: 5px; border-radius: 3px; background: linear-gradient(to right, #e02424, #f04444); transition: width .25s ease; }
-.qs-slider input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #e02424; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); transition: transform .15s ease; }
+.qs-slider input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at center, #e02424 0%, #e02424 32%, rgba(25,25,32,.55) 34%, rgba(25,25,32,.55) 100%); border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); transition: transform .15s ease; }
 .qs-slider input[type="range"]:active::-moz-range-thumb { transform: scale(1.25); }
 .qs-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; background: rgba(255,255,255,.3); margin-left: -20px; margin-right: -20px; margin-bottom: -14px; padding: 10px 20px; border-radius: 0 0 16px 16px; }
 .qs-bat { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #1e3a8a; }
