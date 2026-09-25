@@ -414,7 +414,7 @@ function renderQS() {
         (btHid ? '' : mainTile(bt, '蓝牙'));
     const moreEl = $('#qsMore');
     if (moreEl) moreEl.innerHTML = QS_MORE.map(q =>
-        `<button class="qs-t${q.on ? ' on' : ''}" data-qm="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}</span><span>${q.name}</span></button>`).join('');
+        `<button class="qs-t${q.on ? ' on' : ''}" data-qm="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}<span class="chev">›</span></span><span>${q.name}</span></button>`).join('');
 }
 function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
