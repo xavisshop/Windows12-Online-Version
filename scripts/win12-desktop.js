@@ -363,6 +363,11 @@ const SVG_ICONS = {
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>',
     display: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    airplane: ICONS.airplane,
+    hotspot: ICONS.hotspot,
+    focus: ICONS.focus,
+    wifi: ICONS.wifi,
+    bluetooth: ICONS.bluetooth,
 };
 const QS = [
     { id: 'airplane', name: '飞行模式', icon: 'airplane', on: false },
@@ -394,10 +399,11 @@ function renderQS() {
         `<button class="qs-sub${n.on ? ' on' : ''}"><span class="qs-sub-ico">${SVG_ICONS[icon]}</span><span>${n.name}</span></button>`).join('');
     const wifi = QS.find(q => q.id === 'wifi'), bt = QS.find(q => q.id === 'bt');
     const wifiHid = hidden.includes('wifi') && !editing, btHid = hidden.includes('bt') && !editing;
+    const mainTile = (q, label) => `<div class="qs-x"><button class="qs-t qs-main${q.on ? ' on' : ''}${hidden.includes(q.id) ? ' qs-hidden' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}</span><span class="chev">›</span><span>${label}</span></button><div class="qs-sublist">${sub(q.id === 'wifi' ? QS_WIFI : QS_BT, q.id === 'wifi' ? 'wifi' : 'bluetooth')}</div></div>`;
     $('#qsToggles').innerHTML =
         QS.filter(q => !q.exp).map(tile).join('') +
-        (wifiHid ? '' : `<div class="qs-x"><button class="qs-t qs-main${wifi.on ? ' on' : ''}${hidden.includes('wifi') ? ' qs-hidden' : ''}" data-q="wifi"><span class="qs-btn">${SVG_ICONS.wifi}<span class="chev">›</span></span><span>WLAN</span></button><div class="qs-sublist">${sub(QS_WIFI, 'wifi')}</div></div>`) +
-        (btHid ? '' : `<div class="qs-x"><button class="qs-t qs-main${bt.on ? ' on' : ''}${hidden.includes('bt') ? ' qs-hidden' : ''}" data-q="bt"><span class="qs-btn">${SVG_ICONS.bluetooth}<span class="chev">›</span></span><span>蓝牙</span></button><div class="qs-sublist">${sub(QS_BT, 'bluetooth')}</div></div>`);
+        (wifiHid ? '' : mainTile(wifi, 'WLAN')) +
+        (btHid ? '' : mainTile(bt, '蓝牙'));
 }
 function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
@@ -1157,9 +1163,11 @@ function buildWeather() {
 }
 
 /* ================= 设置（Win11 截图 1:1） ================= */
-/* 壁纸：仅保留视频壁纸（用户要求去掉其余） */
+/* 壁纸：视频壁纸 + 彩带壁纸 */
 const WALLPAPERS = [
     { id: 'video', name: '视频壁纸', cls: 'wp-video', accent: '#e0449e' },
+    { id: 'ribbons', name: '彩带', cls: 'wp-ribbons', accent: '#4a6fe0' },
+    { id: 'pastel', name: '粉彩', cls: 'wp-pastel', accent: '#f0a8cf' },
 ];
 /* 仅切换壁纸 class，不写 localStorage（首次访问保持纯净） */
 function applyWallpaper(id) {
@@ -1655,7 +1663,7 @@ function initAiPanel() {
     };
     const box = $('#aiPanelMsgs');
     box.innerHTML = `<div class="aip-empty">欢迎使用 AI 助手<br>内置免费模型，开箱即用<br>我可以帮你打开应用、搜索网页、切换主题</div>`;
-    if (orcaKey()) aiPanelMsg('ai', AI_WELCOME);
+    if (orcaKey() && !aiWelcomed) { aiWelcomed = true; aiPanelMsg('ai', AI_WELCOME); }
     // 发送按钮：正常"发送" / 截断后"➤ 继续"
     const setContinueBtn = (on) => {
         const b = $('#aiPanelSend');
@@ -2202,14 +2210,9 @@ function wireGlobal() {
             return;
         }
     });
-    // 快捷设置底部电池电量
+    // 快捷设置底部电池电量：固定显示 67%
     const batEl = document.getElementById('qsBatPct');
-    if (navigator.getBattery) {
-        navigator.getBattery().then(b => {
-            const up = () => { if (batEl) batEl.textContent = Math.round(b.level * 100) + '%'; };
-            up(); b.addEventListener('levelchange', up); b.addEventListener('chargingchange', up);
-        }).catch(() => {});
-    }
+    if (batEl) batEl.textContent = '67%';
     const qsFill = el => { const p = (el.value - el.min) / (el.max - el.min) * 100; el.style.setProperty('--fill', p + '%'); };
     ['qsBrightness', 'qsVolume'].forEach(id => { const el = document.getElementById(id); if (el) { qsFill(el); el.addEventListener('input', () => qsFill(el)); } });
     $('#qsBrightness').addEventListener('input', e => {
