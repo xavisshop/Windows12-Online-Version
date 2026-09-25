@@ -387,6 +387,14 @@ const QS_BT = [
     { name: 'Surface Earbuds', on: true },
     { name: 'Bluetooth Mouse', on: false },
 ];
+const qsExpanded = { wifi: false, bt: false }; // WiFi/蓝牙展开状态，默认收起
+const QS_MORE = [
+    { id: 'a11y', name: '辅助功能', icon: 'a11y', on: false },
+    { id: 'saver', name: '节能模式', icon: 'saver', on: false },
+    { id: 'captions', name: '实时字幕', icon: 'captions', on: false },
+    { id: 'share', name: '就近共享', icon: 'share', on: false },
+    { id: 'display', name: '有线显示器', icon: 'display', on: false },
+];
 function renderQS() {
     const hidden = store.get('qs_hidden', []);
     const editing = $('#qsToggles') && $('#qsToggles').classList.contains('qs-edit');
@@ -399,11 +407,14 @@ function renderQS() {
         `<button class="qs-sub${n.on ? ' on' : ''}"><span class="qs-sub-ico">${SVG_ICONS[icon]}</span><span>${n.name}</span></button>`).join('');
     const wifi = QS.find(q => q.id === 'wifi'), bt = QS.find(q => q.id === 'bt');
     const wifiHid = hidden.includes('wifi') && !editing, btHid = hidden.includes('bt') && !editing;
-    const mainTile = (q, label) => `<div class="qs-x"><button class="qs-t qs-main${q.on ? ' on' : ''}${hidden.includes(q.id) ? ' qs-hidden' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}</span><span class="chev">›</span><span>${label}</span></button><div class="qs-sublist">${sub(q.id === 'wifi' ? QS_WIFI : QS_BT, q.id === 'wifi' ? 'wifi' : 'bluetooth')}</div></div>`;
+    const mainTile = (q, label) => { const exp = qsExpanded[q.id]; return `<div class="qs-x${exp ? ' exp' : ''}"><button class="qs-t qs-main${q.on ? ' on' : ''}${hidden.includes(q.id) ? ' qs-hidden' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}</span><span class="chev">›</span><span>${label}</span></button>${exp ? `<div class="qs-sublist">${sub(q.id === 'wifi' ? QS_WIFI : QS_BT, q.id === 'wifi' ? 'wifi' : 'bluetooth')}</div>` : ''}</div>`; };
     $('#qsToggles').innerHTML =
         QS.filter(q => !q.exp).map(tile).join('') +
         (wifiHid ? '' : mainTile(wifi, 'WLAN')) +
         (btHid ? '' : mainTile(bt, '蓝牙'));
+    const moreEl = $('#qsMore');
+    if (moreEl) moreEl.innerHTML = QS_MORE.map(q =>
+        `<button class="qs-t${q.on ? ' on' : ''}" data-qm="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}</span><span>${q.name}</span></button>`).join('');
 }
 function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
@@ -438,13 +449,9 @@ function lunarDate(y, m, d) {
     const mName = (isLeap ? '闰' : '') + MN[month - 1], dName = DN[offset];
     return { mName, dName, festival: FES[mName.replace('闰', '') + dName] || '' };
 }
-/* 通知数据 */
+/* 通知数据：默认空 */
 let NTF_DND = false;
-let NTFS = [
-    { app: '截图工具', icon: '✂️', time: '14:01', items: [{ t: '屏幕截图已复制到剪贴板', b: '已自动保存到屏幕截图文件夹。' }] },
-    { app: 'ChatGPT', icon: '✦', time: '13:57', items: [{ t: '来自 ChatGPT 的新回复', b: '已为你生成了代码片段，点击查看详情。' }] },
-    { app: 'Outlook', icon: '📧', time: '13:32', items: [{ t: 'Accio', b: '144612 is your ACCIO verification code.' }, { t: '+1 个通知', b: '' }] },
-];
+let NTFS = [];
 function renderNtfs() {
     const box = $('#ntfList');
     if (!NTFS.length) { box.innerHTML = '<div class="ntf-empty">没有新通知</div>'; return; }
@@ -2199,7 +2206,14 @@ function wireGlobal() {
                 renderQS(); return;
             }
             const q = QS.find(x => x.id === t.dataset.q);
-            if (q) { q.on = !q.on; t.classList.toggle('on', q.on); applyQS(); }
+            if (q) {
+                // WiFi/蓝牙：点右半箭头展开收起，点左半切换开关
+                if ((q.id === 'wifi' || q.id === 'bt') && e.target.closest('.chev')) {
+                    qsExpanded[q.id] = !qsExpanded[q.id];
+                    renderQS(); return;
+                }
+                q.on = !q.on; t.classList.toggle('on', q.on); applyQS();
+            }
             return;
         }
         const s = e.target.closest('.qs-sub');
@@ -2207,6 +2221,12 @@ function wireGlobal() {
             const list = s.closest('.qs-x').querySelectorAll('.qs-sub');
             list.forEach(x => x.classList.remove('on'));
             s.classList.add('on');
+            return;
+        }
+        const qm = e.target.closest('[data-qm]');
+        if (qm) {
+            const q = QS_MORE.find(x => x.id === qm.dataset.qm);
+            if (q) { q.on = !q.on; qm.classList.toggle('on', q.on); }
             return;
         }
     });
