@@ -226,12 +226,16 @@ function fileIcon(name, thumbIdx) {
 const WEEK = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 function tickClock() {
     const n = new Date();
-    const hh = String(n.getHours()).padStart(2, '0'), mm = String(n.getMinutes()).padStart(2, '0'), ss = String(n.getSeconds()).padStart(2, '0');
-    $('#clockTime').textContent = `${hh}:${mm}:${ss}`;
+    const use24 = store.get('clock_24h', true);
+    const showSec = store.get('clock_seconds', false);
+    let hh = n.getHours(), ap = '';
+    if (!use24) { ap = hh >= 12 ? ' PM' : ' AM'; hh = hh % 12 || 12; }
+    const mm = String(n.getMinutes()).padStart(2, '0'), ss = String(n.getSeconds()).padStart(2, '0');
+    $('#clockTime').textContent = `${String(hh).padStart(2, '0')}:${mm}${showSec ? ':' + ss : ''}${ap}`;
     $('#clockDate').textContent = `${n.getFullYear()}/${n.getMonth() + 1}/${n.getDate()}`;
-    $('#lockTime').textContent = `${hh}:${mm}`;
+    $('#lockTime').textContent = `${String(hh).padStart(2, '0')}:${mm}`;
     $('#lockDate').textContent = `${n.getFullYear()} 年 ${n.getMonth() + 1} 月 ${n.getDate()} 日 ${WEEK[n.getDay()]}`;
-    const wc = $('#wgClock'); if (wc) wc.textContent = `${hh}:${mm}`;
+    const wc = $('#wgClock'); if (wc) wc.textContent = `${String(hh).padStart(2, '0')}:${mm}`;
 }
 setInterval(tickClock, 1000);
 
@@ -366,8 +370,13 @@ const QS = [
     { id: 'display', name: '有线显示器', icon: 'display', on: true, chev: true },
 ];
 function renderQS() {
-    $('#qsToggles').innerHTML = QS.map(q =>
-        `<button class="qs-t${q.on ? ' on' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}${q.chev ? '<span class="chev">›</span>' : ''}</span><span>${q.name}</span></button>`).join('');
+    const hidden = store.get('qs_hidden', []);
+    const editing = $('#qsToggles') && $('#qsToggles').classList.contains('qs-edit');
+    $('#qsToggles').innerHTML = QS.map(q => {
+        const hid = hidden.includes(q.id);
+        if (hid && !editing) return '';
+        return `<button class="qs-t${q.on ? ' on' : ''}${hid ? ' qs-hidden' : ''}" data-q="${q.id}"><span class="qs-btn">${SVG_ICONS[q.icon]}${q.chev ? '<span class="chev">›</span>' : ''}</span><span>${q.name}</span></button>`;
+    }).join('');
 }
 function applyQS() {
     document.body.style.filter = QS.find(q => q.id === 'night').on ? 'sepia(0.35)' : '';
@@ -1365,8 +1374,12 @@ function pgAccount() {
 }
 
 function pgTime() {
+    const sec24 = store.get('clock_24h', true), sec = store.get('clock_seconds', false);
     return `<div class="wtitle">时间和语言</div>
     ${wcard(wrow('clock', '日期和时间', '时区、自动设置时间'))}
+    ${wcard(`${wrow('clock', '任务栏时钟显示', '秒钟与 12/24 小时制')}
+        <div class="wrow" role="button" tabindex="0"><span class="wrow-tx"><b>显示秒钟</b></span><span class="wrow-r"><button class="wtoggle${sec ? ' on' : ''}" data-clocksec aria-label="显示秒钟"></button></span></div>
+        <div class="wrow" role="button" tabindex="0"><span class="wrow-tx"><b>24 小时制</b><i>关闭则使用 12 小时制（AM/PM）</i></span><span class="wrow-r"><button class="wtoggle${sec24 ? ' on' : ''}" data-clock24 aria-label="24小时制"></button></span></div>`)}
     ${wcard(wrow('rGlobe', '语言和区域', '首选语言、区域格式'))}
     ${wcard(wrow('rKeyboard', '键入', '触摸键盘、输入法'))}
     ${wcard(wrow('rSpeech', '语音', '语音识别、语音包'))}`;
@@ -1494,6 +1507,20 @@ function initSettings(root) {
             const lab = tg.previousElementSibling;
             if (lab && lab.classList.contains('wtg-lab')) lab.textContent = tg.classList.contains('on') ? '开' : '关';
             toast('设置已保存（演示）'); return;
+        }
+        const ckSec = e.target.closest('[data-clocksec]');
+        if (ckSec) {
+            const on = !ckSec.classList.contains('on');
+            ckSec.classList.toggle('on', on);
+            store.set('clock_seconds', on);
+            tickClock(); toast(on ? '任务栏时钟已显示秒钟' : '任务栏时钟已隐藏秒钟'); return;
+        }
+        const ck24 = e.target.closest('[data-clock24]');
+        if (ck24) {
+            const on = !ck24.classList.contains('on');
+            ck24.classList.toggle('on', on);
+            store.set('clock_24h', on);
+            tickClock(); toast(on ? '已切换为 24 小时制' : '已切换为 12 小时制'); return;
         }
         const acc = e.target.closest('[data-acc]');
         if (acc) {
@@ -2127,15 +2154,36 @@ function wireGlobal() {
     });
     // 快捷设置
     $('#quickSettings').addEventListener('click', e => {
+        if (e.target.closest('#qsSettings')) { closePanels(); openApp('settings'); return; }
+        if (e.target.closest('#qsEdit')) {
+            const g = $('#qsToggles'), on = !g.classList.contains('qs-edit');
+            g.classList.toggle('qs-edit', on);
+            renderQS();
+            toast(on ? '编辑模式：点击磁贴可隐藏/恢复，再点铅笔退出' : '已退出编辑模式'); return;
+        }
         const t = e.target.closest('.qs-t');
         if (t) {
+            if ($('#qsToggles').classList.contains('qs-edit')) {
+                const hidden = store.get('qs_hidden', []);
+                const id = t.dataset.q;
+                const i = hidden.indexOf(id);
+                if (i >= 0) hidden.splice(i, 1); else hidden.push(id);
+                store.set('qs_hidden', hidden);
+                renderQS(); return;
+            }
             const q = QS.find(x => x.id === t.dataset.q);
             q.on = !q.on; t.classList.toggle('on', q.on); applyQS();
             if (q.id === 'theme') { store.set('theme', q.on ? 'dark' : 'light'); toast(q.on ? '已切换深色模式' : '已切换浅色模式', q.on ? '🌙' : '☀️'); }
             return;
         }
-        if (e.target.closest('#qsSettings')) { closePanels(); openApp('settings'); }
     });
+    // 快捷设置底部电池电量
+    if (navigator.getBattery) {
+        navigator.getBattery().then(b => {
+            const up = () => { const el = $('#qsBatPct'); if (el) el.textContent = Math.round(b.level * 100) + '%'; };
+            up(); b.addEventListener('levelchange', up);
+        }).catch(() => { const el = $('#qsBatPct'); if (el) el.textContent = '82%'; });
+    } else { const el = $('#qsBatPct'); if (el) el.textContent = '82%'; }
     $('#qsBrightness').addEventListener('input', e => {
         $('#wallpaper').style.filter = `brightness(${e.target.value / 100})`;
     });
