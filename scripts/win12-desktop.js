@@ -154,6 +154,9 @@ const APP_IMGS = {
     todo: 'img/icons/todo.png', clock: 'img/icons/clock.png',
     weather: 'img/icons/weather.png', calc: 'img/icons/calc.png',
     camera: 'img/icons/camera.png', defender: 'img/icons/defender.png',
+    powerpoint: 'img/icons/powerpoint.png', mediaplayer: 'img/icons/mediaplayer.png',
+    download: 'img/icons/download.png', search: 'img/icons/search.png',
+    windows: 'img/icons/windows.png',
 };
 const ico = (n, cls) => {
     if (typeof n === 'string' && n.startsWith('img:')) {
@@ -206,13 +209,13 @@ const APPS = [
     { id: 'calendar', name: '日历', icon: 'calendar', pinned: false },
     { id: 'word', name: 'Word', icon: 'word', pinned: false },
     { id: 'excel', name: 'Excel', icon: 'excel', pinned: false },
-    { id: 'ppt', name: 'PowerPoint', icon: 'ppt', pinned: false },
+    { id: 'ppt', name: 'PowerPoint', icon: 'powerpoint', pinned: false },
     { id: 'todo', name: 'To Do', icon: 'todo', pinned: false },
     { id: 'clock', name: '时钟', icon: 'clock', pinned: false },
     { id: 'weather', name: '天气', icon: 'weather', pinned: false },
     { id: 'calc', name: '计算器', icon: 'calc', pinned: false },
     { id: 'camera', name: '相机', icon: 'camera', pinned: false },
-    { id: 'ai', name: 'AI 助手', icon: 'img:img/icons/copilot.svg', pinned: true },
+    { id: 'ai', name: 'AI 助手', icon: 'img:img/icons/copilot.png', pinned: true },
 ];
 const appById = id => APPS.find(a => a.id === id);
 
@@ -252,7 +255,7 @@ function renderTaskbar() {
         b.addEventListener('click', act);
         c.appendChild(b); return b;
     };
-    mk(`<img src="icon/logo-sm.png" alt="开始">`, '开始', () => togglePanel('startMenu'));
+    mk(`<img src="img/icons/windows.png" alt="开始">`, '开始', () => togglePanel('startMenu'));
     mk(`<span class="tk-ico">${ICONS.widgets}</span>`, '小组件', () => togglePanel('widgetsPanel'));
     mk(`<span class="tk-ico">${ICONS.search}</span>`, '搜索', () => togglePanel('searchPanel'));
     const sep = document.createElement('span'); sep.className = 'tb-sep'; c.appendChild(sep);
@@ -1787,7 +1790,7 @@ function buildAiApp() {
     const html = `
     <div class="aiapp" data-aiapp style="display:flex;flex-direction:column;height:100%">
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)">
-            ${ico('img:img/icons/copilot.svg')}
+            ${ico('img:img/icons/copilot.png')}
             <div style="flex:1;min-width:0">
                 <div style="font-size:14px;font-weight:600">AI 助手</div>
                 <div style="font-size:11.5px;color:var(--text-dim)">OrcaRouter 模型路由 · 多模型接入 · 按量计费</div>
@@ -1844,7 +1847,7 @@ function initAiApp(root) {
     function paintEmpty() {
         const em = $('[data-aiempty]', root); if (!em) return;
         if (getKey()) { em.remove(); addMsg('ai', AI_WELCOME); return; }
-        em.innerHTML = `${ico('img:img/icons/copilot.svg')}<b style="font-size:14px">开始使用 AI 助手</b>
+        em.innerHTML = `${ico('img:img/icons/copilot.png')}<b style="font-size:14px">开始使用 AI 助手</b>
             <div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">内置免费模型，开箱即用。<br>OrcaRouter 模型路由 · 多模型接入。</div>
             <button class="wlink" data-aiget style="font-size:13px">了解 OrcaRouter</button>`;
         const g = $('[data-aiget]', em);
@@ -2042,7 +2045,7 @@ function buildStore() {
         { id: 'apps', icon: 'grid', label: '应用' },
         { id: 'gaming', icon: 'rGamebar', label: '游戏' },
         { id: 'ent', icon: 'rFilm', label: '娱乐' },
-        { id: 'ai', icon: 'img:img/icons/copilot.svg', label: 'AI Hub' },
+        { id: 'ai', icon: 'img:img/icons/copilot.png', label: 'AI Hub' },
     ];
     const html = `<div class="mstore" data-store>
         <aside class="mstore-side">
