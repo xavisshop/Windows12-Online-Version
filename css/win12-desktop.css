@@ -597,6 +597,16 @@ input { font-family: inherit; }
     background-size: cover;
     background-position: center;
 }
+.wp-ribbons {
+    background-image: url('../img/wallpaper-ribbons.png');
+    background-size: cover;
+    background-position: center;
+}
+.wp-pastel {
+    background-image: url('../img/wallpaper-pastel.png');
+    background-size: cover;
+    background-position: center;
+}
 .wp-v1 {
     background-image: url('../img/wallpaper-v1.jpg');
     background-size: cover;
