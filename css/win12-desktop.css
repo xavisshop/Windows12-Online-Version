@@ -333,6 +333,12 @@ input { font-family: inherit; }
 .qs-scroll::-webkit-scrollbar { width: 6px; }
 .qs-scroll::-webkit-scrollbar-thumb { background: rgba(43,74,203,.3); border-radius: 3px; }
 .qs-more { margin-top: 4px; margin-bottom: 8px; }
+.qs-more .qs-t { flex-direction: column; gap: 6px; background: rgba(30,30,38,.72); color: #e8e8ec; border-radius: 12px; padding: 14px 6px 10px; font-size: 12px; transition: transform .15s ease, background .15s; }
+.qs-more .qs-t .qs-btn { width: 100%; background: transparent; border-radius: 0; }
+.qs-more .qs-t .qs-btn svg { width: 22px; height: 22px; }
+.qs-more .qs-t.on { background: #e02424; color: #fff; }
+.qs-more .qs-t.on .qs-btn { background: transparent; color: #fff; }
+.qs-more .qs-t:active { transform: scale(.94); }
 .qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
 .qs-t { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.35); border-radius: 10px; padding: 10px 12px; cursor: pointer; color: #1e3a8a; font-size: 13px; font-weight: 500; transition: background .15s; text-align: left; }
 .qs-t:hover { background: rgba(255,255,255,.65); }
@@ -362,8 +368,10 @@ input { font-family: inherit; }
 .qs-sub-ico { display: flex; width: 20px; height: 20px; flex-shrink: 0; }
 .qs-sub-ico svg { width: 18px; height: 18px; }
 .qs-slider { display: flex; align-items: center; gap: 16px; margin: 16px 4px; color: #1e3a8a; }
+.qs-slider.qs-vol { background: rgba(20,20,25,.85); border-radius: 12px; padding: 10px 16px; margin-left: -12px; margin-right: -12px; color: #e02424; }
 @property --fill { syntax: '<percentage>'; inherits: true; initial-value: 60%; }
-.qs-slider svg { width: 20px; height: 20px; flex-shrink: 0; }
+.qs-slider svg { width: 20px; height: 20px; flex-shrink: 0; transition: transform .15s ease; cursor: pointer; }
+.qs-slider svg:active { transform: scale(.75); }
 .qs-slider input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 22px; background: transparent; cursor: pointer; --fill: 60%; }
 .qs-slider input[type="range"]::-webkit-slider-runnable-track { height: 5px; border-radius: 3px; background: linear-gradient(to right, #e02424 0%, #f04444 var(--fill), rgba(0,0,0,.55) var(--fill)); transition: --fill .25s ease; }
 .qs-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #e02424; margin-top: -6.5px; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); transition: transform .15s ease; }
