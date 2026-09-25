@@ -328,15 +328,19 @@ input { font-family: inherit; }
 /* ---------- 快捷设置 ---------- */
 #quickSettings { right: 12px; bottom: 84px; width: 360px; padding: 20px 20px 14px; transform: translateY(26px) scale(0.94); transform-origin: 100% 100%; transition: opacity 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), visibility 0.3s; }
 #quickSettings.open { transform: none; }
-.qs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 10px; margin-bottom: 18px; }
-.qs-t { display: flex; flex-direction: column; align-items: stretch; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; }
-.qs-t .qs-btn {
-    display: flex; align-items: center; justify-content: center; gap: 4px;
-    height: 52px; border-radius: 8px;
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.07);
-    color: var(--text); transition: background .15s;
-}
+.qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.qs-t { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 10px 12px; cursor: pointer; color: var(--text); font-size: 13px; transition: background .15s; text-align: left; }
+.qs-t:hover { background: rgba(255,255,255,.1); }
+.qs-t .qs-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; }
 .qs-t .qs-btn svg { width: 20px; height: 20px; }
+.qs-t.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.qs-t .chev { margin-left: auto; font-size: 18px; opacity: .7; }
+.qs-x { display: flex; flex-direction: column; gap: 8px; }
+.qs-sublist { display: flex; flex-direction: column; gap: 4px; }
+.qs-sub { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.05); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text); font-size: 12.5px; text-align: left; }
+.qs-sub.on { background: rgba(224,68,158,.18); border-color: var(--accent); }
+.qs-sub-ico { display: flex; width: 20px; height: 20px; flex-shrink: 0; }
+.qs-sub-ico svg { width: 18px; height: 18px; }
 .qs-t .qs-btn .chev { font-size: 12px; color: var(--text-dim); margin-left: 2px; }
 .qs-t:hover .qs-btn { background: rgba(255,255,255,.1); }
 .qs-t.on .qs-btn { background: var(--accent); border-color: transparent; color: #fff; }
