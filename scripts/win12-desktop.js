@@ -290,7 +290,7 @@ function renderStartMenu() {
     $('#smPinned').innerHTML = APPS.map(a =>
         `<button class="sm-app" data-app="${a.id}">${ico(a.icon)}<span>${esc(a.name)}</span></button>`).join('');
     $('#smRecent').innerHTML = RECENT.map(r =>
-        `<button class="sm-rec-item"><span class="f-ico">${ICONS[r.icon]}</span><span class="r-meta"><b>${esc(r.name)}</b><i>${esc(r.sub)}</i></span><span class="r-time">${esc(r.time)}</span></button>`).join('');
+        `<button class="sm-rec-item">${ico(r.icon, 'f-ico')}<span class="r-meta"><b>${esc(r.name)}</b><i>${esc(r.sub)}</i></span><span class="r-time">${esc(r.time)}</span></button>`).join('');
     // 所有应用 A-Z
     const sorted = [...APPS].sort((a, b) => a.name.localeCompare(b.name, 'zh'));
     let html = '', lastH = '';
@@ -1167,9 +1167,9 @@ const SET_NAV = [
 const wchev = '<span class="wchev">›</span>';
 /* 用 div 而非 button，避免右侧控件出现嵌套按钮 */
 const wrow = (icon, title, sub, right) =>
-    `<div class="wrow" data-demo role="button" tabindex="0"><span class="wrow-ico">${icon ? ICONS[icon] : ''}</span><span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${right === undefined ? wchev : right}</span></div>`;
+    `<div class="wrow" data-demo role="button" tabindex="0">${icon ? ico(icon, 'wrow-ico') : ''}<span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${right === undefined ? wchev : right}</span></div>`;
 const wrowPage = (icon, title, sub, page) =>
-    `<div class="wrow" data-gopage="${page}" role="button" tabindex="0"><span class="wrow-ico">${icon ? ICONS[icon] : ''}</span><span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${wchev}</span></div>`;
+    `<div class="wrow" data-gopage="${page}" role="button" tabindex="0">${icon ? ico(icon, 'wrow-ico') : ''}<span class="wrow-tx"><b>${title}</b>${sub ? `<i>${sub}</i>` : ''}</span><span class="wrow-r">${wchev}</span></div>`;
 const wcard = inner => `<div class="wcard">${inner}</div>`;
 const wsw = on => `<span class="wtoggle${on ? ' on' : ''}"></span>`;
 const wsec = t => `<div class="wsec">${t}</div>`;
