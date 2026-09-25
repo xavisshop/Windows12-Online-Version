@@ -2034,8 +2034,12 @@ function wireGlobal() {
             togglePanel('startMenu');
         } else if (e.key === 'Escape') closePanels();
     });
+    // 锁屏绑定已移至 wireLockscreen()（init 最先调用，避免其他初始化报错导致锁屏失效）
+}
+function wireLockscreen() {
     // 锁屏：点击或上滑关闭（iOS 强化：JS 完全接管触摸，不依赖 CSS touch-action）
     const ls = $('#lockscreen');
+    if (!ls) return;
     ls.addEventListener('click', () => ls.classList.add('hide'));
     let lsTouchY = null, lsDy = 0;
     ls.addEventListener('touchstart', e => {
@@ -2095,6 +2099,7 @@ function renderLockWidgets() {
 
 /* ================= 启动 ================= */
 function init() {
+    wireLockscreen(); // 最先绑定锁屏手势，避免后续初始化报错导致锁屏无法关闭
     fillTray();
     renderTaskbar();
     renderStartMenu();
