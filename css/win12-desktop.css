@@ -204,7 +204,7 @@ input { font-family: inherit; }
 .sm-rec-item { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 10px; text-align: left; width: 100%; }
 .sm-rec-item:hover { background: var(--hover); }
 .sm-rec-item .f-ico { width: 34px; height: 34px; flex-shrink: 0; }
-.sm-rec-item .f-ico svg { width: 34px; height: 34px; }
+.sm-rec-item .f-ico svg, .sm-rec-item .f-ico img { width: 34px; height: 34px; }
 .sm-rec-item .r-meta { flex: 1; min-width: 0; }
 .sm-rec-item .r-meta b { display: block; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sm-rec-item .r-meta i { font-style: normal; font-size: 11px; color: var(--text-dim); }
