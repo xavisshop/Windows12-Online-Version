@@ -162,11 +162,11 @@ input { font-family: inherit; }
 .tb-tray { display: flex; align-items: center; gap: 9px; height: 44px; padding: 0 12px; border-radius: 12px; }
 .tb-tray:hover { background: var(--hover); }
 .ti svg { width: 17px; height: 17px; display: block; fill: currentColor; }
-.tb-clock { position: relative; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; height: 48px; padding: 6px 14px; border-radius: 12px; font-size: 12px; line-height: 1.4; }
+.tb-clock { position: relative; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 3px; height: 48px; padding: 6px 30px 6px 14px; border-radius: 12px; font-size: 12px; line-height: 1.4; }
 .tb-clock:hover { background: var(--hover); }
 .tb-clock span { display: block; white-space: nowrap; }
 .ntf-badge {
-    position: absolute; top: 4px; right: 6px; min-width: 16px; height: 16px; padding: 0 4px;
+    position: absolute; top: 5px; right: 8px; min-width: 16px; height: 16px; padding: 0 4px;
     background: var(--accent); color: #fff; font-size: 10px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
 }
@@ -326,7 +326,8 @@ input { font-family: inherit; }
 .wg-hint { text-align: center; color: rgba(255,255,255,.6); font-size: 13px; margin-top: 3vh; }
 
 /* ---------- 快捷设置 ---------- */
-#quickSettings { right: 12px; bottom: 84px; width: 360px; padding: 20px 20px 14px; }
+#quickSettings { right: 12px; bottom: 84px; width: 360px; padding: 20px 20px 14px; transform: translateY(26px) scale(0.94); transform-origin: 100% 100%; transition: opacity 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), visibility 0.3s; }
+#quickSettings.open { transform: none; }
 .qs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 10px; margin-bottom: 18px; }
 .qs-t { display: flex; flex-direction: column; align-items: stretch; gap: 6px; background: none; border: none; padding: 0; cursor: pointer; }
 .qs-t .qs-btn {
@@ -343,11 +344,12 @@ input { font-family: inherit; }
 .qs-t > span:last-child { font-size: 12px; color: var(--text); text-align: center; }
 .qs-slider { display: flex; align-items: center; gap: 16px; margin: 16px 4px; color: var(--text); }
 .qs-slider svg { width: 20px; height: 20px; flex-shrink: 0; }
-.qs-slider input[type="range"] { flex: 1; accent-color: var(--accent); height: 28px; cursor: pointer; }
-.qs-slider input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
-.qs-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); margin-top: -7px; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
-.qs-slider input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
-.qs-slider input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+.qs-slider input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 22px; background: transparent; cursor: pointer; --fill: 60%; }
+.qs-slider input[type="range"]::-webkit-slider-runnable-track { height: 5px; border-radius: 3px; background: linear-gradient(to right, #4a7de0 0%, #6b9bf5 var(--fill), rgba(120,140,180,.28) var(--fill)); }
+.qs-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #2f5fd0; margin-top: -6.5px; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); }
+.qs-slider input[type="range"]::-moz-range-track { height: 5px; border-radius: 3px; background: rgba(120,140,180,.28); }
+.qs-slider input[type="range"]::-moz-range-progress { height: 5px; border-radius: 3px; background: linear-gradient(to right, #4a7de0, #6b9bf5); }
+.qs-slider input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #2f5fd0; border: none; box-shadow: 0 1px 5px rgba(0,0,0,.35); }
 .qs-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
 .qs-bat { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
 .qs-bat svg { width: 20px; height: 20px; }
