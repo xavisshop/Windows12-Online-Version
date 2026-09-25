@@ -128,9 +128,23 @@
     .dd .opts div { padding: 8px 10px; font-size: .85em; color: #e8e8e8; cursor: pointer; text-align: center; }
     .dd .opts div:hover { background: var(--red); color: #fff; }
 
-    .bootlist { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
-    .bootlist .b { display: flex; align-items: center; gap: 12px; font-size: .85em; color: #f0f0f0; }
-    .bootlist .b svg { width: 30px; height: 30px; flex-shrink: 0; }
+    .bootlist { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+    .bootlist .b {
+        display: flex; align-items: center; gap: 12px; min-width: 0;
+        padding: 8px 10px; border: 1px solid #3a3a3e; background: #1c1c1e;
+        font-size: .85em; color: #f0f0f0; cursor: grab;
+        transition: border-color .15s, background .15s, opacity .15s;
+    }
+    .bootlist .b:hover { border-color: var(--red-dim); background: #242426; }
+    .bootlist .b:active { cursor: grabbing; }
+    .bootlist .b.dragging { opacity: .45; }
+    .bootlist .b.drop-before { border-top: 3px solid var(--red-hi); }
+    .bootlist .b.drop-after { border-bottom: 3px solid var(--red-hi); }
+    .bootlist .b:focus-visible { outline: 2px solid var(--red-hi); outline-offset: 2px; }
+    .bootlist .b svg { width: 30px; height: 30px; flex-shrink: 0; pointer-events: none; }
+    .bootlist .b .boot-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .bootlist .b .boot-grip { color: var(--gray); font-size: 1.5em; line-height: 1; pointer-events: none; }
+    .boot-hint { color: var(--gray); font-size: .75em; margin-top: 7px; }
 
     .help { color: var(--yellow); font-size: .78em; line-height: 1.7; margin-top: 14px; }
 
@@ -397,16 +411,21 @@
         </div>
         <div class="block">
             <h3 data-i18n="bootorder">启动顺序</h3>
-            <div class="bootlist">
-                <div class="b">
+            <div class="bootlist" id="bootList" aria-label="启动顺序">
+                <div class="b" draggable="true" tabindex="0" data-boot="windows">
                     <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="8" width="26" height="16" rx="2" stroke="#c9c9ce" stroke-width="2"/><circle cx="11" cy="16" r="4" stroke="#c9c9ce" stroke-width="2"/><rect x="20" y="14" width="6" height="4" fill="#c9c9ce"/></svg>
-                    <span>Windows Boot Manager (HS-SSD-C4000 1024G)</span>
+                    <span class="boot-name">Windows Boot Manager (HS-SSD-C4000 1024G)</span><span class="boot-grip" aria-hidden="true">⠿</span>
                 </div>
-                <div class="b">
+                <div class="b" draggable="true" tabindex="0" data-boot="usb">
                     <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="8" width="26" height="16" rx="2" stroke="#c9c9ce" stroke-width="2"/><circle cx="11" cy="16" r="4" stroke="#c9c9ce" stroke-width="2"/><rect x="20" y="14" width="6" height="4" fill="#c9c9ce"/></svg>
-                    <span>UEFI: Netac OnlyDisk 1100, Partition 1 (Netac OnlyDisk 1100)</span>
+                    <span class="boot-name">UEFI: Netac OnlyDisk 1100, Partition 1 (Netac OnlyDisk 1100)</span><span class="boot-grip" aria-hidden="true">⠿</span>
+                </div>
+                <div class="b" draggable="true" tabindex="0" data-boot="network">
+                    <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#c9c9ce" stroke-width="2"/><path d="M4 16h24M16 4c-7 7-7 17 0 24M16 4c7 7 7 17 0 24" stroke="#c9c9ce" stroke-width="1.5"/></svg>
+                    <span class="boot-name">UEFI: Network</span><span class="boot-grip" aria-hidden="true">⠿</span>
                 </div>
             </div>
+            <p class="boot-hint" data-i18n="boot_drag_hint">拖动启动项调整顺序（也可用 ↑ / ↓ 键）</p>
         </div>
     </div>
 
@@ -595,7 +614,7 @@
         zh: {
             nav_oc: '超频OC', nav_adv: '高级模式', nav_bios: 'BIOS功能', nav_lang: '语言', nav_exit: '退出',
             sysinfo: '系统信息', k_mb: '主板型号:', k_cpu: 'CPU:', k_mem: '总内存:', k_biosver: 'BIOS版本:', k_biosdate: '更新日期:',
-            memstatus: '内存状态', bootorder: '启动顺序',
+            memstatus: '内存状态', bootorder: '启动顺序', boot_drag_hint: '拖动启动项调整顺序（也可用 ↑ / ↓ 键）',
             cputemp: 'CPU温度:', cpuvolt: 'CPU电压:', mbtemp: '主板温度:', dramvolt: '内存电压:',
             satastatus: 'SATA状态', bootprio: '启动优先级', empty: 'Empty',
             help: 'XMP: XMP是内存工作在高性能的规范，开启后主板会自动加载内存默认的频率、电压、时序。电脑超频会造成硬件的损坏，请在工作在更高的频率。相比默认的设置，开启XMP后内存性能会大幅度提升。',
@@ -615,7 +634,7 @@
         en: {
             nav_oc: 'OC', nav_adv: 'Advanced Mode', nav_bios: 'BIOS Features', nav_lang: 'Language', nav_exit: 'Exit',
             sysinfo: 'System Information', k_mb: 'Motherboard:', k_cpu: 'CPU:', k_mem: 'Total Memory:', k_biosver: 'BIOS Version:', k_biosdate: 'Update Date:',
-            memstatus: 'Memory Status', bootorder: 'Boot Order',
+            memstatus: 'Memory Status', bootorder: 'Boot Order', boot_drag_hint: 'Drag to reorder boot devices (or use ↑ / ↓ keys)',
             cputemp: 'CPU Temp:', cpuvolt: 'CPU Voltage:', mbtemp: 'MB Temp:', dramvolt: 'DRAM Voltage:',
             satastatus: 'SATA Status', bootprio: 'Boot Priority', empty: 'Empty',
             help: 'XMP: XMP is a specification for memory running at high performance. When enabled, the motherboard automatically loads the default frequency, voltage and timings. Overclocking may damage hardware; please operate at higher frequencies with care. Compared with default settings, enabling XMP greatly improves memory performance.',
@@ -748,9 +767,9 @@
             sel(B('等待按键进入 BIOS 时间 (秒)', 'Setup Prompt Timeout'), ['1', '2', '3', '5'], 0),
             sel(B('CSM 兼容模块', 'CSM Support'), O_EN, 0, B('关闭后仅支持 UEFI 启动。', 'When disabled, only UEFI boot is supported.')),
             hd(B('启动顺序', 'Boot Option Priorities')),
-            sel(B('启动项 #1', 'Boot Option #1'), ['Windows Boot Manager (HS-SSD-C4000 1024G)', 'UEFI: Netac OnlyDisk 1100, Partition 1', 'UEFI: Network'], 0),
-            sel(B('启动项 #2', 'Boot Option #2'), ['UEFI: Netac OnlyDisk 1100, Partition 1', 'Windows Boot Manager (HS-SSD-C4000 1024G)', 'UEFI: Network'], 0),
-            sel(B('启动项 #3', 'Boot Option #3'), ['UEFI: Network', B('关闭', 'Disabled')], 0),
+            info(B('启动项 #1', 'Boot Option #1'), ''),
+            info(B('启动项 #2', 'Boot Option #2'), ''),
+            info(B('启动项 #3', 'Boot Option #3'), ''),
             hd(B('保存与退出', 'Save & Exit')),
             btn(B('保存更改并重启', 'Save Changes and Reset'), 'save'),
             btn(B('放弃更改并退出', 'Discard Changes and Exit'), 'exit'),
@@ -826,6 +845,78 @@
         document.getElementById('clkMon').textContent = MON[d.getMonth()];
     }
     tick(); setInterval(tick, 5000);
+
+    /* 启动顺序：EZ 页拖拽，和高级模式启动项 #1—#3 共用同一顺序。 */
+    var bootList = document.getElementById('bootList');
+    var bootIds = ['windows', 'usb', 'network'];
+    var bootLabels = {
+        windows: 'Windows Boot Manager (HS-SSD-C4000 1024G)',
+        usb: 'UEFI: Netac OnlyDisk 1100, Partition 1',
+        network: 'UEFI: Network'
+    };
+    var draggedBoot = null;
+    function bootOrder() {
+        return Array.from(bootList.querySelectorAll('.b')).map(function (el) { return el.dataset.boot; });
+    }
+    function syncBootOptions() {
+        var items = ADV[5].items;
+        bootOrder().forEach(function (id, i) { items[6 + i].val = bootLabels[id]; });
+        if (mode === 'adv' && currentGroup === 5) renderRows();
+    }
+    function setBootOrder(order) {
+        order.forEach(function (id) {
+            var item = bootList.querySelector('[data-boot="' + id + '"]');
+            if (item) bootList.appendChild(item);
+        });
+        syncBootOptions();
+    }
+    try {
+        var savedBootOrder = JSON.parse(localStorage.getItem('bios_boot_order'));
+        if (Array.isArray(savedBootOrder) && savedBootOrder.length === bootIds.length &&
+            bootIds.every(function (id) { return savedBootOrder.includes(id); })) setBootOrder(savedBootOrder);
+    } catch (e) {}
+    function clearBootDrag() {
+        draggedBoot = null;
+        bootList.querySelectorAll('.b').forEach(function (el) {
+            el.classList.remove('dragging', 'drop-before', 'drop-after');
+        });
+    }
+    bootList.querySelectorAll('.b').forEach(function (item) {
+        item.addEventListener('dragstart', function (event) {
+            draggedBoot = item;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', item.dataset.boot);
+            setTimeout(function () { if (draggedBoot === item) item.classList.add('dragging'); }, 0);
+        });
+        item.addEventListener('dragover', function (event) {
+            if (!draggedBoot || draggedBoot === item) return;
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            item.classList.remove('drop-before', 'drop-after');
+            item.classList.add(event.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2 ? 'drop-before' : 'drop-after');
+        });
+        item.addEventListener('dragleave', function () {
+            item.classList.remove('drop-before', 'drop-after');
+        });
+        item.addEventListener('drop', function (event) {
+            if (!draggedBoot || draggedBoot === item) return;
+            event.preventDefault();
+            var before = event.clientY < item.getBoundingClientRect().top + item.offsetHeight / 2;
+            bootList.insertBefore(draggedBoot, before ? item : item.nextSibling);
+            clearBootDrag();
+            syncBootOptions();
+        });
+        item.addEventListener('dragend', clearBootDrag);
+        item.addEventListener('keydown', function (event) {
+            if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+            event.preventDefault();
+            var other = event.key === 'ArrowUp' ? item.previousElementSibling : item.nextElementSibling;
+            if (!other) return;
+            bootList.insertBefore(item, event.key === 'ArrowUp' ? other : other.nextSibling);
+            syncBootOptions();
+            item.focus();
+        });
+    });
     function toast(message) {
         toastEl.textContent = message;
         toastEl.classList.add('show');
@@ -1054,6 +1145,7 @@
     }
     function loadDefaults() {
         ADV.concat(OC).forEach(function (group) { resetItems(group.items); });
+        setBootOrder(bootIds);
         document.getElementById('ddXmp').dataset.value = 'disabled';
         document.getElementById('ddRaid').dataset.value = 'disabled';
         document.querySelectorAll('.dd').forEach(buildDd);
@@ -1061,7 +1153,11 @@
         if (mode !== 'bios') renderRows();
         toast(t('t_defaults'));
     }
-    function saveAndLeave() { toast(t('t_saving')); setTimeout(leave, 700); }
+    function saveAndLeave() {
+        try { localStorage.setItem('bios_boot_order', JSON.stringify(bootOrder())); } catch (e) {}
+        toast(t('t_saving'));
+        setTimeout(leave, 700);
+    }
     function runAction(act) {
         if (act === 'save') saveAndLeave();
         else if (act === 'exit') leave();
@@ -1107,6 +1203,7 @@
             }
         }
     });
+    syncBootOptions();
     applyLang();
 })();
 </script>
