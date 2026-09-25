@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows 12</title>
     <link rel="icon" type="image/png" href="icon/logo-sm.png">
-    <link rel="stylesheet" href="css/components.css?v=2025092509">
-    <link rel="stylesheet" href="css/animations.css?v=2025092509">
-    <link rel="stylesheet" href="css/responsive.css?v=2025092509">
-    <link rel="stylesheet" href="css/win12-desktop.css?v=2025092509">
+    <link rel="stylesheet" href="css/components.css?v=2025092510">
+    <link rel="stylesheet" href="css/animations.css?v=2025092510">
+    <link rel="stylesheet" href="css/responsive.css?v=2025092510">
+    <link rel="stylesheet" href="css/win12-desktop.css?v=2025092510">
 </head>
 <body>
     <!-- 壁纸（视频同款紫红流体） -->
@@ -152,12 +152,21 @@
         <div class="qs-foot"><button id="qsSettings" title="设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
     </section>
 
-    <!-- 日历 / 通知 -->
-    <section id="calPanel" class="flyout">
-        <div class="cal-head"><span id="calTitle"></span><div><button id="calPrev">‹</button><button id="calToday">今天</button><button id="calNext">›</button></div></div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="sp-sec">通知</div>
+    <!-- 通知中心 / 日历（Win11 样式） -->
+    <section id="calPanel" class="flyout ntf-center">
+        <div class="nc-head"><span>通知</span><div class="nc-head-btns"><button id="ncDnd" title="请勿打扰"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button><button id="ncClearAll" class="nc-clear">全部清除</button></div></div>
+        <div class="nc-dnd-banner" id="ncDndBanner" hidden>
+            <span class="nc-dnd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.7 3A6 6 0 0 1 18 8c0 7-3 9-3 9h-8.3"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/><line x1="2" y1="2" x2="22" y2="22"/></svg></span>
+            <span class="nc-dnd-tx"><b>"请勿打扰"已开启</b><i>你将只看到优先通知和闹钟的横幅。</i></span>
+        </div>
+        <button class="nc-dnd-link" id="ncDndLink" hidden>通知设置</button>
         <div class="ntf-list" id="ntfList"></div>
+        <div class="nc-date"><span class="nc-date-tx"><b id="ncDateMain"></b><i id="ncDateLunar"></i></span><button id="ncDateChev" title="折叠">﹀</button></div>
+        <div class="nc-cal" id="ncCalWrap">
+            <div class="cal-head"><span id="calTitle"></span><div><button id="calPrev">‹</button><button id="calNext">›</button></div></div>
+            <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div class="nc-focus"><button id="ncFocusMinus" title="减少">−</button><span><b id="ncFocusMin">30</b> 分钟</span><button id="ncFocusPlus" title="增加">＋</button><button id="ncFocusStart" class="nc-focus-go">▶ 开始专注</button></div>
     </section>
 
     <!-- 窗口层 -->
@@ -179,7 +188,7 @@
         <div class="subtitle">请将设备横向放置以获得最佳体验</div>
     </div>
 
-    <script src="scripts/win12-desktop.js?v=2025092509"></script>
+    <script src="scripts/win12-desktop.js?v=2025092510"></script>
     <script src="scripts/orientation-detector.js"></script>
 </body>
 </html>
