@@ -1558,6 +1558,8 @@ const AI_SYSTEM = `请使用中文对话。你是 Windows 12 网页版中的 AI 
 
 /* AI 侧边栏 */
 let aiHist = [];
+let aiWelcomed = false; // 欢迎语只发一次
+let aiContPh = null, aiContPartial = ''; // 被截断时的继续上下文
 function toggleAiPanel(force) {
     const p = $('#aiPanel');
     const show = force !== undefined ? force : !p.classList.contains('open');
@@ -1577,7 +1579,6 @@ function aiPanelMsg(role, text) {
 function initAiPanel() {
     if (initAiPanel.done) return;
     initAiPanel.done = true;
-    $('#aiPanelIco').innerHTML = '<img src="img/icons/copilot.svg" alt="" draggable="false">';
     $('#aiPanelKey').value = store.get('orcarouter_key', '');
     $('#aiPanelModel').value = store.get('orcarouter_model', '');
     const pModelSel = $('#aiPanelModelSel');
@@ -1597,7 +1598,7 @@ function initAiPanel() {
         $('#aiPanelStat').textContent = orcaUsingBuiltin() ? '使用内置体验 Key' : '已保存到本机';
         setTimeout(() => $('#aiPanelStat').textContent = '', 2000);
         if (pBuiltin) pBuiltin.style.display = orcaUsingBuiltin() ? '' : 'none';
-        if (!aiHist.length) { aiPanelMsg('ai', AI_WELCOME); }
+        if (!aiWelcomed) { aiWelcomed = true; aiPanelMsg('ai', AI_WELCOME); }
     };
     $('#aiPanelClear').onclick = () => {
         store.del('orcarouter_key'); store.del('orcarouter_model');
@@ -1608,38 +1609,99 @@ function initAiPanel() {
     const box = $('#aiPanelMsgs');
     box.innerHTML = `<div class="aip-empty">欢迎使用 AI 助手<br>内置免费模型，开箱即用<br>我可以帮你打开应用、搜索网页、切换主题</div>`;
     if (orcaKey()) aiPanelMsg('ai', AI_WELCOME);
+    // 发送按钮：正常"发送" / 截断后"➤ 继续"
+    const setContinueBtn = (on) => {
+        const b = $('#aiPanelSend');
+        b.classList.toggle('cont', on);
+        b.textContent = on ? '➤' : '发送';
+        b.title = on ? '继续输出' : '发送';
+    };
+    // SSE 流式请求：收到什么输出什么；base 为继续时的前文
+    async function aiStream(messages, ph, base) {
+        const key = orcaKey(), model = orcaModel();
+        const r = await fetch(ORCA_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+            body: JSON.stringify({ model, messages, stream: true })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const reader = r.body.getReader(), dec = new TextDecoder();
+        let buf = '', out = '', truncated = false, started = false;
+        for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += dec.decode(value, { stream: true });
+            let i;
+            while ((i = buf.indexOf('\n')) >= 0) {
+                const line = buf.slice(0, i).trim();
+                buf = buf.slice(i + 1);
+                if (!line.startsWith('data:')) continue;
+                const data = line.slice(5).trim();
+                if (data === '[DONE]') continue;
+                let j; try { j = JSON.parse(data); } catch (e) { continue; }
+                const ch = j.choices && j.choices[0];
+                if (!ch) continue;
+                const d = ch.delta && ch.delta.content ? ch.delta.content : '';
+                if (d) {
+                    if (!started) { started = true; ph.textContent = base; }
+                    out += d;
+                    ph.textContent = base + out;
+                    box.scrollTop = box.scrollHeight;
+                }
+                if (ch.finish_reason === 'length') truncated = true;
+            }
+        }
+        if (!started) ph.textContent = base;
+        return { text: out, truncated };
+    }
+    // 解析并执行系统指令（对用户隐藏），返回展示文本
+    function aiVisible(reply) {
+        const lines = reply.split('\n'), visible = [];
+        for (const ln of lines) {
+            const m = ln.trim().match(/^\{(openapp|openurl|settheme)\s+([^}]+)\}$/);
+            if (m) { runAiCmd(m[1], m[2].trim()); } else { visible.push(ln); }
+        }
+        return visible.join('\n').trim() || reply;
+    }
     const send = async () => {
         const inp = $('#aiPanelIn');
         const text = inp.value.trim();
-        if (!text) return;
+        const cont = !text && aiContPh; // 输入为空且有截断 → 继续输出
+        if (!cont && !text) return;
         const key = orcaKey();
         if (!key) { aiPanelMsg('sys', '请先点击右上 ⚙ 设置你的 OrcaRouter API Key。'); return; }
-        inp.value = '';
-        aiPanelMsg('user', text);
-        const ph = aiPanelMsg('ai', '思考中…');
-        const model = orcaModel();
-        aiHist.push({ role: 'user', content: text });
+        let ph, base = '';
+        if (cont) {
+            ph = aiContPh; base = aiContPartial;
+        } else {
+            inp.value = '';
+            aiPanelMsg('user', text);
+            aiHist.push({ role: 'user', content: text });
+            ph = aiPanelMsg('ai', '');
+        }
+        ph.innerHTML = '<span class="aip-breath"><i></i></span>'; // 呼吸点
+        setContinueBtn(false);
+        aiContPh = null; aiContPartial = '';
+        const msgs = [{ role: 'system', content: AI_SYSTEM }, ...aiHist.slice(-12)];
+        if (cont) msgs.push({ role: 'user', content: '请从上次截断处继续输出，不要重复已输出的内容。' });
         try {
-            const r = await fetch(ORCA_API, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-                body: JSON.stringify({ model, messages: [{ role: 'system', content: AI_SYSTEM }, ...aiHist.slice(-12)] })
-            });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            const j = await r.json();
-            let reply = j.choices && j.choices[0] && j.choices[0].message ? j.choices[0].message.content : '';
-            if (!reply) throw new Error('空回复');
-            aiHist.push({ role: 'assistant', content: reply });
-            // 解析并执行系统指令（对用户隐藏）
-            const lines = reply.split('\n');
-            const visible = [];
-            for (const ln of lines) {
-                const m = ln.trim().match(/^\{(openapp|openurl|settheme)\s+([^}]+)\}$/);
-                if (m) { runAiCmd(m[1], m[2].trim()); } else { visible.push(ln); }
+            const { text: delta, truncated } = await aiStream(msgs, ph, base);
+            const full = base + delta;
+            if (!full.trim()) throw new Error('空回复');
+            aiHist.push({ role: 'assistant', content: full });
+            if (truncated) {
+                aiContPh = ph; aiContPartial = full;
+                setContinueBtn(true);
+                ph.textContent = aiVisible(full);
+                const tip = document.createElement('div');
+                tip.style.cssText = 'margin-top:8px;font-size:12px;color:var(--text-dim)';
+                tip.textContent = '输出被截断，点击 ➤ 继续';
+                ph.appendChild(tip);
+            } else {
+                ph.textContent = aiVisible(full);
             }
-            ph.textContent = visible.join('\n').trim() || reply;
         } catch (e) {
-            ph.textContent = '请求失败：' + e.message + '。请检查 Key 与网络后重试。';
+            ph.textContent = base + '请求失败：' + e.message + '。请检查 Key 与网络后重试。';
         }
         box.scrollTop = box.scrollHeight;
     };
