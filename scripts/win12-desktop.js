@@ -467,7 +467,6 @@ function setDnd(on) {
     $('#ncDnd').classList.toggle('on', on);
     $('#ncDndBanner').hidden = !on;
     $('#ncDndLink').hidden = !on;
-    if (on) toast('已开启"请勿打扰"', '🔕');
 }
 function wireNc() {
     $('#ncDnd').addEventListener('click', () => setDnd(!NTF_DND));
